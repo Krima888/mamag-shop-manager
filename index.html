@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Mama G's General Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
+            font-family: 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            min-height: 100vh;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            padding: 25px 20px 20px;
+            color: white;
+        }
+
+        .shop-name {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .manager-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .manager-name-header {
+            margin-top: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date {
+            margin-top: 8px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .nav-bar {
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-btn.active {
+            background: #2d6a4f;
+            color: white;
+        }
+
+        #dashboard { background: #f8f9fa; }
+        #record { background: #fef9e6; }
+        #reports { background: #e8f0fe; }
+        #settings { background: #f0f2f5; }
+
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+            min-height: calc(100vh - 140px);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .sales-card {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            color: white;
+            text-align: center;
+        }
+
+        .sales-amount {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .today-sales-card {
+            background: linear-gradient(135deg, #fff, #fef9e6);
+            border-left: 5px solid #2d6a4f;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #2d6a4f;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .start-time-display {
+            background: #e8f0fe;
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #2d6a4f;
+            text-align: center;
+        }
+
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-day {
+            width: 45px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        .bar-fill {
+            flex: 1;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .bar-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2d6a4f, #40916c);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .insight-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .sales-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .history-date {
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        .history-amount {
+            font-weight: bold;
+            color: #1b4d3e;
+        }
+
+        .history-time {
+            color: #6c757d;
+            font-size: 11px;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2d6a4f;
+        }
+
+        button {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #1b4d3e;
+            transform: scale(1.02);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 350px;
+            text-align: center;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            animation: fadeIn 0.3s;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #6c757d;
+            font-size: 11px;
+            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .sales-amount { font-size: 36px; }
+            .nav-btn { padding: 8px 12px; font-size: 14px; }
+            .shop-name { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="shop-name">
+                <span id="headerShopName">🏪 MAMA G'S GENERAL SHOP</span>
+                <span class="manager-badge">👩‍💼📊💰</span>
+            </div>
+            <div class="manager-name-header">
+                👤 Manager: <strong id="headerManagerName">Mama G</strong>
+            </div>
+            <div class="date" id="currentDate"></div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active" data-page="dashboard">🏠 Home</button>
+            <button class="nav-btn" data-page="record">💰 Record</button>
+            <button class="nav-btn" data-page="reports">📊 Reports</button>
+            <button class="nav-btn" data-page="settings">⚙️ Settings</button>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard" class="page active">
+            <div class="card sales-card">
+                <div>🎯 DAILY GOAL</div>
+                <div class="sales-amount" id="dailyGoalDisplay">KSH 0</div>
+                <div id="goalStatus"></div>
+            </div>
+
+            <div class="card today-sales-card">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">💰 TODAY'S SALES</div>
+                <div class="sales-amount" id="todaySalesDisplay" style="font-size: 36px; color: #2d6a4f;">KSH 0</div>
+                <div id="streakDisplay" style="color: #ff6b35; margin-top: 10px;"></div>
+                <div id="startTimeDisplay" class="start-time-display">
+                    ⏰ Start: <strong id="startTimeValue">Not set</strong> | 🔒 Close: <strong id="closingTimeValue">Not set</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">📊 THIS WEEK</div>
+                <div id="weeklyGraph"></div>
+                <div style="margin-top: 15px; text-align: center; font-weight: bold;" id="weeklyTotal"></div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">📜 SAVED SALES HISTORY</div>
+                <div id="salesHistory" class="sales-history"></div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">💡 INSIGHTS</div>
+                <div id="insights"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div>📈 VS LAST WEEK</div>
+                    <div class="stat-value" id="vsLastWeek">0%</div>
+                </div>
+                <div class="stat-box">
+                    <div>🎯 MONTH FORECAST</div>
+                    <div class="stat-value" id="monthForecast">KSH 0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECORD PAGE -->
+        <div id="record" class="page">
+            <div class="card">
+                <h3 style="color: #2d6a4f; margin-bottom: 20px;">📝 RECORD TODAY'S SALES</h3>
+                <div class="form-group">
+                    <label>📅 Date</label>
+                    <input type="date" id="recordDate" style="background: #f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label>⏰ Start Time (when you opened)</label>
+                    <input type="time" id="startTimeInput">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Closing Time (when you closed)</label>
+                    <input type="time" id="closingTimeInput">
+                </div>
+                <div class="form-group">
+                    <label>💰 Total Sales (KSH)</label>
+                    <input type="number" id="saleAmount" placeholder="Enter amount" step="100">
+                </div>
+                <button id="saveSaleBtn">💾 SAVE SALES</button>
+                <div id="recordMessage" style="margin-top: 15px; text-align: center;"></div>
+            </div>
+        </div>
+
+        <!-- REPORTS PAGE -->
+        <div id="reports" class="page">
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">🏆 VS LAST MONTH</div>
+                <div id="vsLastMonth"></div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">📅 BEST DAYS ANALYSIS</div>
+                <div id="bestDays"></div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">📈 MONTHLY FORECAST</div>
+                <div id="monthlyForecast"></div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: bold; margin-bottom: 15px;">💡 BUSINESS INSIGHTS</div>
+                <div id="businessInsights"></div>
+            </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div id="settings" class="page">
+            <div class="card">
+                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🏪 SHOP INFO</h3>
+                <div class="form-group">
+                    <label>Shop Name</label>
+                    <input type="text" id="shopNameInput" placeholder="Shop Name">
+                </div>
+                <div class="form-group">
+                    <label>Manager Name</label>
+                    <input type="text" id="managerNameInput" placeholder="Manager Name">
+                </div>
+                <button id="saveInfoBtn">💾 SAVE INFO</button>
+                <div id="infoSaveMessage" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🎯 DAILY GOAL</h3>
+                <div class="form-group">
+                    <label>Set Daily Target (KSH)</label>
+                    <input type="number" id="dailyGoalInput" step="100">
+                </div>
+                <button id="saveGoalBtn">💾 SAVE GOAL</button>
+                <div id="goalSaveMessage" style="margin-top: 10px;"></div>
+                <div style="margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="reminderToggle"> 🔔 Morning Reminder (8:00 AM)
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🔔 NOTIFICATIONS</h3>
+                <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects (Cha-ching!)
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration Animation
+                </label>
+                <button id="saveNotificationsBtn" style="background: #40916c; margin-top: 15px;">💾 SAVE NOTIFICATION SETTINGS</button>
+                <div id="notificationSaveMessage" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: #2d6a4f; margin-bottom: 15px;">💾 DATA MANAGEMENT</h3>
+                <button id="exportBtn" style="background: #40916c; margin-bottom: 10px;">📥 Export to CSV</button>
+                <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
+                <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">⚠️ Reset will delete all sales history</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Mama G's General Shop | Smart Business Manager
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div id="celebrationModal" class="modal">
+        <div class="modal-content">
+            <div style="font-size: 48px;">🎉 🎉 🎉</div>
+            <div style="font-size: 24px; font-weight: bold; color: #2d6a4f; margin: 15px 0;" id="celebrationTitle"></div>
+            <div id="celebrationMessage" style="margin: 15px 0; line-height: 1.5;"></div>
+            <button id="closeModalBtn" style="background: #2d6a4f;">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA STORAGE ==========
+        let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
+        let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
+        let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
+        let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
+            shopName: "🏪 MAMA G'S GENERAL SHOP",
+            managerName: "Mama G",
+            dailyGoal: 3500,
+            reminderEnabled: true,
+            soundEnabled: true,
+            celebrationEnabled: true
+        };
+
+        // Helper Functions
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDisplayDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function getTodayKey() {
+            return formatDate(new Date());
+        }
+
+        function getWeekDates() {
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+            const weekDates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                weekDates.push(formatDate(date));
+            }
+            return weekDates;
+        }
+
+        function getMonthDates() {
+            const today = new Date();
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const dates = [];
+            for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
+                dates.push(formatDate(d));
+            }
+            return dates;
+        }
+
+        function getLastMonthDates() {
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+            const dates = [];
+            for (let d = new Date(lastMonth); d <= endOfLastMonth; d.setDate(d.getDate() + 1)) {
+                dates.push(formatDate(d));
+            }
+            return dates;
+        }
+
+        function getWeekTotal() {
+            const weekDates = getWeekDates();
+            let total = 0;
+            weekDates.forEach(date => {
+                total += salesData[date] || 0;
+            });
+            return total;
+        }
+
+        function getLastWeekTotal() {
+            const today = new Date();
+            const lastWeekStart = new Date(today);
+            lastWeekStart.setDate(today.getDate() - 7);
+            let total = 0;
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(lastWeekStart);
+                date.setDate(lastWeekStart.getDate() + i);
+                const dateKey = formatDate(date);
+                total += salesData[dateKey] || 0;
+            }
+            return total;
+        }
+
+        function getMonthTotal() {
+            const monthDates = getMonthDates();
+            let total = 0;
+            monthDates.forEach(date => {
+                total += salesData[date] || 0;
+            });
+            return total;
+        }
+
+        function getLastMonthTotal() {
+            const lastMonthDates = getLastMonthDates();
+            let total = 0;
+            lastMonthDates.forEach(date => {
+                total += salesData[date] || 0;
+            });
+            return total;
+        }
+
+        function getStreak() {
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < 365; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() - i);
+                const dateKey = formatDate(checkDate);
+                if (salesData[dateKey] && salesData[dateKey] > 0) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function getBestDayAnalysis() {
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayTotals = [0, 0, 0, 0, 0, 0, 0];
+            const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+            
+            Object.keys(salesData).forEach(dateKey => {
+                const date = new Date(dateKey);
+                if (!isNaN(date.getTime())) {
+                    const day = date.getDay();
+                    dayTotals[day] += salesData[dateKey];
+                    dayCounts[day]++;
+                }
+            });
+            
+            const averages = dayTotals.map((total, i) => dayCounts[i] > 0 ? total / dayCounts[i] : 0);
+            const bestDayIndex = averages.indexOf(Math.max(...averages));
+            const slowDayIndex = averages.indexOf(Math.min(...averages.filter(a => a > 0)));
+            
+            return {
+                bestDay: dayNames[bestDayIndex],
+                bestAvg: Math.round(averages[bestDayIndex]),
+                slowDay: dayNames[slowDayIndex],
+                slowAvg: Math.round(averages[slowDayIndex]),
+                hasData: Object.keys(salesData).length > 0
+            };
+        }
+
+        // Sound Effect
+        let audioContext = null;
+        
+        function playChaChing() {
+            if (!settings.soundEnabled) return;
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+                oscillator.frequency.value = 880;
+                gain.gain.value = 0.3;
+                oscillator.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
+                oscillator.stop(audioContext.currentTime + 0.3);
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            } catch(e) {
+                console.log('Sound error:', e);
+            }
+        }
+
+        function showCelebration(title, message) {
+            if (!settings.celebrationEnabled) return;
+            document.getElementById('celebrationTitle').innerText = title;
+            document.getElementById('celebrationMessage').innerHTML = message;
+            document.getElementById('celebrationModal').classList.add('active');
+        }
+
+        function showSaveMessage(elementId, message, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="success-message" style="background: ${isSuccess ? '#d4edda' : '#f8d7da'}; color: ${isSuccess ? '#155724' : '#721c24'};">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 3000);
+        }
+
+        function updateHeaderNames() {
+            document.getElementById('headerShopName').innerHTML = settings.shopName;
+            document.getElementById('headerManagerName').innerHTML = settings.managerName;
+        }
+
+        // Sales History Display
+        function updateSalesHistory() {
+            const historyContainer = document.getElementById('salesHistory');
+            const sortedDates = Object.keys(salesData).sort().reverse().slice(0, 10);
+            
+            if (sortedDates.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-history">📭 No sales recorded yet.<br>Go to Record page to add your first sale!</div>';
+                return;
+            }
+            
+            let historyHtml = '';
+            sortedDates.forEach(date => {
+                const amount = salesData[date];
+                const displayDate = formatDisplayDate(date);
+                const startTime = startTimeData[date] || 'Not set';
+                const closingTime = closingTimeData[date] || 'Not set';
+                historyHtml += `
+                    <div class="history-item">
+                        <div>
+                            <span class="history-date">📅 ${displayDate}</span><br>
+                            <span class="history-time">⏰ ${startTime} - 🔒 ${closingTime}</span>
+                        </div>
+                        <span class="history-amount">💰 KSH ${amount.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            historyContainer.innerHTML = historyHtml;
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const todayKey = getTodayKey();
+            const todaySales = salesData[todayKey] || 0;
+            const todayStartTime = startTimeData[todayKey] || 'Not set';
+            const todayClosingTime = closingTimeData[todayKey] || 'Not set';
+            const dailyGoal = settings.dailyGoal;
+            const streak = getStreak();
+            const weekTotal = getWeekTotal();
+            const lastWeekTotal = getLastWeekTotal();
+            const monthTotal = getMonthTotal();
+            const weekDates = getWeekDates();
+            const maxSale = Math.max(...weekDates.map(d => salesData[d] || 0), 1);
+            
+            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
+            document.getElementById('startTimeValue').innerHTML = todayStartTime;
+            document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
+            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
+            
+            const percentOfGoal = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
+            if (todaySales > 0) {
+                if (todaySales >= dailyGoal) {
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">🎉 ${percentOfGoal}% ABOVE GOAL! 🎉</span>`;
+                } else {
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">📊 ${percentOfGoal}% of goal</span>`;
+                }
+            } else {
+                document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">✨ Record your first sale!</span>`;
+            }
+            
+            document.getElementById('streakDisplay').innerHTML = streak > 0 ? `🔥 ${streak} DAY STREAK! 🔥` : '✨ Start a streak!';
+            
+            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            let graphHtml = '<div class="bar-container">';
+            weekDates.forEach((date, i) => {
+                const sale = salesData[date] || 0;
+                const percent = (sale / maxSale * 100).toFixed(0);
+                graphHtml += `
+                    <div class="bar-item">
+                        <div class="bar-day">${dayNames[i]}</div>
+                        <div class="bar-fill">
+                            <div class="bar-progress" style="width: ${percent}%;">${sale > 0 ? `KSH ${sale.toLocaleString()}` : ''}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            graphHtml += '</div>';
+            document.getElementById('weeklyGraph').innerHTML = graphHtml;
+            document.getElementById('weeklyTotal').innerHTML = `WEEK TOTAL: KSH ${weekTotal.toLocaleString()}`;
+            
+            const bestDayAnalysis = getBestDayAnalysis();
+            const vsLastWeekPercent = lastWeekTotal > 0 ? ((weekTotal - lastWeekTotal) / lastWeekTotal * 100).toFixed(1) : 0;
+            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / (new Date().getDate()) * 30) : 0;
+            
+            let insightsHtml = '';
+            if (bestDayAnalysis.hasData) {
+                insightsHtml = `
+                    <div class="insight-item"><span>📊 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>📉 Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>🔥 Current Streak:</span><strong>${streak} days!</strong></div>
+                    <div class="insight-item"><span>🏆 Best Day Ever:</span><strong>KSH ${Math.max(...Object.values(salesData)).toLocaleString()}</strong></div>
+                `;
+            } else {
+                insightsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div>No sales data yet. Record your first sale to see insights!</div>
+                    </div>
+                `;
+            }
+            document.getElementById('insights').innerHTML = insightsHtml;
+            
+            document.getElementById('vsLastWeek').innerHTML = `${vsLastWeekPercent >= 0 ? '+' : ''}${vsLastWeekPercent}%`;
+            document.getElementById('monthForecast').innerHTML = `KSH ${projectedMonth.toLocaleString()}`;
+            
+            updateSalesHistory();
+        }
+
+        function updateReports() {
+            const monthTotal = getMonthTotal();
+            const lastMonthTotal = getLastMonthTotal();
+            const vsLastMonthPercent = lastMonthTotal > 0 ? ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
+            const bestDayAnalysis = getBestDayAnalysis();
+            const streak = getStreak();
+            const daysInMonth = new Date().getDate();
+            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / daysInMonth * 30) : 0;
+            
+            let vsLastMonthHtml = '';
+            if (monthTotal > 0 || lastMonthTotal > 0) {
+                vsLastMonthHtml = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
+                        <div>This Month: KSH ${monthTotal.toLocaleString()}</div>
+                        <div>Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
+                        <div style="margin-top: 10px;">${vsLastMonthPercent >= 0 ? '🎉 BETTER!' : '📉 NEED IMPROVEMENT'}</div>
+                    </div>
+                `;
+            } else {
+                vsLastMonthHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div>Record sales to see monthly comparison</div>
+                    </div>
+                `;
+            }
+            document.getElementById('vsLastMonth').innerHTML = vsLastMonthHtml;
+            
+            let bestDaysHtml = '';
+            if (bestDayAnalysis.hasData) {
+                bestDaysHtml = `
+                    <div class="insight-item"><span>🥇 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>🥈 Second Best:</span><strong>${bestDayAnalysis.bestDay === 'Friday' ? 'Saturday' : 'Friday'}</strong></div>
+                    <div class="insight-item"><span>⚠️ Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>📈 Trend:</span><strong>${vsLastMonthPercent >= 0 ? `+${vsLastMonthPercent}% this month!` : `${vsLastMonthPercent}% decline`}</strong></div>
+                `;
+            } else {
+                bestDaysHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⭐</div>
+                        <div>Add sales to see your best performing days</div>
+                    </div>
+                `;
+            }
+            document.getElementById('bestDays').innerHTML = bestDaysHtml;
+            
+            let monthlyForecastHtml = '';
+            if (monthTotal > 0) {
+                monthlyForecastHtml = `
+                    <div style="text-align: center;">
+                        <div>Current month total: KSH ${monthTotal.toLocaleString()}</div>
+                        <div>Days recorded: ${Object.keys(salesData).filter(d => new Date(d).getMonth() === new Date().getMonth()).length} days</div>
+                        <div>Projected total: KSH ${projectedMonth.toLocaleString()}</div>
+                        <div style="margin-top: 10px; font-weight: bold;">${projectedMonth > monthTotal ? '📈 ON TRACK FOR GROWTH!' : '📊 Keep recording sales!'}</div>
+                    </div>
+                `;
+            } else {
+                monthlyForecastHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📈</div>
+                        <div>Start recording daily sales to see your monthly forecast</div>
+                        <div style="margin-top: 10px; font-size: 12px;">📝 Go to Record page to add your first sale</div>
+                    </div>
+                `;
+            }
+            document.getElementById('monthlyForecast').innerHTML = monthlyForecastHtml;
+            
+            let insightsHtml = '';
+            if (bestDayAnalysis.hasData) {
+                insightsHtml = `
+                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day - stock up extra on ${bestDayAnalysis.bestDay.toLowerCase()}!"</div>
+                    <div class="insight-item">💡 "${bestDayAnalysis.slowDay}s are slower - consider running a small promotion on ${bestDayAnalysis.slowDay.toLowerCase()}s!"</div>
+                    <div class="insight-item">💡 "You're ${Math.abs(vsLastMonthPercent)}% ${vsLastMonthPercent >= 0 ? 'ahead' : 'behind'} compared to last month!"</div>
+                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep the momentum going!"</div>
+                    <div class="insight-item">💡 "Your average daily sale is KSH ${Math.round(monthTotal / Object.keys(salesData).length || 0).toLocaleString()}"</div>
+                `;
+            } else {
+                insightsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💡</div>
+                        <div>No data yet! Record your first sale to get personalized business insights</div>
+                        <div style="margin-top: 10px;">→ Go to Record page and enter today's sales</div>
+                    </div>
+                `;
+            }
+            document.getElementById('businessInsights').innerHTML = insightsHtml;
+        }
+
+        function updateAll() {
+            updateDashboard();
+            updateReports();
+            updateHeaderNames();
+            document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('recordDate').value = getTodayKey();
+            document.getElementById('dailyGoalInput').value = settings.dailyGoal;
+            document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
+            document.getElementById('managerNameInput').value = settings.managerName;
+            document.getElementById('reminderToggle').checked = settings.reminderEnabled;
+            document.getElementById('soundToggle').checked = settings.soundEnabled;
+            document.getElementById('celebrationToggle').checked = settings.celebrationEnabled;
+            
+            const todayKey = getTodayKey();
+            if (startTimeData[todayKey]) {
+                document.getElementById('startTimeInput').value = startTimeData[todayKey];
+            } else {
+                document.getElementById('startTimeInput').value = '';
+            }
+            if (closingTimeData[todayKey]) {
+                document.getElementById('closingTimeInput').value = closingTimeData[todayKey];
+            } else {
+                document.getElementById('closingTimeInput').value = '';
+            }
+        }
+
+        // Save Sale
+        function saveSale() {
+            const todayKey = getTodayKey();
+            const amount = parseInt(document.getElementById('saleAmount').value);
+            const startTime = document.getElementById('startTimeInput').value;
+            const closingTime = document.getElementById('closingTimeInput').value;
+            
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Please enter a valid amount</span>';
+                return;
+            }
+            
+            if (!startTime) {
+                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Please enter your start time</span>';
+                return;
+            }
+            
+            if (!closingTime) {
+                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Please enter your closing time</span>';
+                return;
+            }
+            
+            salesData[todayKey] = amount;
+            startTimeData[todayKey] = startTime;
+            closingTimeData[todayKey] = closingTime;
+            localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+            localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
+            localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+            
+            playChaChing();
+            
+            const dailyGoal = settings.dailyGoal;
+            const streak = getStreak();
+            let celebrationTitle = '🎉 SALES RECORDED! 🎉';
+            let celebrationMessage = `KSH ${amount.toLocaleString()} saved for today!<br>⏰ ${startTime} - 🔒 ${closingTime}<br><br>`;
+            
+            if (amount >= dailyGoal) {
+                celebrationTitle = '🎉 GOAL ACHIEVED! 🎉';
+                celebrationMessage += `🎯 You reached ${Math.round(amount/dailyGoal*100)}% of your goal!<br>`;
+            }
+            
+            if (streak === 1) {
+                celebrationMessage += `🔥 Started a ${streak} day streak! Keep it going!<br>`;
+            } else if (streak > 1) {
+                celebrationMessage += `🔥 ${streak} DAY STREAK! Amazing consistency!<br>`;
+            }
+            
+            const bestDay = getBestDayAnalysis();
+            if (bestDay.hasData) {
+                celebrationMessage += `<br>💡 Tip: ${bestDay.bestDay}s are your best selling days!`;
+            }
+            
+            showCelebration(celebrationTitle, celebrationMessage);
+            
+            document.getElementById('saleAmount').value = '';
+            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded successfully!</span>';
+            setTimeout(() => {
+                document.getElementById('recordMessage').innerHTML = '';
+            }, 3000);
+            
+            updateAll();
+        }
+
+        // Settings Functions
+        function saveShopInfo() {
+            const shopNameInput = document.getElementById('shopNameInput').value.trim();
+            const managerName = document.getElementById('managerNameInput').value.trim();
+            
+            if (shopNameInput) {
+                settings.shopName = `🏪 ${shopNameInput.toUpperCase()}`;
+            }
+            if (managerName) {
+                settings.managerName = managerName;
+            }
+            
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            updateHeaderNames();
+            showSaveMessage('infoSaveMessage', '✅ Shop info saved successfully!');
+        }
+        
+        function saveDailyGoal() {
+            const newGoal = parseInt(document.getElementById('dailyGoalInput').value);
+            if (newGoal > 0) {
+                settings.dailyGoal = newGoal;
+                localStorage.setItem('mamag_settings', JSON.stringify(settings));
+                showSaveMessage('goalSaveMessage', '✅ Daily goal saved successfully!');
+                updateAll();
+            } else {
+                showSaveMessage('goalSaveMessage', '❌ Please enter a valid amount', false);
+            }
+        }
+        
+        function saveNotificationSettings() {
+            settings.soundEnabled = document.getElementById('soundToggle').checked;
+            settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
+            settings.reminderEnabled = document.getElementById('reminderToggle').checked;
+            
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            showSaveMessage('notificationSaveMessage', '✅ Notification settings saved!');
+        }
+        
+        function exportData() {
+            const data = {
+                shop: settings.shopName,
+                manager: settings.managerName,
+                sales: salesData,
+                startTimes: startTimeData,
+                closingTimes: closingTimeData,
+                exported: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mamag_sales_${formatDate(new Date())}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Data exported!');
+        }
+        
+        function resetData() {
+            if (confirm('⚠️ WARNING: This will delete ALL sales data. Are you sure?')) {
+                salesData = {};
+                startTimeData = {};
+                closingTimeData = {};
+                localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+                localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
+                localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+                updateAll();
+                alert('✅ All data reset!');
+            }
+        }
+
+        // Navigation
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('data-page') === pageId) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                navigateTo(btn.getAttribute('data-page'));
+            });
+        });
+        
+        document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
+        document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
+        document.getElementById('saveGoalBtn').addEventListener('click', saveDailyGoal);
+        document.getElementById('saveNotificationsBtn').addEventListener('click', saveNotificationSettings);
+        document.getElementById('exportBtn').addEventListener('click', exportData);
+        document.getElementById('resetBtn').addEventListener('click', resetData);
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('celebrationModal').classList.remove('active');
+        });
+        
+        document.getElementById('saleAmount').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') saveSale();
+        });
+
+        // Initialize
+        updateAll();
+        
+        // Morning reminder
+        if (settings.reminderEnabled) {
+            const lastReminder = localStorage.getItem('lastReminder');
+            const today = formatDate(new Date());
+            if (lastReminder !== today) {
+                setTimeout(() => {
+                    if (confirm('🌞 Good morning! Have you set your daily sales goal for today?')) {
+                        navigateTo('settings');
+                    }
+                    localStorage.setItem('lastReminder', today);
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
