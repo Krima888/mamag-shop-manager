@@ -1,45 +1,46 @@
-// Service Worker for Mama G's Shop - UPDATED for offline support
-const CACHE_NAME = 'mamag-shop-v2';
+// Service Worker for Mama G's Shop - Complete Offline Support
+const CACHE_NAME = 'mamag-shop-v3';
 const urlsToCache = [
   '/',
-  '/index.html',
-  // Add all the assets your app needs
-  'https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap'
+  '/index.html'
 ];
 
-// Install event - cache all important files
+// Install event - cache core files
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
+  console.log('Service Worker: Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Caching app files');
+        console.log('Service Worker: Caching files');
         return cache.addAll(urlsToCache);
       })
+      .then(() => {
+        console.log('Service Worker: Cache complete');
+      })
       .catch(error => {
-        console.log('Cache addAll error:', error);
+        console.log('Service Worker: Cache failed', error);
       })
   );
   // Force activation
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - serve from cache first, then network
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
         // Found in cache - return it
         if (response) {
-          console.log('Serving from cache:', event.request.url);
+          console.log('Service Worker: Serving from cache:', event.request.url);
           return response;
         }
         
         // Not in cache - fetch from network
-        console.log('Fetching from network:', event.request.url);
+        console.log('Service Worker: Fetching from network:', event.request.url);
         return fetch(event.request)
           .then(networkResponse => {
-            // Optional: Cache new files for future offline use
+            // Cache new files for future offline use
             if (networkResponse && networkResponse.status === 200) {
               const responseClone = networkResponse.clone();
               caches.open(CACHE_NAME).then(cache => {
@@ -49,29 +50,41 @@ self.addEventListener('fetch', event => {
             return networkResponse;
           })
           .catch(error => {
-            console.log('Fetch failed:', error);
-            // Return offline fallback page
+            console.log('Service Worker: Fetch failed, returning offline fallback', error);
+            // Return cached index.html as fallback
             return caches.match('/index.html');
           });
       })
   );
 });
 
-// Activate event - clean old caches
+// Activate event - clean old caches and take control
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
+  console.log('Service Worker: Activating...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
+            console.log('Service Worker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
-  // Take control of all clients
+  // Take control of all clients immediately
   event.waitUntil(clients.claim());
+});
+
+// Handle messages from the page
+self.addEventListener('message', event => {
+  if (event.data === 'cacheNow') {
+    console.log('Service Worker: Manual cache triggered');
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+    );
+  }
 });
