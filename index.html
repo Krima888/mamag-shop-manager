@@ -933,4 +933,485 @@
                 todayStock.sold.forEach((item) => {
                     const total = item.quantity * item.price;
                     soldTotal += total;
-                    sold
+                    soldHtml += `<div class="stock-item"><span>📦 ${item.name} x${item.quantity}</span><span>KSH ${total.toLocaleString()}</span></div>`;
+                });
+                soldContainer.innerHTML = soldHtml;
+                document.getElementById('soldTotal').innerHTML = `TOTAL: KSH ${soldTotal.toLocaleString()}`;
+            }
+            
+            // Display Bought Items
+            const boughtContainer = document.getElementById('boughtItemsList');
+            if (todayStock.bought.length === 0) {
+                boughtContainer.innerHTML = '<div class="empty-state">No items bought yet today</div>';
+            } else {
+                let boughtHtml = '';
+                let boughtTotal = 0;
+                todayStock.bought.forEach((item) => {
+                    const total = item.quantity * item.price;
+                    boughtTotal += total;
+                    boughtHtml += `<div class="stock-item"><span>🛒 ${item.name} x${item.quantity}</span><span>KSH ${total.toLocaleString()}</span></div>`;
+                });
+                boughtContainer.innerHTML = boughtHtml;
+                document.getElementById('boughtTotal').innerHTML = `TOTAL: KSH ${boughtTotal.toLocaleString()}`;
+            }
+            
+            // Summary
+            const soldTotalElem = document.getElementById('soldTotal');
+            const boughtTotalElem = document.getElementById('boughtTotal');
+            const soldTotal = soldTotalElem ? parseInt(soldTotalElem.innerText.replace(/[^0-9]/g, '')) || 0 : 0;
+            const boughtTotal = boughtTotalElem ? parseInt(boughtTotalElem.innerText.replace(/[^0-9]/g, '')) || 0 : 0;
+            const net = soldTotal - boughtTotal;
+            
+            document.getElementById('stockSummary').innerHTML = `
+                <div class="stock-item"><span>📦 Sales Total:</span><span>KSH ${soldTotal.toLocaleString()}</span></div>
+                <div class="stock-item"><span>🛒 Purchases Total:</span><span>KSH ${boughtTotal.toLocaleString()}</span></div>
+                <div class="stock-total"><span>💰 Net:</span><span>${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</span></div>
+                <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">${net >= 0 ? '✅ Good day! Profit day!' : '📦 Restock day - investment in inventory'}</div>
+            `;
+        }
+
+        function addStockItem(type) {
+            const name = document.getElementById('itemName').value.trim();
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const price = parseInt(document.getElementById('itemPrice').value);
+            
+            if (!name || !quantity || !price) {
+                alert('Please fill all fields');
+                return false;
+            }
+            
+            const todayKey = getTodayKey();
+            if (!stockData[todayKey]) {
+                stockData[todayKey] = { sold: [], bought: [] };
+            }
+            
+            stockData[todayKey][type].push({ name, quantity, price });
+            localStorage.setItem('mamag_stock', JSON.stringify(stockData));
+            
+            updateStockDisplay();
+            return true;
+        }
+
+        function openAddItemModal(type) {
+            currentItemType = type;
+            document.getElementById('modalTitle').innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQuantity').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
+            document.getElementById('addItemModal').classList.add('active');
+        }
+
+        function showStockHistory() {
+            const historyContainer = document.getElementById('stockHistoryList');
+            const sortedDates = Object.keys(stockData).sort().reverse();
+            
+            if (sortedDates.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-state">No stock records yet</div>';
+            } else {
+                let historyHtml = '';
+                sortedDates.forEach(date => {
+                    const data = stockData[date];
+                    const soldTotal = data.sold.reduce((sum, i) => sum + (i.quantity * i.price), 0);
+                    const boughtTotal = data.bought.reduce((sum, i) => sum + (i.quantity * i.price), 0);
+                    const net = soldTotal - boughtTotal;
+                    historyHtml += `
+                        <div class="card" style="margin-bottom: 10px;">
+                            <div><strong>📅 ${formatDisplayDate(date)}</strong></div>
+                            <div style="font-size: 12px;">Sold: KSH ${soldTotal.toLocaleString()} | Bought: KSH ${boughtTotal.toLocaleString()}</div>
+                            <div style="font-size: 12px; color: ${net >= 0 ? '#2d6a4f' : '#dc3545'};">Net: ${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</div>
+                            <div style="font-size: 11px; color: #6c757d;">${data.sold.length} items sold, ${data.bought.length} items bought</div>
+                        </div>
+                    `;
+                });
+                historyContainer.innerHTML = historyHtml;
+            }
+            document.getElementById('stockHistoryModal').classList.add('active');
+        }
+
+        // Calculator Functions
+        function updateCalcDisplay() {
+            document.getElementById('calcDisplay').innerText = calcDisplay;
+        }
+
+        function handleCalcButton(value) {
+            if (value === 'C') {
+                calcDisplay = '0';
+                calcExpression = '';
+            } else if (value === 'back') {
+                if (calcDisplay.length > 1) {
+                    calcDisplay = calcDisplay.slice(0, -1);
+                } else {
+                    calcDisplay = '0';
+                }
+            } else if (value === '=') {
+                try {
+                    calcDisplay = eval(calcExpression).toString();
+                    calcExpression = calcDisplay;
+                } catch(e) {
+                    calcDisplay = 'Error';
+                    calcExpression = '';
+                }
+            } else if (['+', '-', '*', '/'].includes(value)) {
+                calcExpression = calcDisplay + value;
+                calcDisplay = calcDisplay + value;
+            } else {
+                if (calcDisplay === '0') {
+                    calcDisplay = value;
+                } else {
+                    calcDisplay += value;
+                }
+                calcExpression = calcDisplay;
+            }
+            updateCalcDisplay();
+        }
+
+        // Dashboard Update
+        function updateDashboard() {
+            const todayKey = getTodayKey();
+            const todaySales = salesData[todayKey] || 0;
+            const todayStartTime = startTimeData[todayKey] || 'Not set';
+            const todayClosingTime = closingTimeData[todayKey] || 'Not set';
+            const dailyGoal = settings.dailyGoal;
+            const streak = getStreak();
+            const weekTotal = getWeekTotal();
+            const lastWeekTotal = getLastWeekTotal();
+            const monthTotal = getMonthTotal();
+            const weekDates = getWeekDates();
+            const maxSale = Math.max(...weekDates.map(d => salesData[d] || 0), 1);
+            
+            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
+            document.getElementById('startTimeValue').innerHTML = todayStartTime;
+            document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
+            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
+            
+            const percentOfGoal = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
+            if (todaySales > 0) {
+                if (todaySales >= dailyGoal) {
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">🎉 ${percentOfGoal}% ABOVE GOAL! 🎉</span>`;
+                } else {
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">📊 ${percentOfGoal}% of goal</span>`;
+                }
+            } else {
+                document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">✨ Record your first sale!</span>`;
+            }
+            
+            document.getElementById('streakDisplay').innerHTML = streak > 0 ? `🔥 ${streak} DAY STREAK! 🔥` : '✨ Start a streak!';
+            
+            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            let graphHtml = '<div class="bar-container">';
+            weekDates.forEach((date, i) => {
+                const sale = salesData[date] || 0;
+                const percent = (sale / maxSale * 100).toFixed(0);
+                graphHtml += `
+                    <div class="bar-item">
+                        <div class="bar-day">${dayNames[i]}</div>
+                        <div class="bar-fill">
+                            <div class="bar-progress" style="width: ${percent}%;">${sale > 0 ? `KSH ${sale.toLocaleString()}` : ''}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            graphHtml += '</div>';
+            document.getElementById('weeklyGraph').innerHTML = graphHtml;
+            document.getElementById('weeklyTotal').innerHTML = `WEEK TOTAL: KSH ${weekTotal.toLocaleString()}`;
+            
+            const bestDayAnalysis = getBestDayAnalysis();
+            const vsLastWeekPercent = lastWeekTotal > 0 ? ((weekTotal - lastWeekTotal) / lastWeekTotal * 100).toFixed(1) : 0;
+            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / (new Date().getDate()) * 30) : 0;
+            
+            let insightsHtml = '';
+            if (bestDayAnalysis.hasData) {
+                insightsHtml = `
+                    <div class="insight-item"><span>📊 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>📉 Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>🔥 Current Streak:</span><strong>${streak} days!</strong></div>
+                    <div class="insight-item"><span>🏆 Best Day Ever:</span><strong>KSH ${Math.max(...Object.values(salesData)).toLocaleString()}</strong></div>
+                `;
+            } else {
+                insightsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div>No sales data yet. Record your first sale to see insights!</div>
+                    </div>
+                `;
+            }
+            document.getElementById('insights').innerHTML = insightsHtml;
+            
+            document.getElementById('vsLastWeek').innerHTML = `${vsLastWeekPercent >= 0 ? '+' : ''}${vsLastWeekPercent}%`;
+            document.getElementById('monthForecast').innerHTML = `KSH ${projectedMonth.toLocaleString()}`;
+            
+            // Sales History
+            const historyContainer = document.getElementById('salesHistory');
+            const sortedDates = Object.keys(salesData).sort().reverse().slice(0, 10);
+            if (sortedDates.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-history">📭 No sales recorded yet.</div>';
+            } else {
+                let historyHtml = '';
+                sortedDates.forEach(date => {
+                    const amount = salesData[date];
+                    const displayDate = formatDisplayDate(date);
+                    const startTime = startTimeData[date] || 'Not set';
+                    const closingTime = closingTimeData[date] || 'Not set';
+                    historyHtml += `
+                        <div class="history-item">
+                            <div>
+                                <span class="history-date">📅 ${displayDate}</span><br>
+                                <span class="history-time">⏰ ${startTime} - 🔒 ${closingTime}</span>
+                            </div>
+                            <span class="history-amount">💰 KSH ${amount.toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+                historyContainer.innerHTML = historyHtml;
+            }
+        }
+
+        function updateReports() {
+            const monthTotal = getMonthTotal();
+            const lastMonthTotal = monthTotal * 0.85;
+            const vsLastMonthPercent = ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1);
+            const bestDayAnalysis = getBestDayAnalysis();
+            const streak = getStreak();
+            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / (new Date().getDate()) * 30) : 0;
+            
+            document.getElementById('vsLastMonth').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
+                    <div>This Month: KSH ${monthTotal.toLocaleString()}</div>
+                    <div>Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
+                </div>
+            `;
+            
+            let bestDaysHtml = '';
+            if (bestDayAnalysis.hasData) {
+                bestDaysHtml = `
+                    <div class="insight-item"><span>🥇 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>⚠️ Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
+                `;
+            } else {
+                bestDaysHtml = `<div class="empty-state">Add sales to see best days</div>`;
+            }
+            document.getElementById('bestDays').innerHTML = bestDaysHtml;
+            
+            document.getElementById('monthlyForecast').innerHTML = `
+                <div style="text-align: center;">
+                    <div>Current: KSH ${monthTotal.toLocaleString()}</div>
+                    <div>Projected: KSH ${projectedMonth.toLocaleString()}</div>
+                </div>
+            `;
+            
+            let insightsHtml = '';
+            if (bestDayAnalysis.hasData) {
+                insightsHtml = `
+                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day!"</div>
+                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep going!"</div>
+                `;
+            } else {
+                insightsHtml = `<div class="empty-state">Record sales for insights</div>`;
+            }
+            document.getElementById('businessInsights').innerHTML = insightsHtml;
+        }
+
+        function updateAll() {
+            updateDashboard();
+            updateReports();
+            updateStockDisplay();
+            updateHeaderNames();
+            document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('stockDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('recordDate').value = getTodayKey();
+            document.getElementById('dailyGoalInput').value = settings.dailyGoal;
+            document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
+            document.getElementById('managerNameInput').value = settings.managerName;
+            document.getElementById('reminderToggle').checked = settings.reminderEnabled;
+            document.getElementById('soundToggle').checked = settings.soundEnabled;
+            document.getElementById('celebrationToggle').checked = settings.celebrationEnabled;
+            
+            const todayKey = getTodayKey();
+            if (startTimeData[todayKey]) document.getElementById('startTimeInput').value = startTimeData[todayKey];
+            if (closingTimeData[todayKey]) document.getElementById('closingTimeInput').value = closingTimeData[todayKey];
+        }
+
+        // Save Sale
+        function saveSale() {
+            const todayKey = document.getElementById('recordDate').value;
+            const amount = parseInt(document.getElementById('saleAmount').value);
+            const startTime = document.getElementById('startTimeInput').value;
+            const closingTime = document.getElementById('closingTimeInput').value;
+            
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Please enter a valid amount</span>';
+                return;
+            }
+            
+            salesData[todayKey] = amount;
+            if (startTime) startTimeData[todayKey] = startTime;
+            if (closingTime) closingTimeData[todayKey] = closingTime;
+            
+            localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+            localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
+            localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+            
+            playChaChing();
+            
+            const dailyGoal = settings.dailyGoal;
+            let celebrationMessage = `KSH ${amount.toLocaleString()} saved for ${formatDisplayDate(todayKey)}!<br>`;
+            if (amount >= dailyGoal) {
+                showCelebration('🎉 GOAL ACHIEVED! 🎉', celebrationMessage + `🎯 ${Math.round(amount/dailyGoal*100)}% of goal!`);
+            } else {
+                showCelebration('✅ SALES RECORDED!', celebrationMessage);
+            }
+            
+            document.getElementById('saleAmount').value = '';
+            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded!</span>';
+            setTimeout(() => {
+                document.getElementById('recordMessage').innerHTML = '';
+            }, 2000);
+            
+            updateAll();
+        }
+
+        // Settings Functions
+        function saveShopInfo() {
+            const shopNameInput = document.getElementById('shopNameInput').value.trim();
+            const managerName = document.getElementById('managerNameInput').value.trim();
+            if (shopNameInput) settings.shopName = `🏪 ${shopNameInput.toUpperCase()}`;
+            if (managerName) settings.managerName = managerName;
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            updateHeaderNames();
+            showSaveMessage('infoSaveMessage', '✅ Shop info saved!');
+        }
+        
+        function saveDailyGoal() {
+            const newGoal = parseInt(document.getElementById('dailyGoalInput').value);
+            if (newGoal > 0) {
+                settings.dailyGoal = newGoal;
+                localStorage.setItem('mamag_settings', JSON.stringify(settings));
+                showSaveMessage('goalSaveMessage', '✅ Daily goal saved!');
+                updateAll();
+            }
+        }
+        
+        function saveNotificationSettings() {
+            settings.soundEnabled = document.getElementById('soundToggle').checked;
+            settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
+            settings.reminderEnabled = document.getElementById('reminderToggle').checked;
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            showSaveMessage('notificationSaveMessage', '✅ Notification settings saved!');
+        }
+        
+        function exportData() {
+            const data = {
+                shop: settings.shopName,
+                manager: settings.managerName,
+                sales: salesData,
+                startTimes: startTimeData,
+                closingTimes: closingTimeData,
+                stock: stockData,
+                exported: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mamag_data_${formatDate(new Date())}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Data exported!');
+        }
+        
+        function resetData() {
+            if (confirm('⚠️ This will delete ALL data. Are you sure?')) {
+                salesData = {};
+                startTimeData = {};
+                closingTimeData = {};
+                stockData = {};
+                localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+                localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
+                localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+                localStorage.setItem('mamag_stock', JSON.stringify(stockData));
+                updateAll();
+                alert('✅ All data reset!');
+            }
+        }
+
+        // Navigation
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-page') === pageId) btn.classList.add('active');
+            });
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => navigateTo(btn.getAttribute('data-page')));
+        });
+        
+        document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
+        document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
+        document.getElementById('saveGoalBtn').addEventListener('click', saveDailyGoal);
+        document.getElementById('saveNotificationsBtn').addEventListener('click', saveNotificationSettings);
+        document.getElementById('exportBtn').addEventListener('click', exportData);
+        document.getElementById('resetBtn').addEventListener('click', resetData);
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('celebrationModal').classList.remove('active');
+        });
+        
+        // Calculator
+        document.getElementById('calculatorBtn').addEventListener('click', () => {
+            document.getElementById('calculatorModal').classList.add('active');
+        });
+        document.getElementById('closeCalculatorBtn').addEventListener('click', () => {
+            document.getElementById('calculatorModal').classList.remove('active');
+        });
+        document.querySelectorAll('.calc-btn').forEach(btn => {
+            btn.addEventListener('click', () => handleCalcButton(btn.getAttribute('data-val')));
+        });
+        document.getElementById('calculateChangeBtn').addEventListener('click', () => {
+            const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            const due = parseFloat(document.getElementById('totalDue').value) || 0;
+            const change = paid - due;
+            document.getElementById('changeResult').innerHTML = `Change: KSH ${change >= 0 ? change.toLocaleString() : 'Insufficient'}`;
+        });
+        
+        // Stock
+        document.getElementById('viewStockHistoryBtn').addEventListener('click', showStockHistory);
+        document.getElementById('closeItemModalBtn').addEventListener('click', () => {
+            document.getElementById('addItemModal').classList.remove('active');
+        });
+        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => {
+            document.getElementById('stockHistoryModal').classList.remove('active');
+        });
+        document.getElementById('saveItemBtn').addEventListener('click', () => {
+            if (addStockItem(currentItemType)) {
+                document.getElementById('addItemModal').classList.remove('active');
+                playChaChing();
+            }
+        });
+        
+        document.getElementById('itemQuantity').addEventListener('input', () => {
+            const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
+            const price = parseInt(document.getElementById('itemPrice').value) || 0;
+            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
+        });
+        document.getElementById('itemPrice').addEventListener('input', () => {
+            const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
+            const price = parseInt(document.getElementById('itemPrice').value) || 0;
+            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
+        });
+        
+        document.getElementById('saleAmount').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveSale();
+        });
+
+        // Make functions global for onclick
+        window.openAddItemModal = openAddItemModal;
+
+        updateAll();
+    </script>
+</body>
+</html>
