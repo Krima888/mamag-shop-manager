@@ -815,15 +815,30 @@
 
         function getMonthTotal() {
             const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
             let total = 0;
-            for (let i = 0; i < 30; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() - i);
-                const dateKey = formatDate(date);
-                if (date.getMonth() === today.getMonth()) {
+            Object.keys(salesData).forEach(dateKey => {
+                const date = new Date(dateKey);
+                if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
                     total += salesData[dateKey] || 0;
                 }
-            }
+            });
+            return total;
+        }
+
+        function getLastMonthTotal() {
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const lastMonthIndex = lastMonth.getMonth();
+            const lastMonthYear = lastMonth.getFullYear();
+            let total = 0;
+            Object.keys(salesData).forEach(dateKey => {
+                const date = new Date(dateKey);
+                if (date.getMonth() === lastMonthIndex && date.getFullYear() === lastMonthYear) {
+                    total += salesData[dateKey] || 0;
+                }
+            });
             return total;
         }
 
@@ -1169,46 +1184,92 @@
 
         function updateReports() {
             const monthTotal = getMonthTotal();
-            const lastMonthTotal = monthTotal * 0.85;
-            const vsLastMonthPercent = ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1);
+            const lastMonthTotal = getLastMonthTotal();
+            const vsLastMonthPercent = lastMonthTotal > 0 ? ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
             const bestDayAnalysis = getBestDayAnalysis();
             const streak = getStreak();
-            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / (new Date().getDate()) * 30) : 0;
+            const daysInMonth = new Date().getDate();
+            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / daysInMonth * 30) : 0;
             
-            document.getElementById('vsLastMonth').innerHTML = `
-                <div style="text-align: center;">
-                    <div style="font-size: 24px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
-                    <div>This Month: KSH ${monthTotal.toLocaleString()}</div>
-                    <div>Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
-                </div>
-            `;
+            // VS LAST MONTH
+            let vsLastMonthHtml = '';
+            if (monthTotal > 0 || lastMonthTotal > 0) {
+                vsLastMonthHtml = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
+                        <div>This Month: KSH ${monthTotal.toLocaleString()}</div>
+                        <div>Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
+                        <div style="margin-top: 10px;">${vsLastMonthPercent >= 0 ? '🎉 BETTER!' : '📉 NEED IMPROVEMENT'}</div>
+                    </div>
+                `;
+            } else {
+                vsLastMonthHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div>Record sales to see monthly comparison</div>
+                    </div>
+                `;
+            }
+            document.getElementById('vsLastMonth').innerHTML = vsLastMonthHtml;
             
+            // BEST DAYS ANALYSIS
             let bestDaysHtml = '';
             if (bestDayAnalysis.hasData) {
                 bestDaysHtml = `
                     <div class="insight-item"><span>🥇 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
                     <div class="insight-item"><span>⚠️ Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
+                    <div class="insight-item"><span>📈 Trend:</span><strong>${vsLastMonthPercent >= 0 ? `+${vsLastMonthPercent}% this month!` : `${vsLastMonthPercent}% decline`}</strong></div>
                 `;
             } else {
-                bestDaysHtml = `<div class="empty-state">Add sales to see best days</div>`;
+                bestDaysHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⭐</div>
+                        <div>Add sales to see your best performing days</div>
+                    </div>
+                `;
             }
             document.getElementById('bestDays').innerHTML = bestDaysHtml;
             
-            document.getElementById('monthlyForecast').innerHTML = `
-                <div style="text-align: center;">
-                    <div>Current: KSH ${monthTotal.toLocaleString()}</div>
-                    <div>Projected: KSH ${projectedMonth.toLocaleString()}</div>
-                </div>
-            `;
+            // MONTHLY FORECAST
+            let monthlyForecastHtml = '';
+            if (monthTotal > 0) {
+                monthlyForecastHtml = `
+                    <div style="text-align: center;">
+                        <div>Current month total: KSH ${monthTotal.toLocaleString()}</div>
+                        <div>Days recorded: ${Object.keys(salesData).filter(d => new Date(d).getMonth() === new Date().getMonth()).length} days</div>
+                        <div>Projected total: KSH ${projectedMonth.toLocaleString()}</div>
+                        <div style="margin-top: 10px; font-weight: bold;">${projectedMonth > monthTotal ? '📈 ON TRACK FOR GROWTH!' : '📊 Keep recording sales!'}</div>
+                    </div>
+                `;
+            } else {
+                monthlyForecastHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📈</div>
+                        <div>Start recording daily sales to see your monthly forecast</div>
+                        <div style="margin-top: 10px; font-size: 12px;">📝 Go to Record page to add your first sale</div>
+                    </div>
+                `;
+            }
+            document.getElementById('monthlyForecast').innerHTML = monthlyForecastHtml;
             
+            // BUSINESS INSIGHTS
             let insightsHtml = '';
             if (bestDayAnalysis.hasData) {
                 insightsHtml = `
-                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day!"</div>
-                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep going!"</div>
+                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day - stock up extra on ${bestDayAnalysis.bestDay.toLowerCase()}!"</div>
+                    <div class="insight-item">💡 "${bestDayAnalysis.slowDay}s are slower - consider running a small promotion on ${bestDayAnalysis.slowDay.toLowerCase()}s!"</div>
+                    <div class="insight-item">💡 "You're ${Math.abs(vsLastMonthPercent)}% ${vsLastMonthPercent >= 0 ? 'ahead' : 'behind'} compared to last month!"</div>
+                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep the momentum going!"</div>
+                    <div class="insight-item">💡 "Your average daily sale is KSH ${Math.round(monthTotal / Object.keys(salesData).length || 0).toLocaleString()}"</div>
                 `;
             } else {
-                insightsHtml = `<div class="empty-state">Record sales for insights</div>`;
+                insightsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💡</div>
+                        <div>No data yet! Record your first sale to get personalized business insights</div>
+                        <div style="margin-top: 10px;">→ Go to Record page and enter today's sales</div>
+                    </div>
+                `;
             }
             document.getElementById('businessInsights').innerHTML = insightsHtml;
         }
