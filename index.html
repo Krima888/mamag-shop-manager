@@ -388,17 +388,38 @@
             display: flex;
         }
 
-        .modal-content {
-            background: #1e1e2a;
-            border-radius: 20px;
-            padding: 18px;
-            max-width: 320px;
-            width: 90%;
-            text-align: center;
-            animation: slideUp 0.3s;
-            border: 1px solid #2d6a4f;
-        }
+        #additemmodal .modal-content {/* Add Item Modal - BLACK THEME */
+#addItemModal .modal-content {
+    background: #1a1a1a;
+    border-radius: 20px;
+    padding: 18px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    animation: slideUp 0.3s;
+    border: 1px solid #ffd966;
+}
 
+#addItemModal label {
+    color: #ffd966;
+}
+
+#addItemModal input {
+    background: #2d2d2d;
+    border: 1px solid #ffd966;
+    color: white;
+}
+
+#addItemModal input:focus {
+    border-color: #ffd966;
+    outline: none;
+}
+
+#addItemModal h3 {
+    color: #ffd966;
+}
+            
+        }
         .modal-content h3 {
             color: #ffd966;
             font-size: 16px;
@@ -743,42 +764,29 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Item Modal -->
-    <div id="addItemModal" class="modal">
-        <div class="modal-content" style="background: white;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="color: #2d6a4f;" id="modalTitle">➕ ADD ITEM</h3>
-                <button id="closeItemModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 20px;">✖</button>
-            </div>
-            <div class="form-group">
-                <label>Item Name</label>
-                <input type="text" id="itemName" placeholder="e.g., Milk, Bread, Sugar">
-            </div>
-            <div class="form-group">
-                <label>Quantity</label>
-                <input type="number" id="itemQuantity" placeholder="How many?" min="1">
-            </div>
-            <div class="form-group">
-                <label>Price per Unit (KSH)</label>
-                <input type="number" id="itemPrice" placeholder="Price per item">
-            </div>
-            <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #e8f0fe; border-radius: 8px; margin-bottom: 10px;">Total: KSH 0</div>
-            <button id="saveItemBtn">💾 SAVE ITEM</button>
+<!-- Add Item Modal -->
+<div id="addItemModal" class="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #ffd966;" id="modalTitle">➕ ADD ITEM</h3>
+            <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
         </div>
-    </div>
-
-    <!-- Stock History Modal -->
-    <div id="stockHistoryModal" class="modal">
-        <div class="modal-content" style="background: white; max-width: 420px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="color: #2d6a4f;">📜 STOCK HISTORY</h3>
-                <button id="closeHistoryModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 20px;">✖</button>
-            </div>
-            <div id="stockHistoryList" style="max-height: 350px; overflow-y: auto;"></div>
+        <div class="form-group">
+            <label style="color: #ffd966;">Item Name</label>
+            <input type="text" id="itemName" placeholder="e.g., Milk, Bread, Sugar" style="background: #2d2d2d; border-color: #ffd966; color: white;">
         </div>
+        <div class="form-group">
+            <label style="color: #ffd966;">Quantity</label>
+            <input type="number" id="itemQuantity" placeholder="How many?" min="1" style="background: #2d2d2d; border-color: #ffd966; color: white;">
+        </div>
+        <div class="form-group">
+            <label style="color: #ffd966;">Price per Unit (KSH)</label>
+            <input type="number" id="itemPrice" placeholder="Price per item" style="background: #2d2d2d; border-color: #ffd966; color: white;">
+        </div>
+        <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; margin-bottom: 10px; color: #ffd966;">Total: KSH 0</div>
+        <button id="saveItemBtn" style="background: #ffd966; color: #1a1a1a; font-weight: bold;">💾 SAVE ITEM</button>
     </div>
-
+</div>
     <!-- Celebration Modal -->
     <div id="celebrationModal" class="modal">
         <div class="modal-content" style="background: white;">
