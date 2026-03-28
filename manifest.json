@@ -1,18 +1,13 @@
 {
-  "name": "Mama G's General Shop",
-  "short_name": "Mama G Shop",
-  "description": "Smart business manager for Mama G's shop",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#1a472a",
-  "theme_color": "#2d6a4f",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d6a4f'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E🛒%3C/text%3E%3C/svg%3E",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+    "name": "Mama G's Shop",
+    "short_name": "Mama G",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#1a472a",
+    "theme_color": "#2d6a4f",
+    "icons": [{
+        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d6a4f'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E🛒%3C/text%3E%3C/svg%3E",
+        "sizes": "any",
+        "type": "image/svg+xml"
+    }]
 }
