@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Mama G's General Shop - Fixed Stock</title>
+    
+    <!-- PWA Manifest and Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mama G Shop">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d6a4f'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E🛒%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#2d6a4f">
+    
     <style>
         * {
             margin: 0;
@@ -377,13 +386,6 @@
             text-align: center;
             font-weight: bold;
         }
-
-        .edit-input {
-            width: 80px;
-            padding: 4px;
-            margin: 0 2px;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body>
@@ -650,7 +652,7 @@
         let currentItemType = 'sold';
         let currentEditInfo = { type: '', index: null, dateKey: '' };
         
-        // FIXED: Sound function with proper AudioContext handling
+        // Sound function
         let audioCtx = null;
         
         function initAudio() {
@@ -670,7 +672,6 @@
                 initAudio();
                 if (!audioCtx) return;
                 
-                // Resume audio context if suspended (browsers require user interaction first)
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume().then(() => {
                         playSound();
@@ -701,7 +702,6 @@
             oscillator.stop(now + 0.3);
         }
         
-        // Helper Functions
         function formatDate(date) {
             return date.toISOString().split('T')[0];
         }
@@ -735,7 +735,6 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // STOCK FUNCTIONS
         function updateStockDisplay() {
             const todayKey = getTodayKey();
             const todayStock = stockData[todayKey] || { sold: [], bought: [] };
@@ -931,7 +930,6 @@
             document.getElementById('stockHistoryModal').classList.add('active');
         }
 
-        // Sales functions with time support
         function saveSale() {
             const todayKey = document.getElementById('recordDate').value;
             const amount = parseInt(document.getElementById('saleAmount').value);
@@ -951,7 +949,6 @@
             localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
             localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
             
-            // Play sound effect when saving sales
             playChaChing();
             
             const hoursWorked = calculateHoursWorked(startTime, closingTime);
@@ -1081,7 +1078,6 @@
             settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
             
-            // Reinitialize audio if sound was turned on
             if (settings.soundEnabled && !audioCtx) {
                 initAudio();
             }
@@ -1121,12 +1117,10 @@
             document.querySelector(`.nav-btn[data-page="${pageId}"]`).classList.add('active');
         }
 
-        // Make functions global for onclick handlers
         window.openAddItemModal = openAddItemModal;
         window.openEditModal = openEditModal;
         window.deleteStockItem = deleteStockItem;
 
-        // Initialize audio on first user interaction
         function initAudioOnFirstClick() {
             if (settings.soundEnabled && (!audioCtx || audioCtx.state === 'suspended')) {
                 initAudio();
@@ -1136,10 +1130,8 @@
             }
         }
         
-        // Add click listener to initialize audio on first user interaction
         document.body.addEventListener('click', initAudioOnFirstClick, { once: true });
 
-        // Event Listeners
         document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
         document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
         document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
@@ -1182,6 +1174,103 @@
         document.getElementById('editItemPrice').addEventListener('input', updateEditPreview);
         
         updateAll();
+    </script>
+    
+    <!-- PWA Installation Script -->
+    <script>
+        (function() {
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+            
+            // Create Install Button
+            let deferredPrompt;
+            const installBtn = document.createElement('button');
+            installBtn.id = 'installPWA';
+            installBtn.innerHTML = '📱 Install App';
+            installBtn.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #2d6a4f;
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 12px 20px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                z-index: 2000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                display: none;
+                font-family: 'Segoe UI', sans-serif;
+                transition: all 0.3s ease;
+            `;
+            
+            installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.02)';
+            installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
+            
+            document.body.appendChild(installBtn);
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'block';
+                
+                installBtn.onclick = async () => {
+                    installBtn.style.display = 'none';
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`Install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                };
+            });
+            
+            // Hide install button if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                installBtn.style.display = 'none';
+            }
+            
+            // Connection status indicator
+            function showConnectionStatus() {
+                const statusDiv = document.createElement('div');
+                statusDiv.id = 'tempConnectionStatus';
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    bottom: 90px;
+                    right: 20px;
+                    background: ${navigator.onLine ? '#4caf50' : '#f44336'};
+                    color: white;
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 11px;
+                    z-index: 2000;
+                    font-weight: bold;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    font-family: 'Segoe UI', sans-serif;
+                `;
+                statusDiv.innerHTML = navigator.onLine ? '🌐 Online' : '📴 Offline Mode';
+                
+                const oldStatus = document.getElementById('tempConnectionStatus');
+                if (oldStatus) oldStatus.remove();
+                document.body.appendChild(statusDiv);
+                
+                setTimeout(() => {
+                    const el = document.getElementById('tempConnectionStatus');
+                    if (el) el.remove();
+                }, 3000);
+            }
+            
+            window.addEventListener('online', showConnectionStatus);
+            window.addEventListener('offline', showConnectionStatus);
+        })();
     </script>
 </body>
 </html>
