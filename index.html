@@ -141,6 +141,33 @@
             margin: 10px 0;
         }
 
+        /* Clickable Today Card */
+        .clickable-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .clickable-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .clickable-card:active {
+            transform: scale(0.99);
+        }
+        
+        .click-icon {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 12px;
+            color: #2d6a4f;
+            background: rgba(45,106,79,0.1);
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -254,37 +281,59 @@
             display: flex;
         }
 
-        #addItemModal .modal-content,
-        #editItemModal .modal-content {
-            background: #1a1a1a;
+        .modal-content {
+            background: white;
             border-radius: 20px;
             padding: 18px;
-            max-width: 320px;
+            max-width: 380px;
             width: 90%;
-            text-align: center;
-            border: 1px solid #ffd966;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        #addItemModal label,
-        #editItemModal label {
-            color: #ffd966;
+        .date-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-
-        #addItemModal input,
-        #editItemModal input {
-            background: #2d2d2d;
-            border: 1px solid #ffd966;
-            color: white;
+        
+        .date-selector input {
+            flex: 1;
         }
-
-        .calc-result {
-            font-size: 24px;
+        
+        .date-selector button {
+            width: auto;
+            padding: 10px 15px;
+        }
+        
+        .daily-report-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .daily-report-item:last-child {
+            border-bottom: none;
+        }
+        
+        .report-date {
             font-weight: bold;
-            color: #ffd966;
-            padding: 10px;
-            background: #2a2a35;
-            border-radius: 10px;
-            margin-top: 10px;
+            color: #2d6a4f;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .report-detail {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .expense-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+            margin-top: 5px;
         }
 
         .stock-item {
@@ -368,6 +417,26 @@
         .offline-badge.show {
             display: block;
         }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
     </style>
 </head>
 <body>
@@ -393,14 +462,17 @@
             <button class="nav-btn" data-page="settings">⚙️ Settings</button>
         </div>
 
+        <!-- DASHBOARD PAGE -->
         <div id="dashboard" class="page active">
             <div class="card sales-card">
                 <div>🎯 DAILY GOAL</div>
                 <div class="sales-amount" id="dailyGoalDisplay">KSH 0</div>
                 <div id="goalStatus"></div>
             </div>
-            <div class="card" style="background: white; border-left: 4px solid #2d6a4f;">
-                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES</div>
+            
+            <!-- CLICKABLE TODAY CARD -->
+            <div class="card clickable-card" id="todayCard" onclick="showDateReport(getTodayKey())">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES <span class="click-icon">📅 Tap to view details</span></div>
                 <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px; color: #2d6a4f;">KSH 0</div>
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 6px; font-size: 11px;"></div>
                 <div id="startTimeDisplay" class="time-info">
@@ -410,6 +482,7 @@
                     ⏱️ Hours: <strong id="hoursWorkedValue">0 hrs</strong>
                 </div>
             </div>
+            
             <div class="card">
                 <div style="font-weight: bold; margin-bottom: 10px;">📊 THIS WEEK</div>
                 <div id="weeklyGraph"></div>
@@ -417,6 +490,7 @@
             <button id="calculatorBtn" style="margin-top: 6px; background: #40916c;">🧮 CALCULATOR</button>
         </div>
 
+        <!-- RECORD PAGE -->
         <div id="record" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f; margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
@@ -436,22 +510,55 @@
                     <label>💰 Total Sales (KSH)</label>
                     <input type="number" id="saleAmount" placeholder="Enter amount" step="100">
                 </div>
+                <div class="form-group">
+                    <label>📝 Daily Expenses (KSH) - optional</label>
+                    <input type="number" id="dailyExpenses" placeholder="Enter expenses" step="100">
+                </div>
                 <button id="saveSaleBtn">💾 SAVE SALES RECORD</button>
                 <div id="recordMessage" style="margin-top: 10px;"></div>
             </div>
         </div>
 
+        <!-- REPORTS PAGE - ENHANCED -->
         <div id="reports" class="page">
             <div class="card">
-                <h3>📈 Monthly Summary</h3>
-                <div id="monthlyReport"></div>
+                <h3>📊 SUMMARY STATS</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>💰 Total Sales</div>
+                        <div class="stat-value" id="totalSalesStat">KSH 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>📅 Total Days</div>
+                        <div class="stat-value" id="totalDaysStat">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>💸 Total Expenses</div>
+                        <div class="stat-value" id="totalExpensesStat">KSH 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>📈 Net Profit</div>
+                        <div class="stat-value" id="netProfitStat">KSH 0</div>
+                    </div>
+                </div>
             </div>
+            
             <div class="card">
-                <h3>⏱️ Hours Analysis</h3>
-                <div id="hoursAnalysis"></div>
+                <h3>📅 DAILY REPORTS</h3>
+                <div class="date-selector">
+                    <input type="date" id="reportDatePicker">
+                    <button id="viewReportBtn">View Report</button>
+                </div>
+                <div id="dailyReportView"></div>
+            </div>
+            
+            <div class="card">
+                <h3>📜 ALL RECORDS</h3>
+                <div id="allRecordsList" style="max-height: 400px; overflow-y: auto;"></div>
             </div>
         </div>
 
+        <!-- STOCK PAGE -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
@@ -480,6 +587,7 @@
             <button id="viewStockHistoryBtn" style="background: #40916c;">📜 VIEW STOCK HISTORY</button>
         </div>
 
+        <!-- SETTINGS PAGE -->
         <div id="settings" class="page">
             <div class="card">
                 <h3>🏪 SHOP INFO</h3>
@@ -541,21 +649,21 @@
     </div>
 
     <div id="addItemModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
-                <h3 id="modalTitle">➕ ADD ITEM</h3>
+                <h3 id="modalTitle" style="color:#ffd966;">➕ ADD ITEM</h3>
                 <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966;">✖</button>
             </div>
             <div class="form-group">
-                <label>Item Name</label>
+                <label style="color:#ffd966;">Item Name</label>
                 <input type="text" id="itemName">
             </div>
             <div class="form-group">
-                <label>Quantity</label>
+                <label style="color:#ffd966;">Quantity</label>
                 <input type="number" id="itemQuantity" min="1">
             </div>
             <div class="form-group">
-                <label>Price per Unit</label>
+                <label style="color:#ffd966;">Price per Unit</label>
                 <input type="number" id="itemPrice">
             </div>
             <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; color: #ffd966;">Total: KSH 0</div>
@@ -564,21 +672,21 @@
     </div>
 
     <div id="editItemModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
-                <h3>✏️ EDIT ITEM</h3>
+                <h3 style="color:#ffd966;">✏️ EDIT ITEM</h3>
                 <button id="closeEditModalBtn" style="width: auto; background: none; color: #ffd966;">✖</button>
             </div>
             <div class="form-group">
-                <label>Item Name</label>
+                <label style="color:#ffd966;">Item Name</label>
                 <input type="text" id="editItemName">
             </div>
             <div class="form-group">
-                <label>Quantity</label>
+                <label style="color:#ffd966;">Quantity</label>
                 <input type="number" id="editItemQuantity">
             </div>
             <div class="form-group">
-                <label>Price per Unit</label>
+                <label style="color:#ffd966;">Price per Unit</label>
                 <input type="number" id="editItemPrice">
             </div>
             <div id="editItemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; color: #ffd966;">Total: KSH 0</div>
@@ -589,10 +697,20 @@
     <div id="stockHistoryModal" class="modal">
         <div class="modal-content" style="max-width: 380px; width: 90%; max-height: 80vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between;">
-                <h3 style="color:#ffd966;">📜 STOCK HISTORY</h3>
-                <button id="closeHistoryModalBtn" style="width: auto; background: none; color:#ffd966;">✖</button>
+                <h3 style="color:#2d6a4f;">📜 STOCK HISTORY</h3>
+                <button id="closeHistoryModalBtn" style="width: auto; background: none; color:#2d6a4f;">✖</button>
             </div>
             <div id="stockHistoryList"></div>
+        </div>
+    </div>
+
+    <div id="dateReportModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: #2d6a4f;" id="dateReportTitle">📅 Daily Report</h3>
+                <button id="closeDateReportBtn" style="width: auto; background: none; color: #2d6a4f; font-size: 20px;">✖</button>
+            </div>
+            <div id="dateReportContent"></div>
         </div>
     </div>
 
@@ -610,6 +728,7 @@
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
         let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
+        let expensesData = JSON.parse(localStorage.getItem('mamag_expenses')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
         let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
             shopName: "🏪 MAMA G'S GENERAL SHOP",
@@ -627,7 +746,7 @@
         function getTodayKey() { return formatDate(new Date()); }
         
         function formatDisplayDate(dateStr) {
-            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         function calculateHoursWorked(start, close) {
@@ -664,6 +783,48 @@
             document.getElementById('celebrationTitle').innerText = title;
             document.getElementById('celebrationMessage').innerHTML = msg;
             document.getElementById('celebrationModal').classList.add('active');
+        }
+
+        // Show Date Report Modal
+        function showDateReport(dateKey) {
+            const sales = salesData[dateKey] || 0;
+            const start = startTimeData[dateKey] || 'Not set';
+            const close = closingTimeData[dateKey] || 'Not set';
+            const hours = calculateHoursWorked(start, close);
+            const expenses = expensesData[dateKey] || 0;
+            const profit = sales - expenses;
+            
+            const stock = stockData[dateKey] || { sold: [], bought: [] };
+            const soldTotal = (stock.sold || []).reduce((s,i) => s + (i.quantity * i.price), 0);
+            const boughtTotal = (stock.bought || []).reduce((s,i) => s + (i.quantity * i.price), 0);
+            
+            document.getElementById('dateReportTitle').innerHTML = `📅 ${formatDisplayDate(dateKey)}`;
+            document.getElementById('dateReportContent').innerHTML = `
+                <div class="daily-report-item">
+                    <div class="report-date">💰 SALES</div>
+                    <div class="report-detail"><span>Total Sales:</span><strong>KSH ${sales.toLocaleString()}</strong></div>
+                    <div class="report-detail"><span>Daily Goal:</span><strong>KSH ${settings.dailyGoal.toLocaleString()}</strong></div>
+                    <div class="report-detail"><span>Goal Achievement:</span><strong>${settings.dailyGoal > 0 ? Math.round(sales/settings.dailyGoal*100) : 0}%</strong></div>
+                </div>
+                <div class="daily-report-item">
+                    <div class="report-date">⏱️ HOURS</div>
+                    <div class="report-detail"><span>Opening Time:</span><strong>${start}</strong></div>
+                    <div class="report-detail"><span>Closing Time:</span><strong>${close}</strong></div>
+                    <div class="report-detail"><span>Hours Worked:</span><strong>${hours > 0 ? hours.toFixed(1) + ' hrs' : 'Not recorded'}</strong></div>
+                </div>
+                <div class="daily-report-item">
+                    <div class="report-date">💸 EXPENSES & PROFIT</div>
+                    <div class="report-detail"><span>Daily Expenses:</span><strong>KSH ${expenses.toLocaleString()}</strong></div>
+                    <div class="report-detail"><span>Net Profit:</span><strong style="color: ${profit >= 0 ? '#2d6a4f' : '#dc3545'}">KSH ${profit.toLocaleString()}</strong></div>
+                </div>
+                <div class="daily-report-item">
+                    <div class="report-date">📦 STOCK SUMMARY</div>
+                    <div class="report-detail"><span>Items Sold Value:</span><strong>KSH ${soldTotal.toLocaleString()}</strong></div>
+                    <div class="report-detail"><span>Items Purchased:</span><strong>KSH ${boughtTotal.toLocaleString()}</strong></div>
+                    <div class="report-detail"><span>Stock Items:</span><strong>${(stock.sold || []).length} sold, ${(stock.bought || []).length} bought</strong></div>
+                </div>
+            `;
+            document.getElementById('dateReportModal').classList.add('active');
         }
 
         // Stock Functions
@@ -764,25 +925,30 @@
             document.getElementById('stockHistoryModal').classList.add('active');
         }
 
-        // Sales Functions
+        // Sales Functions with Expenses
         function saveSale() {
             let date = document.getElementById('recordDate').value;
             let amount = parseInt(document.getElementById('saleAmount').value);
             let start = document.getElementById('startTimeInput').value;
             let close = document.getElementById('closingTimeInput').value;
+            let expenses = parseInt(document.getElementById('dailyExpenses').value) || 0;
+            
             if (!amount || amount <= 0) { alert('Enter valid amount'); return; }
             
             salesData[date] = amount;
             if (start) startTimeData[date] = start;
             if (close) closingTimeData[date] = close;
+            if (expenses > 0) expensesData[date] = expenses;
             
             localStorage.setItem('mamag_sales', JSON.stringify(salesData));
             localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
             localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+            localStorage.setItem('mamag_expenses', JSON.stringify(expensesData));
             
             playChaChing();
-            showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(date)}`);
+            showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(date)}${expenses > 0 ? `<br>Expenses: KSH ${expenses.toLocaleString()}` : ''}`);
             document.getElementById('saleAmount').value = '';
+            document.getElementById('dailyExpenses').value = '';
             updateDashboard();
             updateReports();
         }
@@ -818,17 +984,56 @@
         }
 
         function updateReports() {
-            let total = Object.values(salesData).reduce((a,b)=>a+b,0);
-            document.getElementById('monthlyReport').innerHTML = `<div style="text-align:center"><div style="font-size:24px;font-weight:bold;">KSH ${total.toLocaleString()}</div><div>Total Sales</div></div>`;
+            let totalSales = Object.values(salesData).reduce((a,b)=>a+b,0);
+            let totalExpenses = Object.values(expensesData).reduce((a,b)=>a+b,0);
+            let totalDays = Object.keys(salesData).length;
+            let netProfit = totalSales - totalExpenses;
             
-            let totalHours = 0, days = 0;
+            document.getElementById('totalSalesStat').innerHTML = `KSH ${totalSales.toLocaleString()}`;
+            document.getElementById('totalDaysStat').innerHTML = totalDays;
+            document.getElementById('totalExpensesStat').innerHTML = `KSH ${totalExpenses.toLocaleString()}`;
+            document.getElementById('netProfitStat').innerHTML = `KSH ${netProfit.toLocaleString()}`;
+            document.getElementById('netProfitStat').style.color = netProfit >= 0 ? '#2d6a4f' : '#dc3545';
+            
+            // All Records List
+            let sortedDates = Object.keys(salesData).sort().reverse();
+            let recordsHtml = '';
+            sortedDates.forEach(date => {
+                let sales = salesData[date] || 0;
+                let expenses = expensesData[date] || 0;
+                let start = startTimeData[date] || '-';
+                let close = closingTimeData[date] || '-';
+                let hours = calculateHoursWorked(start, close);
+                recordsHtml += `
+                    <div class="daily-report-item" style="cursor:pointer;" onclick="showDateReport('${date}')">
+                        <div class="report-date">📅 ${formatDisplayDate(date)}</div>
+                        <div class="report-detail"><span>💰 Sales:</span><strong>KSH ${sales.toLocaleString()}</strong></div>
+                        <div class="report-detail"><span>⏱️ Hours:</span><strong>${hours > 0 ? hours.toFixed(1) + ' hrs' : '-'}</strong></div>
+                        <div class="report-detail"><span>💸 Expenses:</span><strong>KSH ${expenses.toLocaleString()}</strong></div>
+                        <div class="report-detail"><span>📈 Profit:</span><strong style="color: ${sales-expenses >= 0 ? '#2d6a4f' : '#dc3545'}">KSH ${(sales-expenses).toLocaleString()}</strong></div>
+                    </div>
+                `;
+            });
+            document.getElementById('allRecordsList').innerHTML = recordsHtml || '<div class="empty-state">No records yet</div>';
+            
+            // Hours Analysis
+            let totalHours = 0, daysWithHours = 0;
             Object.keys(startTimeData).forEach(d => {
                 if(startTimeData[d] && closingTimeData[d]) {
                     let h = calculateHoursWorked(startTimeData[d], closingTimeData[d]);
-                    if(h > 0) { totalHours += h; days++; }
+                    if(h > 0) { totalHours += h; daysWithHours++; }
                 }
             });
-            document.getElementById('hoursAnalysis').innerHTML = `<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#2d6a4f;">⏱️ ${totalHours.toFixed(1)} hrs</div><div>Over ${days} days</div><div>Avg: ${days>0?(totalHours/days).toFixed(1):0} hrs/day</div></div>`;
+            document.getElementById('hoursAnalysis').innerHTML = `<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#2d6a4f;">⏱️ ${totalHours.toFixed(1)} hrs</div><div>Over ${daysWithHours} days</div><div>Avg: ${daysWithHours>0?(totalHours/daysWithHours).toFixed(1):0} hrs/day</div></div>`;
+        }
+
+        function viewDailyReport() {
+            let date = document.getElementById('reportDatePicker').value;
+            if (!date) {
+                alert('Select a date');
+                return;
+            }
+            showDateReport(date);
         }
 
         function updateAll() {
@@ -840,6 +1045,7 @@
             document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('stockDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('recordDate').value = getTodayKey();
+            document.getElementById('reportDatePicker').value = getTodayKey();
             document.getElementById('dailyGoalInput').value = settings.dailyGoal;
             document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
             document.getElementById('managerNameInput').value = settings.managerName;
@@ -875,7 +1081,7 @@
             alert('✅ Settings saved');
         }
         function exportData() {
-            let data = { sales: salesData, stock: stockData, settings };
+            let data = { sales: salesData, expenses: expensesData, startTimes: startTimeData, closingTimes: closingTimeData, stock: stockData, settings };
             let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -884,7 +1090,7 @@
         }
         function resetData() {
             if(confirm('⚠️ Delete ALL data?')) {
-                salesData = {}; startTimeData = {}; closingTimeData = {}; stockData = {};
+                salesData = {}; startTimeData = {}; closingTimeData = {}; expensesData = {}; stockData = {};
                 localStorage.clear();
                 updateAll();
                 alert('✅ Reset complete');
@@ -916,6 +1122,7 @@
         window.openAddItemModal = openAddItemModal;
         window.openEditModal = openEditModal;
         window.deleteStockItem = deleteStockItem;
+        window.showDateReport = showDateReport;
 
         // Event listeners
         document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
@@ -937,6 +1144,9 @@
         document.getElementById('closeItemModalBtn').addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
         document.getElementById('closeEditModalBtn').addEventListener('click', () => document.getElementById('editItemModal').classList.remove('active'));
         document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
+        document.getElementById('closeDateReportBtn').addEventListener('click', () => document.getElementById('dateReportModal').classList.remove('active'));
+        document.getElementById('viewReportBtn').addEventListener('click', viewDailyReport);
+        
         document.getElementById('saveItemBtn').addEventListener('click', () => {
             if(addStockItem(currentItemType)) {
                 document.getElementById('addItemModal').classList.remove('active');
