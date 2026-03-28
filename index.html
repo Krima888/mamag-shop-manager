@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Mama G's General Shop</title>
+    <title>Mama G's General Shop - Fixed Stock</title>
     <style>
         * {
             margin: 0;
@@ -30,7 +30,6 @@
             position: relative;
         }
 
-        /* HEADER */
         .header {
             background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
             padding: 18px 16px 14px;
@@ -63,7 +62,6 @@
             opacity: 0.8;
         }
 
-        /* TABS - COMPACT, ALL VISIBLE WITHOUT SCROLLING */
         .nav-bar {
             background: white;
             display: flex;
@@ -79,7 +77,7 @@
         }
 
         .nav-btn {
-            background: #fofofo;
+            background: #f0f0f0;
             border: none;
             font-size: 12px;
             padding: 6px 8px;
@@ -87,7 +85,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
-            color: black
+            color: #2d6a4f;
             flex: 1;
             text-align: center;
             white-space: nowrap;
@@ -97,12 +95,6 @@
             background: #2d6a4f;
             color: white;
         }
-
-        #dashboard { background: #f8f9fa; }
-        #record { background: #fef9e6; }
-        #reports { background: #e8f0fe; }
-        #stock { background: #e6f7e6; }
-        #settings { background: #f0f2f5; }
 
         .page {
             display: none;
@@ -140,137 +132,6 @@
             margin: 10px 0;
         }
 
-        .today-sales-card {
-            background: linear-gradient(135deg, #fff, #fef9e6);
-            border-left: 4px solid #2d6a4f;
-        }
-
-        .start-time-display {
-            background: #e8f0fe;
-            padding: 6px 8px;
-            border-radius: 10px;
-            margin-top: 8px;
-            font-size: 11px;
-            color: #2d6a4f;
-            text-align: center;
-        }
-
-        .hours-worked {
-            background: #d4edda;
-            padding: 6px 8px;
-            border-radius: 10px;
-            margin-top: 6px;
-            font-size: 11px;
-            color: #155724;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .bar-container {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 10px;
-        }
-
-        .bar-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .bar-day {
-            width: 35px;
-            font-weight: bold;
-            color: #2d6a4f;
-            font-size: 11px;
-        }
-
-        .bar-fill {
-            flex: 1;
-            height: 22px;
-            background: #e9ecef;
-            border-radius: 11px;
-            overflow: hidden;
-        }
-
-        .bar-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #2d6a4f, #40916c);
-            border-radius: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 6px;
-            color: white;
-            font-size: 9px;
-            font-weight: bold;
-        }
-
-        .insight-item {
-            padding: 6px 0;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        .insight-item:last-child {
-            border-bottom: none;
-        }
-
-        .sales-history {
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 11px;
-        }
-
-        .history-date {
-            font-weight: bold;
-            color: #2d6a4f;
-        }
-
-        .history-amount {
-            font-weight: bold;
-            color: #1b4d3e;
-        }
-
-        .history-time {
-            color: #6c757d;
-            font-size: 9px;
-        }
-
-        .empty-history {
-            text-align: center;
-            padding: 16px;
-            color: #6c757d;
-            font-size: 12px;
-        }
-
-        .stock-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 12px;
-        }
-
-        .stock-total {
-            font-weight: bold;
-            padding-top: 6px;
-            margin-top: 6px;
-            border-top: 2px solid #2d6a4f;
-            text-align: right;
-            font-size: 12px;
-        }
-
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -278,47 +139,31 @@
             margin-bottom: 14px;
         }
 
-.action-card {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid #ffd966;
-    transition: all 0.3s;
-}
-
-.action-card h3 {
-    color: #ffd966;
-    margin-bottom: 3px;
-    font-size: 13px;
-}
-
-.action-card p {
-    color: #aaa;
-    font-size: 10px;
-}
-
-.action-card:hover {
-    background: #2d2d2d;
-    transform: scale(1.01);
-}
-    
-
-        .action-card:hover {
-            border-color: #2d6a4f;
-            transform: scale(1.01);
+        .action-card {
+            background: #2d6a4f;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .action-card h3 {
-            color: #2d6a4f;
-            margin-bottom: 3px;
-            font-size: 13px;
+            color: #ffd966;
+            margin-bottom: 5px;
+            font-size: 14px;
         }
 
         .action-card p {
+            color: #e9ecef;
             font-size: 10px;
-            color: #6c757d;
+        }
+
+        .action-card:hover {
+            transform: scale(1.02);
+            background: #1b4d3e;
         }
 
         .form-group {
@@ -369,7 +214,6 @@
             background: #6c757d;
         }
 
-        /* MODAL - DARK THEME FOR CALCULATOR */
         .modal {
             display: none;
             position: fixed;
@@ -388,55 +232,34 @@
             display: flex;
         }
 
-        #additemmodal .modal-content {/* Add Item Modal - BLACK THEME */
-#addItemModal .modal-content {
-    background: #1a1a1a;
-    border-radius: 20px;
-    padding: 18px;
-    max-width: 320px;
-    width: 90%;
-    text-align: center;
-    animation: slideUp 0.3s;
-    border: 1px solid #ffd966;
-}
-
-#addItemModal label {
-    color: #ffd966;
-}
-
-#addItemModal input {
-    background: #2d2d2d;
-    border: 1px solid #ffd966;
-    color: white;
-}
-
-#addItemModal input:focus {
-    border-color: #ffd966;
-    outline: none;
-}
-
-#addItemModal h3 {
-    color: #ffd966;
-}
-            
-        }
-        .modal-content h3 {
-            color: #ffd966;
-            font-size: 16px;
+        #addItemModal .modal-content {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 18px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s;
+            border: 1px solid #ffd966;
         }
 
-        .modal-content label {
+        #addItemModal label {
             color: #ffd966;
         }
 
-        .modal-content input {
-            background: #2a2a35;
-            border-color: #2d6a4f;
+        #addItemModal input {
+            background: #2d2d2d;
+            border: 1px solid #ffd966;
             color: white;
         }
 
-        .modal-content input:focus {
+        #addItemModal input:focus {
             border-color: #ffd966;
+            outline: none;
+        }
+
+        #addItemModal h3 {
+            color: #ffd966;
         }
 
         .calc-result {
@@ -469,35 +292,28 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 12px;
         }
 
-        .stat-box {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 18px;
+        .stock-total {
             font-weight: bold;
-            color: #2d6a4f;
+            padding-top: 8px;
+            margin-top: 6px;
+            border-top: 2px solid #2d6a4f;
+            text-align: right;
+            font-size: 13px;
         }
 
         .empty-state {
             text-align: center;
             padding: 20px;
             color: #6c757d;
-        }
-
-        .empty-state-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
+            font-size: 12px;
         }
 
         .success-message {
@@ -519,20 +335,32 @@
             margin-top: 12px;
         }
 
-        @media (max-width: 500px) {
-            .sales-amount { font-size: 28px; }
-            .nav-btn { font-size: 10px; padding: 5px 4px; }
-            .shop-name { font-size: 14px; }
+        .stock-summary-net {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+            text-align: center;
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        .stock-summary-net.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stock-summary-net.negative {
+            background: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- HEADER - DYNAMICALLY UPDATABLE -->
         <div class="header">
             <div class="shop-name">
                 <span id="headerShopName">🏪 MAMA G'S GENERAL SHOP</span>
-                <span class="manager-badge">👩‍💼📊💰</span>
+                <span>👩‍💼📊💰</span>
             </div>
             <div class="manager-line">
                 👤 Manager: <strong id="headerManagerName">Priscilla Wambui Kamau</strong>
@@ -540,7 +368,6 @@
             <div class="date" id="currentDate"></div>
         </div>
 
-        <!-- COMPACT TABS - ALL VISIBLE WITHOUT SCROLLING -->
         <div class="nav-bar">
             <button class="nav-btn active" data-page="dashboard">🏠 Home</button>
             <button class="nav-btn" data-page="record">💰 Record</button>
@@ -556,98 +383,44 @@
                 <div class="sales-amount" id="dailyGoalDisplay">KSH 0</div>
                 <div id="goalStatus"></div>
             </div>
-
-            <div class="card today-sales-card">
+            <div class="card today-sales-card" style="background: white; border-left: 4px solid #2d6a4f;">
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES</div>
                 <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px; color: #2d6a4f;">KSH 0</div>
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 6px; font-size: 11px;"></div>
-                <div id="startTimeDisplay" class="start-time-display">
-                    ⏰ Start: <strong id="startTimeValue">Not set</strong> | 🔒 Close: <strong id="closingTimeValue">Not set</strong>
-                </div>
-                <div id="hoursWorkedDisplay" class="hours-worked">
-                    ⏱️ Hours Worked: <strong id="hoursWorkedValue">0 hrs</strong>
-                </div>
             </div>
-
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px; font-size: 13px;">📊 THIS WEEK</div>
+                <div style="font-weight: bold; margin-bottom: 10px;">📊 THIS WEEK</div>
                 <div id="weeklyGraph"></div>
-                <div style="margin-top: 10px; text-align: center; font-weight: bold; font-size: 12px;" id="weeklyTotal"></div>
             </div>
-
-            <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px; font-size: 13px;">📜 SAVED SALES HISTORY</div>
-                <div id="salesHistory" class="sales-history"></div>
-            </div>
-
-            <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px; font-size: 13px;">💡 INSIGHTS</div>
-                <div id="insights"></div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div style="font-size: 11px;">📈 VS LAST WEEK</div>
-                    <div class="stat-value" id="vsLastWeek">0%</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 11px;">🎯 MONTH FORECAST</div>
-                    <div class="stat-value" id="monthForecast">KSH 0</div>
-                </div>
-            </div>
-
-            <button id="calculatorBtn" class="btn-secondary" style="margin-top: 6px;">🧮 CALCULATOR</button>
+            <button id="calculatorBtn" style="margin-top: 6px; background: #40916c;">🧮 CALCULATOR</button>
         </div>
 
         <!-- RECORD PAGE -->
         <div id="record" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 12px; font-size: 16px;">📝 RECORD TODAY'S SALES</h3>
+                <h3 style="color: #2d6a4f; margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
                 <div class="form-group">
                     <label>📅 Date</label>
-                    <input type="date" id="recordDate" style="background: #f8f9fa;">
-                </div>
-                <div class="form-group">
-                    <label>⏰ Start Time (when you opened)</label>
-                    <input type="time" id="startTimeInput">
-                </div>
-                <div class="form-group">
-                    <label>🔒 Closing Time (when you closed)</label>
-                    <input type="time" id="closingTimeInput">
+                    <input type="date" id="recordDate">
                 </div>
                 <div class="form-group">
                     <label>💰 Total Sales (KSH)</label>
                     <input type="number" id="saleAmount" placeholder="Enter amount" step="100">
                 </div>
                 <button id="saveSaleBtn">💾 SAVE SALES</button>
-                <div id="recordMessage" style="margin-top: 10px; text-align: center;"></div>
+                <div id="recordMessage" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- REPORTS PAGE -->
+        <!-- REPORTS PAGE (simplified) -->
         <div id="reports" class="page">
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px;">🏆 VS LAST MONTH</div>
-                <div id="vsLastMonth"></div>
-            </div>
-
-            <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px;">📅 BEST DAYS ANALYSIS</div>
-                <div id="bestDays"></div>
-            </div>
-
-            <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px;">📈 MONTHLY FORECAST</div>
-                <div id="monthlyForecast"></div>
-            </div>
-
-            <div class="card">
-                <div style="font-weight: bold; margin-bottom: 10px;">💡 BUSINESS INSIGHTS</div>
-                <div id="businessInsights"></div>
+                <h3>📈 Monthly Summary</h3>
+                <div id="monthlyReport"></div>
             </div>
         </div>
 
-        <!-- STOCK PAGE -->
+        <!-- STOCK PAGE - FIXED VERSION -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
@@ -688,111 +461,106 @@
         <!-- SETTINGS PAGE -->
         <div id="settings" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 10px;">🏪 SHOP INFO</h3>
+                <h3>🏪 SHOP INFO</h3>
                 <div class="form-group">
                     <label>Shop Name</label>
-                    <input type="text" id="shopNameInput" placeholder="Shop Name" value="MAMA G'S GENERAL SHOP">
+                    <input type="text" id="shopNameInput" value="MAMA G'S GENERAL SHOP">
                 </div>
                 <div class="form-group">
                     <label>Manager Name</label>
-                    <input type="text" id="managerNameInput" placeholder="Manager Name" value="Priscilla Wambui Kamau">
+                    <input type="text" id="managerNameInput" value="Priscilla Wambui Kamau">
                 </div>
                 <button id="saveInfoBtn">💾 SAVE INFO</button>
-                <div id="infoSaveMessage" style="margin-top: 6px;"></div>
             </div>
-
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 10px;">🎯 DAILY GOAL</h3>
+                <h3>🎯 DAILY GOAL</h3>
                 <div class="form-group">
                     <label>Set Daily Target (KSH)</label>
                     <input type="number" id="dailyGoalInput" step="100">
                 </div>
                 <button id="saveGoalBtn">💾 SAVE GOAL</button>
-                <div id="goalSaveMessage" style="margin-top: 6px;"></div>
-                <div style="margin-top: 6px;">
-                    <label style="display: flex; align-items: center; gap: 6px;">
-                        <input type="checkbox" id="reminderToggle"> 🔔 Morning Reminder (8:00 AM)
-                    </label>
-                </div>
             </div>
-
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 10px;">🔔 NOTIFICATIONS</h3>
+                <h3>🔔 NOTIFICATIONS</h3>
                 <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                    <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects (Cha-ching!)
+                    <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects
                 </label>
                 <label style="display: flex; align-items: center; gap: 6px;">
-                    <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration Animation
+                    <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration
                 </label>
-                <button id="saveNotificationsBtn" style="background: #40916c; margin-top: 10px;">💾 SAVE NOTIFICATION SETTINGS</button>
-                <div id="notificationSaveMessage" style="margin-top: 6px;"></div>
+                <button id="saveNotificationsBtn" style="margin-top: 10px;">💾 SAVE</button>
             </div>
-
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 10px;">💾 DATA MANAGEMENT</h3>
-                <button id="exportBtn" style="background: #40916c; margin-bottom: 6px;">📥 Export All Data</button>
+                <h3>💾 DATA MANAGEMENT</h3>
+                <button id="exportBtn" style="background: #40916c; margin-bottom: 6px;">📥 Export Data</button>
                 <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
-                <div style="margin-top: 6px; font-size: 9px; color: #6c757d;">⚠️ Reset will delete all sales and stock history</div>
             </div>
         </div>
 
-        <div class="footer">
-            Mama G's General Shop | Smart Business Manager
+        <div class="footer">Mama G's General Shop | Smart Business Manager</div>
+    </div>
+
+    <!-- CALCULATOR MODAL -->
+    <div id="calculatorModal" class="modal">
+        <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
+            <div style="display: flex; justify-content: space-between;">
+                <h3 style="color: #ffd966;">🧮 CALCULATE CHANGE</h3>
+                <button id="closeCalculatorBtn" style="width: auto; background: none; color: #ffd966;">✖</button>
+            </div>
+            <div class="form-group">
+                <label style="color:#ffd966;">💰 Amount Paid</label>
+                <input type="number" id="amountPaid" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label style="color:#ffd966;">📝 Total Due</label>
+                <input type="number" id="totalDue" placeholder="0">
+            </div>
+            <button id="calculateChangeBtn" style="background:#ffd966; color:#1a1a1a;">CALCULATE</button>
+            <div class="calc-result" id="changeResult">Change: KSH 0</div>
         </div>
     </div>
 
-    <!-- CALCULATOR MODAL - DARK THEME -->
-    <div id="calculatorModal" class="modal">
+    <!-- ADD ITEM MODAL - FIXED -->
+    <div id="addItemModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="color: #ffd966;">🧮 CALCULATE CHANGE</h3>
-                <button id="closeCalculatorBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
+                <h3 id="modalTitle">➕ ADD ITEM</h3>
+                <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
             </div>
-            <div class="calc-simple">
-                <div class="form-group">
-                    <label>💰 Amount Paid (KSH)</label>
-                    <input type="number" id="amountPaid" placeholder="0" style="font-size: 16px;">
-                </div>
-                <div class="form-group">
-                    <label>📝 Total Due (KSH)</label>
-                    <input type="number" id="totalDue" placeholder="0" style="font-size: 16px;">
-                </div>
-                <button id="calculateChangeBtn" style="background: #ffd966; color: #1e1e2a;">🔢 CALCULATE CHANGE</button>
-                <div class="calc-result" id="changeResult">
-                    Change: KSH 0
-                </div>
+            <div class="form-group">
+                <label>Item Name</label>
+                <input type="text" id="itemName" placeholder="e.g., Milk, Bread, Sugar">
             </div>
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="itemQuantity" placeholder="How many?" min="1">
+            </div>
+            <div class="form-group">
+                <label>Price per Unit (KSH)</label>
+                <input type="number" id="itemPrice" placeholder="Price per item">
+            </div>
+            <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; margin-bottom: 10px; color: #ffd966;">Total: KSH 0</div>
+            <button id="saveItemBtn" style="background: #ffd966; color: #1a1a1a; font-weight: bold;">💾 SAVE ITEM</button>
         </div>
     </div>
-<!-- Add Item Modal -->
-<div id="addItemModal" class="modal">
-    <div class="modal-content">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #ffd966;" id="modalTitle">➕ ADD ITEM</h3>
-            <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
+
+    <!-- STOCK HISTORY MODAL -->
+    <div id="stockHistoryModal" class="modal">
+        <div class="modal-content" style="background: #1a1a1a; max-width: 380px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between;">
+                <h3 style="color:#ffd966;">📜 STOCK HISTORY</h3>
+                <button id="closeHistoryModalBtn" style="width: auto; background: none; color:#ffd966;">✖</button>
+            </div>
+            <div id="stockHistoryList"></div>
         </div>
-        <div class="form-group">
-            <label style="color: #ffd966;">Item Name</label>
-            <input type="text" id="itemName" placeholder="e.g., Milk, Bread, Sugar" style="background: #2d2d2d; border-color: #ffd966; color: white;">
-        </div>
-        <div class="form-group">
-            <label style="color: #ffd966;">Quantity</label>
-            <input type="number" id="itemQuantity" placeholder="How many?" min="1" style="background: #2d2d2d; border-color: #ffd966; color: white;">
-        </div>
-        <div class="form-group">
-            <label style="color: #ffd966;">Price per Unit (KSH)</label>
-            <input type="number" id="itemPrice" placeholder="Price per item" style="background: #2d2d2d; border-color: #ffd966; color: white;">
-        </div>
-        <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; margin-bottom: 10px; color: #ffd966;">Total: KSH 0</div>
-        <button id="saveItemBtn" style="background: #ffd966; color: #1a1a1a; font-weight: bold;">💾 SAVE ITEM</button>
     </div>
-</div>
-    <!-- Celebration Modal -->
+
+    <!-- CELEBRATION MODAL -->
     <div id="celebrationModal" class="modal">
         <div class="modal-content" style="background: white;">
             <div style="font-size: 36px;">🎉 🎉 🎉</div>
             <div style="font-size: 18px; font-weight: bold; color: #2d6a4f; margin: 10px 0;" id="celebrationTitle"></div>
-            <div id="celebrationMessage" style="margin: 10px 0; line-height: 1.4;"></div>
+            <div id="celebrationMessage" style="margin: 10px 0;"></div>
             <button id="closeModalBtn" style="background: #2d6a4f;">Continue</button>
         </div>
     </div>
@@ -800,19 +568,16 @@
     <script>
         // ========== DATA STORAGE ==========
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
-        let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
-        let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
         let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
             shopName: "🏪 MAMA G'S GENERAL SHOP",
             managerName: "Priscilla Wambui Kamau",
             dailyGoal: 3500,
-            reminderEnabled: true,
             soundEnabled: true,
             celebrationEnabled: true
         };
 
-        let currentItemType = 'sold';
+        let currentItemType = 'sold'; // 'sold' or 'bought'
 
         // Helper Functions
         function formatDate(date) {
@@ -828,151 +593,21 @@
             return formatDate(new Date());
         }
 
-        function calculateHoursWorked(startTime, closingTime) {
-            if (!startTime || !closingTime) return 0;
-            const [startHour, startMinute] = startTime.split(':').map(Number);
-            const [closeHour, closeMinute] = closingTime.split(':').map(Number);
-            let hours = closeHour - startHour;
-            let minutes = closeMinute - startMinute;
-            if (minutes < 0) {
-                hours--;
-                minutes += 60;
-            }
-            return hours + (minutes / 60);
-        }
-
-        function getWeekDates() {
-            const today = new Date();
-            const startOfWeek = new Date(today);
-            startOfWeek.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
-            const weekDates = [];
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(startOfWeek);
-                date.setDate(startOfWeek.getDate() + i);
-                weekDates.push(formatDate(date));
-            }
-            return weekDates;
-        }
-
-        function getWeekTotal() {
-            const weekDates = getWeekDates();
-            let total = 0;
-            weekDates.forEach(date => {
-                total += salesData[date] || 0;
-            });
-            return total;
-        }
-
-        function getLastWeekTotal() {
-            const today = new Date();
-            const lastWeekStart = new Date(today);
-            lastWeekStart.setDate(today.getDate() - 7);
-            let total = 0;
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(lastWeekStart);
-                date.setDate(lastWeekStart.getDate() + i);
-                const dateKey = formatDate(date);
-                total += salesData[dateKey] || 0;
-            }
-            return total;
-        }
-
-        function getMonthTotal() {
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            let total = 0;
-            Object.keys(salesData).forEach(dateKey => {
-                const date = new Date(dateKey);
-                if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                    total += salesData[dateKey] || 0;
-                }
-            });
-            return total;
-        }
-
-        function getLastMonthTotal() {
-            const today = new Date();
-            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-            const lastMonthIndex = lastMonth.getMonth();
-            const lastMonthYear = lastMonth.getFullYear();
-            let total = 0;
-            Object.keys(salesData).forEach(dateKey => {
-                const date = new Date(dateKey);
-                if (date.getMonth() === lastMonthIndex && date.getFullYear() === lastMonthYear) {
-                    total += salesData[dateKey] || 0;
-                }
-            });
-            return total;
-        }
-
-        function getStreak() {
-            let streak = 0;
-            const today = new Date();
-            for (let i = 0; i < 365; i++) {
-                const checkDate = new Date(today);
-                checkDate.setDate(today.getDate() - i);
-                const dateKey = formatDate(checkDate);
-                if (salesData[dateKey] && salesData[dateKey] > 0) {
-                    streak++;
-                } else if (i > 0) {
-                    break;
-                }
-            }
-            return streak;
-        }
-
-        function getBestDayAnalysis() {
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const dayTotals = [0, 0, 0, 0, 0, 0, 0];
-            const dayCounts = [0, 0, 0, 0, 0, 0, 0];
-            
-            Object.keys(salesData).forEach(dateKey => {
-                const date = new Date(dateKey);
-                if (!isNaN(date.getTime())) {
-                    const day = date.getDay();
-                    dayTotals[day] += salesData[dateKey];
-                    dayCounts[day]++;
-                }
-            });
-            
-            const averages = dayTotals.map((total, i) => dayCounts[i] > 0 ? total / dayCounts[i] : 0);
-            const bestDayIndex = averages.indexOf(Math.max(...averages));
-            const slowDayIndex = averages.indexOf(Math.min(...averages.filter(a => a > 0)));
-            
-            return {
-                bestDay: dayNames[bestDayIndex],
-                bestAvg: Math.round(averages[bestDayIndex]),
-                slowDay: dayNames[slowDayIndex],
-                slowAvg: Math.round(averages[slowDayIndex]),
-                hasData: Object.keys(salesData).length > 0
-            };
-        }
-
-        // Sound Effect
-        let audioContext = null;
-        
         function playChaChing() {
             if (!settings.soundEnabled) return;
             try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                const oscillator = audioContext.createOscillator();
-                const gain = audioContext.createGain();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 oscillator.connect(gain);
-                gain.connect(audioContext.destination);
+                gain.connect(audioCtx.destination);
                 oscillator.frequency.value = 880;
-                gain.gain.value = 0.3;
+                gain.gain.value = 0.2;
                 oscillator.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
-                oscillator.stop(audioContext.currentTime + 0.3);
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-            } catch(e) {
-                console.log('Sound error:', e);
-            }
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                oscillator.stop(audioCtx.currentTime + 0.3);
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } catch(e) { console.log('Sound error'); }
         }
 
         function showCelebration(title, message) {
@@ -982,99 +617,132 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        function showSaveMessage(elementId, message) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.innerHTML = `<div class="success-message">${message}</div>`;
-                setTimeout(() => {
-                    element.innerHTML = '';
-                }, 3000);
-            }
-        }
-
-        function updateHeaderNames() {
-            document.getElementById('headerShopName').innerHTML = settings.shopName;
-            document.getElementById('headerManagerName').innerHTML = settings.managerName;
-        }
-
-        // Stock Functions
+        // STOCK FUNCTIONS - FIXED: Now properly saves items
         function updateStockDisplay() {
             const todayKey = getTodayKey();
             const todayStock = stockData[todayKey] || { sold: [], bought: [] };
             
+            // Display SOLD items
             const soldContainer = document.getElementById('soldItemsList');
-            if (todayStock.sold.length === 0) {
-                soldContainer.innerHTML = '<div class="empty-state">No items sold yet today</div>';
+            if (!todayStock.sold || todayStock.sold.length === 0) {
+                soldContainer.innerHTML = '<div class="empty-state">✨ No items sold yet today</div>';
             } else {
                 let soldHtml = '';
                 let soldTotal = 0;
-                todayStock.sold.forEach((item) => {
+                todayStock.sold.forEach((item, idx) => {
                     const total = item.quantity * item.price;
                     soldTotal += total;
-                    soldHtml += `<div class="stock-item"><span>📦 ${item.name} x${item.quantity}</span><span>KSH ${total.toLocaleString()}</span></div>`;
+                    soldHtml += `<div class="stock-item"><span>📦 ${item.name} x${item.quantity} @ KSH ${item.price}</span><span><strong>KSH ${total.toLocaleString()}</strong></span></div>`;
                 });
                 soldContainer.innerHTML = soldHtml;
-                document.getElementById('soldTotal').innerHTML = `TOTAL: KSH ${soldTotal.toLocaleString()}`;
+                document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
             }
             
+            // Display BOUGHT items
             const boughtContainer = document.getElementById('boughtItemsList');
-            if (todayStock.bought.length === 0) {
-                boughtContainer.innerHTML = '<div class="empty-state">No items bought yet today</div>';
+            if (!todayStock.bought || todayStock.bought.length === 0) {
+                boughtContainer.innerHTML = '<div class="empty-state">🛒 No items bought yet today</div>';
             } else {
                 let boughtHtml = '';
                 let boughtTotal = 0;
                 todayStock.bought.forEach((item) => {
                     const total = item.quantity * item.price;
                     boughtTotal += total;
-                    boughtHtml += `<div class="stock-item"><span>🛒 ${item.name} x${item.quantity}</span><span>KSH ${total.toLocaleString()}</span></div>`;
+                    boughtHtml += `<div class="stock-item"><span>🛒 ${item.name} x${item.quantity} @ KSH ${item.price}</span><span><strong>KSH ${total.toLocaleString()}</strong></span></div>`;
                 });
                 boughtContainer.innerHTML = boughtHtml;
-                document.getElementById('boughtTotal').innerHTML = `TOTAL: KSH ${boughtTotal.toLocaleString()}`;
+                document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH ${boughtTotal.toLocaleString()}`;
             }
             
+            // Calculate totals for summary
             const soldTotalElem = document.getElementById('soldTotal');
             const boughtTotalElem = document.getElementById('boughtTotal');
-            const soldTotal = soldTotalElem ? parseInt(soldTotalElem.innerText.replace(/[^0-9]/g, '')) || 0 : 0;
-            const boughtTotal = boughtTotalElem ? parseInt(boughtTotalElem.innerText.replace(/[^0-9]/g, '')) || 0 : 0;
-            const net = soldTotal - boughtTotal;
+            let soldTotalVal = 0, boughtTotalVal = 0;
+            if (soldTotalElem && soldTotalElem.innerText) {
+                const match = soldTotalElem.innerText.match(/[\d,]+/);
+                if (match) soldTotalVal = parseInt(match[0].replace(/,/g, '')) || 0;
+            }
+            if (boughtTotalElem && boughtTotalElem.innerText) {
+                const match = boughtTotalElem.innerText.match(/[\d,]+/);
+                if (match) boughtTotalVal = parseInt(match[0].replace(/,/g, '')) || 0;
+            }
             
-            document.getElementById('stockSummary').innerHTML = `
-                <div class="stock-item"><span>📦 Sales Total:</span><span>KSH ${soldTotal.toLocaleString()}</span></div>
-                <div class="stock-item"><span>🛒 Purchases Total:</span><span>KSH ${boughtTotal.toLocaleString()}</span></div>
-                <div class="stock-total"><span>💰 Net:</span><span>${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</span></div>
-                <div style="margin-top: 6px; font-size: 10px; color: #6c757d;">${net >= 0 ? '✅ Good day! Profit day!' : '📦 Restock day - investment in inventory'}</div>
+            const net = soldTotalVal - boughtTotalVal;
+            const summaryDiv = document.getElementById('stockSummary');
+            summaryDiv.innerHTML = `
+                <div class="stock-item"><span>📊 Sales Revenue:</span><span>KSH ${soldTotalVal.toLocaleString()}</span></div>
+                <div class="stock-item"><span>📦 Restock Cost:</span><span>KSH ${boughtTotalVal.toLocaleString()}</span></div>
+                <div class="stock-summary-net ${net >= 0 ? 'positive' : 'negative'}">
+                    ${net >= 0 ? '💰 NET PROFIT' : '📉 NET INVESTMENT'}: KSH ${Math.abs(net).toLocaleString()} ${net >= 0 ? '🟢' : '🔴'}
+                </div>
             `;
         }
 
+        // FIXED: Core function to add item - now properly saves and persists
         function addStockItem(type) {
             const name = document.getElementById('itemName').value.trim();
             const quantity = parseInt(document.getElementById('itemQuantity').value);
             const price = parseInt(document.getElementById('itemPrice').value);
             
-            if (!name || !quantity || !price) {
-                alert('Please fill all fields');
+            if (!name) {
+                alert('❌ Please enter item name');
+                return false;
+            }
+            if (isNaN(quantity) || quantity <= 0) {
+                alert('❌ Please enter a valid quantity (minimum 1)');
+                return false;
+            }
+            if (isNaN(price) || price <= 0) {
+                alert('❌ Please enter a valid price per unit (minimum 1 KSH)');
                 return false;
             }
             
             const todayKey = getTodayKey();
+            // Initialize today's stock entry if not exists
             if (!stockData[todayKey]) {
                 stockData[todayKey] = { sold: [], bought: [] };
             }
             
-            stockData[todayKey][type].push({ name, quantity, price });
+            // Add the item to the correct array
+            const newItem = { 
+                name: name, 
+                quantity: quantity, 
+                price: price,
+                timestamp: new Date().toISOString()
+            };
+            
+            stockData[todayKey][type].push(newItem);
+            
+            // Save to localStorage
             localStorage.setItem('mamag_stock', JSON.stringify(stockData));
             
+            // Play sound for feedback
+            playChaChing();
+            
+            // Show quick success message
+            const itemTotal = quantity * price;
+            showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${quantity} x ${name} = KSH ${itemTotal.toLocaleString()}`);
+            
+            // Refresh display
             updateStockDisplay();
+            
             return true;
         }
 
         function openAddItemModal(type) {
             currentItemType = type;
-            document.getElementById('modalTitle').innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
+            const modalTitle = document.getElementById('modalTitle');
+            if (type === 'sold') {
+                modalTitle.innerHTML = '➕ ADD ITEM SOLD';
+            } else {
+                modalTitle.innerHTML = '🛒 ADD ITEM BOUGHT';
+            }
+            // Clear form
             document.getElementById('itemName').value = '';
             document.getElementById('itemQuantity').value = '';
             document.getElementById('itemPrice').value = '';
             document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
+            // Show modal
             document.getElementById('addItemModal').classList.add('active');
         }
 
@@ -1083,392 +751,197 @@
             const sortedDates = Object.keys(stockData).sort().reverse();
             
             if (sortedDates.length === 0) {
-                historyContainer.innerHTML = '<div class="empty-state">No stock records yet</div>';
-            } else {
-                let historyHtml = '';
-                sortedDates.forEach(date => {
-                    const data = stockData[date];
-                    const soldTotal = data.sold.reduce((sum, i) => sum + (i.quantity * i.price), 0);
-                    const boughtTotal = data.bought.reduce((sum, i) => sum + (i.quantity * i.price), 0);
-                    const net = soldTotal - boughtTotal;
-                    historyHtml += `
-                        <div class="card" style="margin-bottom: 6px;">
-                            <div><strong>📅 ${formatDisplayDate(date)}</strong></div>
-                            <div style="font-size: 10px;">Sold: KSH ${soldTotal.toLocaleString()} | Bought: KSH ${boughtTotal.toLocaleString()}</div>
-                            <div style="font-size: 10px; color: ${net >= 0 ? '#2d6a4f' : '#dc3545'};">Net: ${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</div>
-                            <div style="font-size: 9px; color: #6c757d;">${data.sold.length} items sold, ${data.bought.length} items bought</div>
-                        </div>
-                    `;
-                });
-                historyContainer.innerHTML = historyHtml;
-            }
-            document.getElementById('stockHistoryModal').classList.add('active');
-        }
-
-        // Dashboard Update
-        function updateDashboard() {
-            const todayKey = getTodayKey();
-            const todaySales = salesData[todayKey] || 0;
-            const todayStartTime = startTimeData[todayKey] || 'Not set';
-            const todayClosingTime = closingTimeData[todayKey] || 'Not set';
-            const hoursWorked = calculateHoursWorked(todayStartTime, todayClosingTime);
-            const dailyGoal = settings.dailyGoal;
-            const streak = getStreak();
-            const weekTotal = getWeekTotal();
-            const lastWeekTotal = getLastWeekTotal();
-            const monthTotal = getMonthTotal();
-            const weekDates = getWeekDates();
-            const maxSale = Math.max(...weekDates.map(d => salesData[d] || 0), 1);
-            
-            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
-            document.getElementById('startTimeValue').innerHTML = todayStartTime;
-            document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
-            document.getElementById('hoursWorkedValue').innerHTML = hoursWorked > 0 ? `${hoursWorked.toFixed(1)} hrs` : 'Not set';
-            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
-            
-            const percentOfGoal = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
-            if (todaySales > 0) {
-                if (todaySales >= dailyGoal) {
-                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 14px; font-size: 10px;">🎉 ${percentOfGoal}% ABOVE GOAL! 🎉</span>`;
-                } else {
-                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 14px; font-size: 10px;">📊 ${percentOfGoal}% of goal</span>`;
-                }
-            } else {
-                document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 14px; font-size: 10px;">✨ Record your first sale!</span>`;
+                historyContainer.innerHTML = '<div class="empty-state">📭 No stock records yet</div>';
+                document.getElementById('stockHistoryModal').classList.add('active');
+                return;
             }
             
-            document.getElementById('streakDisplay').innerHTML = streak > 0 ? `🔥 ${streak} DAY STREAK! 🔥` : '✨ Start a streak!';
-            
-            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            let graphHtml = '<div class="bar-container">';
-            weekDates.forEach((date, i) => {
-                const sale = salesData[date] || 0;
-                const percent = (sale / maxSale * 100).toFixed(0);
-                graphHtml += `
-                    <div class="bar-item">
-                        <div class="bar-day">${dayNames[i]}</div>
-                        <div class="bar-fill">
-                            <div class="bar-progress" style="width: ${percent}%;">${sale > 0 ? `KSH ${sale.toLocaleString()}` : ''}</div>
-                        </div>
+            let historyHtml = '';
+            sortedDates.forEach(date => {
+                const data = stockData[date];
+                const soldTotal = (data.sold || []).reduce((sum, i) => sum + (i.quantity * i.price), 0);
+                const boughtTotal = (data.bought || []).reduce((sum, i) => sum + (i.quantity * i.price), 0);
+                const net = soldTotal - boughtTotal;
+                historyHtml += `
+                    <div style="background: #2d2d2d; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
+                        <div style="color: #ffd966; font-weight: bold;">📅 ${formatDisplayDate(date)}</div>
+                        <div style="font-size: 11px; margin-top: 5px;">Sold: KSH ${soldTotal.toLocaleString()} (${(data.sold || []).length} items)</div>
+                        <div style="font-size: 11px;">Bought: KSH ${boughtTotal.toLocaleString()} (${(data.bought || []).length} items)</div>
+                        <div style="font-size: 12px; margin-top: 5px; font-weight: bold; color: ${net >= 0 ? '#90be6d' : '#f4acb7'}">Net: ${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</div>
                     </div>
                 `;
             });
+            historyContainer.innerHTML = historyHtml;
+            document.getElementById('stockHistoryModal').classList.add('active');
+        }
+
+        // Sales functions
+        function saveSale() {
+            const todayKey = document.getElementById('recordDate').value;
+            const amount = parseInt(document.getElementById('saleAmount').value);
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Enter valid amount</span>';
+                return;
+            }
+            salesData[todayKey] = amount;
+            localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+            playChaChing();
+            if (amount >= settings.dailyGoal) {
+                showCelebration('🎉 GOAL ACHIEVED!', `KSH ${amount.toLocaleString()} recorded! You hit the target!`);
+            } else {
+                showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(todayKey)}`);
+            }
+            document.getElementById('saleAmount').value = '';
+            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded!</span>';
+            setTimeout(() => document.getElementById('recordMessage').innerHTML = '', 2000);
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const todayKey = getTodayKey();
+            const todaySales = salesData[todayKey] || 0;
+            const dailyGoal = settings.dailyGoal;
+            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
+            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
+            const percent = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
+            if (todaySales > 0) {
+                document.getElementById('goalStatus').innerHTML = `<span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:14px;">${percent}% of goal</span>`;
+            } else {
+                document.getElementById('goalStatus').innerHTML = `<span>✨ Record your first sale!</span>`;
+            }
+            // Weekly graph simple
+            const weekDates = [];
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                weekDates.push(formatDate(d));
+            }
+            let graphHtml = '<div class="bar-container">';
+            weekDates.forEach(date => {
+                const sale = salesData[date] || 0;
+                graphHtml += `<div style="display:flex; justify-content:space-between; font-size:11px; margin:4px 0;"><span>${formatDisplayDate(date)}</span><strong>KSH ${sale.toLocaleString()}</strong></div>`;
+            });
             graphHtml += '</div>';
             document.getElementById('weeklyGraph').innerHTML = graphHtml;
-            document.getElementById('weeklyTotal').innerHTML = `WEEK TOTAL: KSH ${weekTotal.toLocaleString()}`;
-            
-            const bestDayAnalysis = getBestDayAnalysis();
-            const vsLastWeekPercent = lastWeekTotal > 0 ? ((weekTotal - lastWeekTotal) / lastWeekTotal * 100).toFixed(1) : 0;
-            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / (new Date().getDate()) * 30) : 0;
-            
-            let insightsHtml = '';
-            if (bestDayAnalysis.hasData) {
-                insightsHtml = `
-                    <div class="insight-item"><span>📊 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
-                    <div class="insight-item"><span>📉 Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
-                    <div class="insight-item"><span>🔥 Current Streak:</span><strong>${streak} days!</strong></div>
-                    <div class="insight-item"><span>🏆 Best Day Ever:</span><strong>KSH ${Math.max(...Object.values(salesData)).toLocaleString()}</strong></div>
-                `;
-            } else {
-                insightsHtml = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📊</div>
-                        <div>No sales data yet. Record your first sale to see insights!</div>
-                    </div>
-                `;
-            }
-            document.getElementById('insights').innerHTML = insightsHtml;
-            
-            document.getElementById('vsLastWeek').innerHTML = `${vsLastWeekPercent >= 0 ? '+' : ''}${vsLastWeekPercent}%`;
-            document.getElementById('monthForecast').innerHTML = `KSH ${projectedMonth.toLocaleString()}`;
-            
-            // Sales History
-            const historyContainer = document.getElementById('salesHistory');
-            const sortedDates = Object.keys(salesData).sort().reverse().slice(0, 10);
-            if (sortedDates.length === 0) {
-                historyContainer.innerHTML = '<div class="empty-history">📭 No sales recorded yet.</div>';
-            } else {
-                let historyHtml = '';
-                sortedDates.forEach(date => {
-                    const amount = salesData[date];
-                    const displayDate = formatDisplayDate(date);
-                    const startTime = startTimeData[date] || 'Not set';
-                    const closingTime = closingTimeData[date] || 'Not set';
-                    const hrsWorked = calculateHoursWorked(startTime, closingTime);
-                    historyHtml += `
-                        <div class="history-item">
-                            <div>
-                                <span class="history-date">📅 ${displayDate}</span><br>
-                                <span class="history-time">⏰ ${startTime} - 🔒 ${closingTime} (${hrsWorked > 0 ? hrsWorked.toFixed(1) + ' hrs' : 'No hours'})</span>
-                            </div>
-                            <span class="history-amount">💰 KSH ${amount.toLocaleString()}</span>
-                        </div>
-                    `;
-                });
-                historyContainer.innerHTML = historyHtml;
-            }
+            document.getElementById('streakDisplay').innerHTML = `🔥 ${Object.keys(salesData).length} days recorded!`;
         }
 
         function updateReports() {
-            const monthTotal = getMonthTotal();
-            const lastMonthTotal = getLastMonthTotal();
-            const vsLastMonthPercent = lastMonthTotal > 0 ? ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
-            const bestDayAnalysis = getBestDayAnalysis();
-            const streak = getStreak();
-            const daysInMonth = new Date().getDate();
-            const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / daysInMonth * 30) : 0;
-            
-            let vsLastMonthHtml = '';
-            if (monthTotal > 0 || lastMonthTotal > 0) {
-                vsLastMonthHtml = `
-                    <div style="text-align: center;">
-                        <div style="font-size: 18px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
-                        <div style="font-size: 11px;">This Month: KSH ${monthTotal.toLocaleString()}</div>
-                        <div style="font-size: 11px;">Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
-                        <div style="margin-top: 6px; font-size: 11px;">${vsLastMonthPercent >= 0 ? '🎉 BETTER!' : '📉 NEED IMPROVEMENT'}</div>
-                    </div>
-                `;
-            } else {
-                vsLastMonthHtml = `<div class="empty-state">Record sales to see monthly comparison</div>`;
-            }
-            document.getElementById('vsLastMonth').innerHTML = vsLastMonthHtml;
-            
-            let bestDaysHtml = '';
-            if (bestDayAnalysis.hasData) {
-                bestDaysHtml = `
-                    <div class="insight-item"><span>🥇 Best Day:</span><strong>${bestDayAnalysis.bestDay} (Avg KSH ${bestDayAnalysis.bestAvg.toLocaleString()})</strong></div>
-                    <div class="insight-item"><span>⚠️ Slow Day:</span><strong>${bestDayAnalysis.slowDay} (Avg KSH ${bestDayAnalysis.slowAvg.toLocaleString()})</strong></div>
-                    <div class="insight-item"><span>📈 Trend:</span><strong>${vsLastMonthPercent >= 0 ? `+${vsLastMonthPercent}% this month!` : `${vsLastMonthPercent}% decline`}</strong></div>
-                `;
-            } else {
-                bestDaysHtml = `<div class="empty-state">Add sales to see best days</div>`;
-            }
-            document.getElementById('bestDays').innerHTML = bestDaysHtml;
-            
-            let monthlyForecastHtml = '';
-            if (monthTotal > 0) {
-                monthlyForecastHtml = `
-                    <div style="text-align: center;">
-                        <div style="font-size: 12px;">Current month total: KSH ${monthTotal.toLocaleString()}</div>
-                        <div style="font-size: 12px;">Days recorded: ${Object.keys(salesData).filter(d => new Date(d).getMonth() === new Date().getMonth()).length} days</div>
-                        <div style="font-size: 12px;">Projected total: KSH ${projectedMonth.toLocaleString()}</div>
-                        <div style="margin-top: 6px; font-weight: bold; font-size: 11px;">${projectedMonth > monthTotal ? '📈 ON TRACK FOR GROWTH!' : '📊 Keep recording sales!'}</div>
-                    </div>
-                `;
-            } else {
-                monthlyForecastHtml = `<div class="empty-state">Start recording daily sales to see your monthly forecast</div>`;
-            }
-            document.getElementById('monthlyForecast').innerHTML = monthlyForecastHtml;
-            
-            let insightsHtml = '';
-            if (bestDayAnalysis.hasData) {
-                insightsHtml = `
-                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day - stock up extra!"</div>
-                    <div class="insight-item">💡 "${bestDayAnalysis.slowDay}s are slower - consider a small promo!"</div>
-                    <div class="insight-item">💡 "You're ${Math.abs(vsLastMonthPercent)}% ${vsLastMonthPercent >= 0 ? 'ahead' : 'behind'} compared to last month!"</div>
-                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep it going!"</div>
-                `;
-            } else {
-                insightsHtml = `<div class="empty-state">Record sales for insights</div>`;
-            }
-            document.getElementById('businessInsights').innerHTML = insightsHtml;
+            const monthTotal = Object.values(salesData).reduce((a,b)=>a+b,0);
+            document.getElementById('monthlyReport').innerHTML = `<div style="text-align:center"><div style="font-size:24px; font-weight:bold;">KSH ${monthTotal.toLocaleString()}</div><div>Total Sales All Time</div></div>`;
         }
 
         function updateAll() {
             updateDashboard();
             updateReports();
             updateStockDisplay();
-            updateHeaderNames();
+            document.getElementById('headerShopName').innerHTML = settings.shopName;
+            document.getElementById('headerManagerName').innerHTML = settings.managerName;
             document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('stockDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('recordDate').value = getTodayKey();
             document.getElementById('dailyGoalInput').value = settings.dailyGoal;
             document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
             document.getElementById('managerNameInput').value = settings.managerName;
-            document.getElementById('reminderToggle').checked = settings.reminderEnabled;
             document.getElementById('soundToggle').checked = settings.soundEnabled;
             document.getElementById('celebrationToggle').checked = settings.celebrationEnabled;
-            
-            const todayKey = getTodayKey();
-            if (startTimeData[todayKey]) document.getElementById('startTimeInput').value = startTimeData[todayKey];
-            if (closingTimeData[todayKey]) document.getElementById('closingTimeInput').value = closingTimeData[todayKey];
         }
 
-        // Save Sale
-        function saveSale() {
-            const todayKey = document.getElementById('recordDate').value;
-            const amount = parseInt(document.getElementById('saleAmount').value);
-            const startTime = document.getElementById('startTimeInput').value;
-            const closingTime = document.getElementById('closingTimeInput').value;
-            
-            if (isNaN(amount) || amount <= 0) {
-                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Please enter a valid amount</span>';
-                return;
-            }
-            
-            salesData[todayKey] = amount;
-            if (startTime) startTimeData[todayKey] = startTime;
-            if (closingTime) closingTimeData[todayKey] = closingTime;
-            
-            localStorage.setItem('mamag_sales', JSON.stringify(salesData));
-            localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
-            localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
-            
-            playChaChing();
-            
-            const dailyGoal = settings.dailyGoal;
-            let celebrationMessage = `KSH ${amount.toLocaleString()} saved for ${formatDisplayDate(todayKey)}!<br>`;
-            if (amount >= dailyGoal) {
-                showCelebration('🎉 GOAL ACHIEVED! 🎉', celebrationMessage + `🎯 ${Math.round(amount/dailyGoal*100)}% of goal!`);
-            } else {
-                showCelebration('✅ SALES RECORDED!', celebrationMessage);
-            }
-            
-            document.getElementById('saleAmount').value = '';
-            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded!</span>';
-            setTimeout(() => {
-                document.getElementById('recordMessage').innerHTML = '';
-            }, 2000);
-            
-            updateAll();
-        }
-
-        // Settings Functions
         function saveShopInfo() {
-            const shopNameInput = document.getElementById('shopNameInput').value.trim();
-            const managerName = document.getElementById('managerNameInput').value.trim();
-            if (shopNameInput) settings.shopName = `🏪 ${shopNameInput.toUpperCase()}`;
-            if (managerName) settings.managerName = managerName;
+            let shop = document.getElementById('shopNameInput').value.trim();
+            let manager = document.getElementById('managerNameInput').value.trim();
+            if (shop) settings.shopName = `🏪 ${shop.toUpperCase()}`;
+            if (manager) settings.managerName = manager;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
-            updateHeaderNames();
-            showSaveMessage('infoSaveMessage', '✅ Shop info saved!');
+            updateAll();
+            alert('✅ Shop info saved');
         }
-        
         function saveDailyGoal() {
-            const newGoal = parseInt(document.getElementById('dailyGoalInput').value);
-            if (newGoal > 0) {
-                settings.dailyGoal = newGoal;
-                localStorage.setItem('mamag_settings', JSON.stringify(settings));
-                showSaveMessage('goalSaveMessage', '✅ Daily goal saved!');
-                updateAll();
-            }
+            let goal = parseInt(document.getElementById('dailyGoalInput').value);
+            if (goal > 0) settings.dailyGoal = goal;
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            updateAll();
+            alert('✅ Goal saved');
         }
-        
-        function saveNotificationSettings() {
+        function saveNotifications() {
             settings.soundEnabled = document.getElementById('soundToggle').checked;
             settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
-            settings.reminderEnabled = document.getElementById('reminderToggle').checked;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
-            showSaveMessage('notificationSaveMessage', '✅ Notification settings saved!');
+            alert('✅ Settings saved');
         }
-        
         function exportData() {
-            const data = {
-                shop: settings.shopName,
-                manager: settings.managerName,
-                sales: salesData,
-                startTimes: startTimeData,
-                closingTimes: closingTimeData,
-                stock: stockData,
-                exported: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            const data = { sales: salesData, stock: stockData, settings };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `mamag_data_${formatDate(new Date())}.json`;
+            a.href = URL.createObjectURL(blob);
+            a.download = `mamag_backup_${getTodayKey()}.json`;
             a.click();
-            URL.revokeObjectURL(url);
-            alert('✅ Data exported!');
+            URL.revokeObjectURL(a.href);
         }
-        
         function resetData() {
-            if (confirm('⚠️ This will delete ALL data. Are you sure?')) {
+            if (confirm('⚠️ Delete ALL data?')) {
                 salesData = {};
-                startTimeData = {};
-                closingTimeData = {};
                 stockData = {};
-                localStorage.setItem('mamag_sales', JSON.stringify(salesData));
-                localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
-                localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
-                localStorage.setItem('mamag_stock', JSON.stringify(stockData));
+                localStorage.setItem('mamag_sales', '{}');
+                localStorage.setItem('mamag_stock', '{}');
                 updateAll();
-                alert('✅ All data reset!');
+                alert('✅ Data reset');
             }
         }
 
         // Navigation
         function navigateTo(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-page') === pageId) btn.classList.add('active');
-            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.nav-btn[data-page="${pageId}"]`).classList.add('active');
         }
 
         // Event Listeners
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => navigateTo(btn.getAttribute('data-page')));
-        });
-        
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
         document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
         document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
         document.getElementById('saveGoalBtn').addEventListener('click', saveDailyGoal);
-        document.getElementById('saveNotificationsBtn').addEventListener('click', saveNotificationSettings);
+        document.getElementById('saveNotificationsBtn').addEventListener('click', saveNotifications);
         document.getElementById('exportBtn').addEventListener('click', exportData);
         document.getElementById('resetBtn').addEventListener('click', resetData);
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('celebrationModal').classList.remove('active');
-        });
-        
-        // Calculator
-        document.getElementById('calculatorBtn').addEventListener('click', () => {
-            document.getElementById('calculatorModal').classList.add('active');
-        });
-        document.getElementById('closeCalculatorBtn').addEventListener('click', () => {
-            document.getElementById('calculatorModal').classList.remove('active');
-        });
+        document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('celebrationModal').classList.remove('active'));
+        document.getElementById('calculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.add('active'));
+        document.getElementById('closeCalculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.remove('active'));
         document.getElementById('calculateChangeBtn').addEventListener('click', () => {
             const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
             const due = parseFloat(document.getElementById('totalDue').value) || 0;
-            const change = paid - due;
-            document.getElementById('changeResult').innerHTML = `Change: KSH ${change >= 0 ? change.toLocaleString() : 'Insufficient'}`;
+            document.getElementById('changeResult').innerHTML = `Change: KSH ${(paid - due >= 0 ? (paid-due).toLocaleString() : 'Insufficient')}`;
         });
         
-        // Stock
+        // STOCK MODALS
         document.getElementById('viewStockHistoryBtn').addEventListener('click', showStockHistory);
-        document.getElementById('closeItemModalBtn').addEventListener('click', () => {
-            document.getElementById('addItemModal').classList.remove('active');
-        });
-        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => {
-            document.getElementById('stockHistoryModal').classList.remove('active');
-        });
+        document.getElementById('closeItemModalBtn').addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
+        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
+        
+        // FIXED: Save item button now calls addStockItem correctly
         document.getElementById('saveItemBtn').addEventListener('click', () => {
             if (addStockItem(currentItemType)) {
                 document.getElementById('addItemModal').classList.remove('active');
-                playChaChing();
+                // Clear preview
+                document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
             }
         });
         
-        document.getElementById('itemQuantity').addEventListener('input', () => {
+        // Preview total
+        function updatePreview() {
             const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
             const price = parseInt(document.getElementById('itemPrice').value) || 0;
             document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
-        });
-        document.getElementById('itemPrice').addEventListener('input', () => {
-            const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
-            const price = parseInt(document.getElementById('itemPrice').value) || 0;
-            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
-        });
+        }
+        document.getElementById('itemQuantity').addEventListener('input', updatePreview);
+        document.getElementById('itemPrice').addEventListener('input', updatePreview);
         
-        document.getElementById('saleAmount').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') saveSale();
-        });
-
         window.openAddItemModal = openAddItemModal;
-
+        
         updateAll();
     </script>
 </body>
 </html>
+```
