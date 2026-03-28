@@ -1272,5 +1272,42 @@
             window.addEventListener('offline', showConnectionStatus);
         })();
     </script>
+<!-- Force Service Worker Update and Cache -->
+<script>
+    // Force service worker to update and cache everything for offline use
+    if ('serviceWorker' in navigator) {
+        // Check and update service worker
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.update();
+                console.log('Service worker updated');
+            }
+        });
+        
+        // Wait for page to fully load, then trigger caching
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                navigator.serviceWorker.ready.then(registration => {
+                    if (registration.active) {
+                        registration.active.postMessage('cacheNow');
+                        console.log('Cache triggered - app will work offline');
+                    }
+                });
+            }, 3000);
+        });
+        
+        // Show offline status in console
+        window.addEventListener('offline', function() {
+            console.log('You are offline. App will still work from cache!');
+        });
+        
+        window.addEventListener('online', function() {
+            console.log('Back online! App will sync when needed.');
+        });
+    }
+    
+    // Display message when app is ready for offline
+    console.log('PWA Ready - Open once with internet, then it works offline!');
+</script>
 </body>
 </html>
