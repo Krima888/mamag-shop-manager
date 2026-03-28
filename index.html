@@ -30,61 +30,56 @@
             position: relative;
         }
 
+        /* HEADER - UPDATED */
         .header {
             background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
-            padding: 25px 20px 20px;
+            padding: 20px 20px 15px;
             color: white;
         }
 
         .shop-name {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .manager-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 14px;
-        }
-
-        .manager-name-header {
-            margin-top: 8px;
-            font-size: 14px;
+        .manager-line {
+            margin-top: 12px;
+            font-size: 13px;
             opacity: 0.9;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .date {
             margin-top: 8px;
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0.8;
         }
 
-        /* TABS - HORIZONTAL SCROLLABLE */
+        /* TABS - COMPACT HORIZONTAL */
         .nav-bar {
             background: white;
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 10px 12px;
+            padding: 6px 10px;
             border-bottom: 1px solid #e0e0e0;
             position: sticky;
             top: 0;
             z-index: 100;
             scrollbar-width: thin;
-            gap: 5px;
+            gap: 3px;
         }
 
         .nav-bar::-webkit-scrollbar {
-            height: 3px;
+            height: 2px;
         }
 
         .nav-bar::-webkit-scrollbar-track {
@@ -93,15 +88,15 @@
 
         .nav-bar::-webkit-scrollbar-thumb {
             background: #2d6a4f;
-            border-radius: 3px;
+            border-radius: 2px;
         }
 
         .nav-btn {
             background: none;
             border: none;
-            font-size: 14px;
-            padding: 10px 16px;
-            border-radius: 30px;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
@@ -121,9 +116,9 @@
 
         .page {
             display: none;
-            padding: 20px;
+            padding: 16px;
             animation: fadeIn 0.3s ease;
-            min-height: calc(100vh - 140px);
+            min-height: calc(100vh - 130px);
         }
 
         .page.active {
@@ -137,10 +132,10 @@
 
         .card {
             background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .sales-card {
@@ -150,32 +145,32 @@
         }
 
         .sales-amount {
-            font-size: 48px;
+            font-size: 40px;
             font-weight: bold;
-            margin: 15px 0;
+            margin: 12px 0;
         }
 
         .today-sales-card {
             background: linear-gradient(135deg, #fff, #fef9e6);
-            border-left: 5px solid #2d6a4f;
+            border-left: 4px solid #2d6a4f;
         }
 
         .start-time-display {
             background: #e8f0fe;
-            padding: 8px 12px;
-            border-radius: 15px;
-            margin-top: 10px;
-            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 12px;
             color: #2d6a4f;
             text-align: center;
         }
 
         .hours-worked {
             background: #d4edda;
-            padding: 8px 12px;
-            border-radius: 15px;
-            margin-top: 8px;
-            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            margin-top: 6px;
+            font-size: 12px;
             color: #155724;
             text-align: center;
             font-weight: bold;
@@ -184,48 +179,50 @@
         .bar-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .bar-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .bar-day {
-            width: 45px;
+            width: 38px;
             font-weight: bold;
             color: #2d6a4f;
+            font-size: 12px;
         }
 
         .bar-fill {
             flex: 1;
-            height: 30px;
+            height: 24px;
             background: #e9ecef;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
         .bar-progress {
             height: 100%;
             background: linear-gradient(90deg, #2d6a4f, #40916c);
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 10px;
+            padding-right: 8px;
             color: white;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
         }
 
         .insight-item {
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #e9ecef;
             display: flex;
             justify-content: space-between;
+            font-size: 13px;
         }
 
         .insight-item:last-child {
@@ -233,16 +230,16 @@
         }
 
         .sales-history {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .history-date {
@@ -257,44 +254,47 @@
 
         .history-time {
             color: #6c757d;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .empty-history {
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             color: #6c757d;
+            font-size: 13px;
         }
 
         .stock-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
         }
 
         .stock-total {
             font-weight: bold;
-            padding-top: 10px;
-            margin-top: 10px;
+            padding-top: 8px;
+            margin-top: 8px;
             border-top: 2px solid #2d6a4f;
             text-align: right;
+            font-size: 14px;
         }
 
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .action-card {
             background: white;
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
-            border: 2px solid #e9ecef;
+            border: 1px solid #e9ecef;
             transition: all 0.3s;
         }
 
@@ -305,26 +305,33 @@
 
         .action-card h3 {
             color: #2d6a4f;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .action-card p {
+            font-size: 11px;
+            color: #6c757d;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
             color: #2d6a4f;
+            font-size: 13px;
         }
 
         input, select {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: 2px solid #e9ecef;
-            border-radius: 15px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 14px;
             transition: all 0.3s;
         }
 
@@ -337,9 +344,9 @@
             background: #2d6a4f;
             color: white;
             border: none;
-            padding: 14px 24px;
-            border-radius: 30px;
-            font-size: 16px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -348,13 +355,14 @@
 
         button:hover {
             background: #1b4d3e;
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
         .btn-secondary {
             background: #6c757d;
         }
 
+        /* MODAL - DARK THEME FOR CALCULATOR */
         .modal {
             display: none;
             position: fixed;
@@ -362,7 +370,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -374,13 +382,57 @@
         }
 
         .modal-content {
-            background: white;
-            border-radius: 30px;
-            padding: 25px;
-            max-width: 380px;
+            background: #1e1e2a;
+            border-radius: 24px;
+            padding: 20px;
+            max-width: 350px;
             width: 90%;
             text-align: center;
             animation: slideUp 0.3s;
+            border: 1px solid #2d6a4f;
+        }
+
+        .modal-content h3 {
+            color: #ffd966;
+        }
+
+        .modal-content label {
+            color: #ffd966;
+        }
+
+        .modal-content input {
+            background: #2a2a35;
+            border-color: #2d6a4f;
+            color: white;
+        }
+
+        .modal-content input:focus {
+            border-color: #ffd966;
+        }
+
+        .calc-result {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd966;
+            padding: 12px;
+            background: #2a2a35;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .close-modal-btn {
+            background: none;
+            color: #ffd966;
+            font-size: 24px;
+            width: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        .close-modal-btn:hover {
+            background: none;
+            transform: none;
+            color: white;
         }
 
         @keyframes slideUp {
@@ -388,101 +440,78 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .calc-simple {
-            margin-top: 10px;
-        }
-
-        .calc-simple .form-group {
-            margin-bottom: 15px;
-        }
-
-        .calc-simple input {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .calc-result {
-            font-size: 28px;
-            font-weight: bold;
-            color: #2d6a4f;
-            padding: 15px;
-            background: #e8f0fe;
-            border-radius: 15px;
-            margin-top: 15px;
-        }
-
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .stat-box {
             background: #f8f9fa;
-            padding: 12px;
-            border-radius: 15px;
+            padding: 10px;
+            border-radius: 12px;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #2d6a4f;
         }
 
         .empty-state {
             text-align: center;
-            padding: 30px;
+            padding: 25px;
             color: #6c757d;
         }
 
         .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 40px;
+            margin-bottom: 10px;
         }
 
         .success-message {
             background: #d4edda;
             color: #155724;
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
-            margin-top: 10px;
+            margin-top: 8px;
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .footer {
             text-align: center;
-            padding: 15px;
+            padding: 12px;
             color: #6c757d;
-            font-size: 11px;
+            font-size: 10px;
             border-top: 1px solid #e9ecef;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         @media (max-width: 500px) {
-            .sales-amount { font-size: 36px; }
-            .nav-btn { font-size: 12px; padding: 8px 14px; }
-            .shop-name { font-size: 18px; }
+            .sales-amount { font-size: 32px; }
+            .nav-btn { font-size: 11px; padding: 5px 10px; }
+            .shop-name { font-size: 16px; }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- UPDATED HEADER -->
         <div class="header">
             <div class="shop-name">
-                <span id="headerShopName">🏪 MAMA G'S GENERAL SHOP</span>
+                <span>> 🏪 MAMA G'S GENERAL SHOP 🏪 <</span>
                 <span class="manager-badge">👩‍💼📊💰</span>
             </div>
-            <div class="manager-name-header">
-                👤 Manager: <strong id="headerManagerName">Mama G</strong>
+            <div class="manager-line">
+                👤 Manager: <strong id="headerManagerName">Priscilla Wambui Kamau</strong>
             </div>
             <div class="date" id="currentDate"></div>
         </div>
 
-        <!-- HORIZONTAL TABS -->
+        <!-- COMPACT HORIZONTAL TABS -->
         <div class="nav-bar">
             <button class="nav-btn active" data-page="dashboard">🏠 Home</button>
             <button class="nav-btn" data-page="record">💰 Record</button>
@@ -500,9 +529,9 @@
             </div>
 
             <div class="card today-sales-card">
-                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">💰 TODAY'S SALES</div>
-                <div class="sales-amount" id="todaySalesDisplay" style="font-size: 36px; color: #2d6a4f;">KSH 0</div>
-                <div id="streakDisplay" style="color: #ff6b35; margin-top: 10px;"></div>
+                <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">💰 TODAY'S SALES</div>
+                <div class="sales-amount" id="todaySalesDisplay" style="font-size: 32px; color: #2d6a4f;">KSH 0</div>
+                <div id="streakDisplay" style="color: #ff6b35; margin-top: 8px; font-size: 12px;"></div>
                 <div id="startTimeDisplay" class="start-time-display">
                     ⏰ Start: <strong id="startTimeValue">Not set</strong> | 🔒 Close: <strong id="closingTimeValue">Not set</strong>
                 </div>
@@ -512,39 +541,39 @@
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">📊 THIS WEEK</div>
+                <div style="font-weight: bold; margin-bottom: 12px; font-size: 14px;">📊 THIS WEEK</div>
                 <div id="weeklyGraph"></div>
-                <div style="margin-top: 15px; text-align: center; font-weight: bold;" id="weeklyTotal"></div>
+                <div style="margin-top: 12px; text-align: center; font-weight: bold; font-size: 13px;" id="weeklyTotal"></div>
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">📜 SAVED SALES HISTORY</div>
+                <div style="font-weight: bold; margin-bottom: 12px; font-size: 14px;">📜 SAVED SALES HISTORY</div>
                 <div id="salesHistory" class="sales-history"></div>
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">💡 INSIGHTS</div>
+                <div style="font-weight: bold; margin-bottom: 12px; font-size: 14px;">💡 INSIGHTS</div>
                 <div id="insights"></div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-box">
-                    <div>📈 VS LAST WEEK</div>
+                    <div style="font-size: 12px;">📈 VS LAST WEEK</div>
                     <div class="stat-value" id="vsLastWeek">0%</div>
                 </div>
                 <div class="stat-box">
-                    <div>🎯 MONTH FORECAST</div>
+                    <div style="font-size: 12px;">🎯 MONTH FORECAST</div>
                     <div class="stat-value" id="monthForecast">KSH 0</div>
                 </div>
             </div>
 
-            <button id="calculatorBtn" class="btn-secondary" style="margin-top: 10px;">🧮 CALCULATOR</button>
+            <button id="calculatorBtn" class="btn-secondary" style="margin-top: 8px;">🧮 CALCULATOR</button>
         </div>
 
         <!-- RECORD PAGE -->
         <div id="record" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 20px;">📝 RECORD TODAY'S SALES</h3>
+                <h3 style="color: #2d6a4f; margin-bottom: 15px; font-size: 18px;">📝 RECORD TODAY'S SALES</h3>
                 <div class="form-group">
                     <label>📅 Date</label>
                     <input type="date" id="recordDate" style="background: #f8f9fa;">
@@ -562,29 +591,29 @@
                     <input type="number" id="saleAmount" placeholder="Enter amount" step="100">
                 </div>
                 <button id="saveSaleBtn">💾 SAVE SALES</button>
-                <div id="recordMessage" style="margin-top: 15px; text-align: center;"></div>
+                <div id="recordMessage" style="margin-top: 12px; text-align: center;"></div>
             </div>
         </div>
 
         <!-- REPORTS PAGE -->
         <div id="reports" class="page">
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">🏆 VS LAST MONTH</div>
+                <div style="font-weight: bold; margin-bottom: 12px;">🏆 VS LAST MONTH</div>
                 <div id="vsLastMonth"></div>
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">📅 BEST DAYS ANALYSIS</div>
+                <div style="font-weight: bold; margin-bottom: 12px;">📅 BEST DAYS ANALYSIS</div>
                 <div id="bestDays"></div>
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">📈 MONTHLY FORECAST</div>
+                <div style="font-weight: bold; margin-bottom: 12px;">📈 MONTHLY FORECAST</div>
                 <div id="monthlyForecast"></div>
             </div>
 
             <div class="card">
-                <div style="font-weight: bold; margin-bottom: 15px;">💡 BUSINESS INSIGHTS</div>
+                <div style="font-weight: bold; margin-bottom: 12px;">💡 BUSINESS INSIGHTS</div>
                 <div id="businessInsights"></div>
             </div>
         </div>
@@ -593,34 +622,34 @@
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
-                <p style="color: #6c757d; font-size: 12px; margin-top: 5px;">📅 <span id="stockDate"></span></p>
+                <p style="color: #6c757d; font-size: 11px; margin-top: 4px;">📅 <span id="stockDate"></span></p>
             </div>
 
             <div class="action-buttons">
                 <div class="action-card" onclick="openAddItemModal('sold')">
                     <h3>📦 ITEMS SOLD</h3>
-                    <p style="font-size: 12px;">Add what you sold today</p>
+                    <p>Add what you sold today</p>
                 </div>
                 <div class="action-card" onclick="openAddItemModal('bought')">
                     <h3>🛒 ITEMS BOUGHT</h3>
-                    <p style="font-size: 12px;">Add restock purchases</p>
+                    <p>Add restock purchases</p>
                 </div>
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f;">📝 SOLD TODAY</h4>
+                <h4 style="color: #2d6a4f; margin-bottom: 10px; font-size: 14px;">📝 SOLD TODAY</h4>
                 <div id="soldItemsList"></div>
                 <div id="soldTotal" class="stock-total"></div>
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f;">🛒 BOUGHT TODAY</h4>
+                <h4 style="color: #2d6a4f; margin-bottom: 10px; font-size: 14px;">🛒 BOUGHT TODAY</h4>
                 <div id="boughtItemsList"></div>
                 <div id="boughtTotal" class="stock-total"></div>
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f;">📊 TODAY'S SUMMARY</h4>
+                <h4 style="color: #2d6a4f; margin-bottom: 10px; font-size: 14px;">📊 TODAY'S SUMMARY</h4>
                 <div id="stockSummary"></div>
             </div>
 
@@ -630,51 +659,51 @@
         <!-- SETTINGS PAGE -->
         <div id="settings" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🏪 SHOP INFO</h3>
+                <h3 style="color: #2d6a4f; margin-bottom: 12px;">🏪 SHOP INFO</h3>
                 <div class="form-group">
                     <label>Shop Name</label>
-                    <input type="text" id="shopNameInput" placeholder="Shop Name">
+                    <input type="text" id="shopNameInput" placeholder="Shop Name" value="MAMA G'S GENERAL SHOP">
                 </div>
                 <div class="form-group">
                     <label>Manager Name</label>
-                    <input type="text" id="managerNameInput" placeholder="Manager Name">
+                    <input type="text" id="managerNameInput" placeholder="Manager Name" value="Priscilla Wambui Kamau">
                 </div>
                 <button id="saveInfoBtn">💾 SAVE INFO</button>
-                <div id="infoSaveMessage" style="margin-top: 10px;"></div>
+                <div id="infoSaveMessage" style="margin-top: 8px;"></div>
             </div>
 
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🎯 DAILY GOAL</h3>
+                <h3 style="color: #2d6a4f; margin-bottom: 12px;">🎯 DAILY GOAL</h3>
                 <div class="form-group">
                     <label>Set Daily Target (KSH)</label>
                     <input type="number" id="dailyGoalInput" step="100">
                 </div>
                 <button id="saveGoalBtn">💾 SAVE GOAL</button>
-                <div id="goalSaveMessage" style="margin-top: 10px;"></div>
-                <div style="margin-top: 10px;">
-                    <label style="display: flex; align-items: center; gap: 10px;">
+                <div id="goalSaveMessage" style="margin-top: 8px;"></div>
+                <div style="margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" id="reminderToggle"> 🔔 Morning Reminder (8:00 AM)
                     </label>
                 </div>
             </div>
 
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 15px;">🔔 NOTIFICATIONS</h3>
-                <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <h3 style="color: #2d6a4f; margin-bottom: 12px;">🔔 NOTIFICATIONS</h3>
+                <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                     <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects (Cha-ching!)
                 </label>
-                <label style="display: flex; align-items: center; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px;">
                     <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration Animation
                 </label>
-                <button id="saveNotificationsBtn" style="background: #40916c; margin-top: 15px;">💾 SAVE NOTIFICATION SETTINGS</button>
-                <div id="notificationSaveMessage" style="margin-top: 10px;"></div>
+                <button id="saveNotificationsBtn" style="background: #40916c; margin-top: 12px;">💾 SAVE NOTIFICATION SETTINGS</button>
+                <div id="notificationSaveMessage" style="margin-top: 8px;"></div>
             </div>
 
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 15px;">💾 DATA MANAGEMENT</h3>
-                <button id="exportBtn" style="background: #40916c; margin-bottom: 10px;">📥 Export All Data</button>
+                <h3 style="color: #2d6a4f; margin-bottom: 12px;">💾 DATA MANAGEMENT</h3>
+                <button id="exportBtn" style="background: #40916c; margin-bottom: 8px;">📥 Export All Data</button>
                 <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
-                <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">⚠️ Reset will delete all sales and stock history</div>
+                <div style="margin-top: 8px; font-size: 10px; color: #6c757d;">⚠️ Reset will delete all sales and stock history</div>
             </div>
         </div>
 
@@ -683,23 +712,23 @@
         </div>
     </div>
 
-    <!-- SIMPLE CALCULATOR MODAL -->
+    <!-- CALCULATOR MODAL - DARK THEME -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="color: #2d6a4f;">🧮 CALCULATE CHANGE</h3>
-                <button id="closeCalculatorBtn" style="width: auto; background: none; color: #6c757d; font-size: 24px;">✖</button>
+                <h3 style="color: #ffd966;">🧮 CALCULATE CHANGE</h3>
+                <button id="closeCalculatorBtn" style="width: auto; background: none; color: #ffd966; font-size: 22px;">✖</button>
             </div>
             <div class="calc-simple">
                 <div class="form-group">
                     <label>💰 Amount Paid (KSH)</label>
-                    <input type="number" id="amountPaid" placeholder="0" style="font-size: 20px;">
+                    <input type="number" id="amountPaid" placeholder="0" style="font-size: 18px;">
                 </div>
                 <div class="form-group">
                     <label>📝 Total Due (KSH)</label>
-                    <input type="number" id="totalDue" placeholder="0" style="font-size: 20px;">
+                    <input type="number" id="totalDue" placeholder="0" style="font-size: 18px;">
                 </div>
-                <button id="calculateChangeBtn">🔢 CALCULATE CHANGE</button>
+                <button id="calculateChangeBtn" style="background: #ffd966; color: #1e1e2a;">🔢 CALCULATE CHANGE</button>
                 <div class="calc-result" id="changeResult">
                     Change: KSH 0
                 </div>
@@ -709,10 +738,10 @@
 
     <!-- Add Item Modal -->
     <div id="addItemModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="background: white;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="color: #2d6a4f;" id="modalTitle">➕ ADD ITEM</h3>
-                <button id="closeItemModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 24px;">✖</button>
+                <button id="closeItemModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 22px;">✖</button>
             </div>
             <div class="form-group">
                 <label>Item Name</label>
@@ -726,17 +755,17 @@
                 <label>Price per Unit (KSH)</label>
                 <input type="number" id="itemPrice" placeholder="Price per item">
             </div>
-            <div id="itemTotalPreview" style="text-align: center; padding: 10px; background: #e8f0fe; border-radius: 10px; margin-bottom: 15px;">Total: KSH 0</div>
+            <div id="itemTotalPreview" style="text-align: center; padding: 8px; background: #e8f0fe; border-radius: 10px; margin-bottom: 12px;">Total: KSH 0</div>
             <button id="saveItemBtn">💾 SAVE ITEM</button>
         </div>
     </div>
 
     <!-- Stock History Modal -->
     <div id="stockHistoryModal" class="modal">
-        <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-content" style="background: white; max-width: 450px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="color: #2d6a4f;">📜 STOCK HISTORY</h3>
-                <button id="closeHistoryModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 24px;">✖</button>
+                <button id="closeHistoryModalBtn" style="width: auto; background: none; color: #6c757d; font-size: 22px;">✖</button>
             </div>
             <div id="stockHistoryList" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
@@ -744,10 +773,10 @@
 
     <!-- Celebration Modal -->
     <div id="celebrationModal" class="modal">
-        <div class="modal-content">
-            <div style="font-size: 48px;">🎉 🎉 🎉</div>
-            <div style="font-size: 24px; font-weight: bold; color: #2d6a4f; margin: 15px 0;" id="celebrationTitle"></div>
-            <div id="celebrationMessage" style="margin: 15px 0; line-height: 1.5;"></div>
+        <div class="modal-content" style="background: white;">
+            <div style="font-size: 40px;">🎉 🎉 🎉</div>
+            <div style="font-size: 20px; font-weight: bold; color: #2d6a4f; margin: 12px 0;" id="celebrationTitle"></div>
+            <div id="celebrationMessage" style="margin: 12px 0; line-height: 1.4;"></div>
             <button id="closeModalBtn" style="background: #2d6a4f;">Continue</button>
         </div>
     </div>
@@ -760,7 +789,7 @@
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
         let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
             shopName: "🏪 MAMA G'S GENERAL SHOP",
-            managerName: "Mama G",
+            managerName: "Priscilla Wambui Kamau",
             dailyGoal: 3500,
             reminderEnabled: true,
             soundEnabled: true,
@@ -948,7 +977,6 @@
         }
 
         function updateHeaderNames() {
-            document.getElementById('headerShopName').innerHTML = settings.shopName;
             document.getElementById('headerManagerName').innerHTML = settings.managerName;
         }
 
@@ -997,7 +1025,7 @@
                 <div class="stock-item"><span>📦 Sales Total:</span><span>KSH ${soldTotal.toLocaleString()}</span></div>
                 <div class="stock-item"><span>🛒 Purchases Total:</span><span>KSH ${boughtTotal.toLocaleString()}</span></div>
                 <div class="stock-total"><span>💰 Net:</span><span>${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</span></div>
-                <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">${net >= 0 ? '✅ Good day! Profit day!' : '📦 Restock day - investment in inventory'}</div>
+                <div style="margin-top: 8px; font-size: 11px; color: #6c757d;">${net >= 0 ? '✅ Good day! Profit day!' : '📦 Restock day - investment in inventory'}</div>
             `;
         }
 
@@ -1047,11 +1075,11 @@
                     const boughtTotal = data.bought.reduce((sum, i) => sum + (i.quantity * i.price), 0);
                     const net = soldTotal - boughtTotal;
                     historyHtml += `
-                        <div class="card" style="margin-bottom: 10px;">
+                        <div class="card" style="margin-bottom: 8px;">
                             <div><strong>📅 ${formatDisplayDate(date)}</strong></div>
-                            <div style="font-size: 12px;">Sold: KSH ${soldTotal.toLocaleString()} | Bought: KSH ${boughtTotal.toLocaleString()}</div>
-                            <div style="font-size: 12px; color: ${net >= 0 ? '#2d6a4f' : '#dc3545'};">Net: ${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</div>
-                            <div style="font-size: 11px; color: #6c757d;">${data.sold.length} items sold, ${data.bought.length} items bought</div>
+                            <div style="font-size: 11px;">Sold: KSH ${soldTotal.toLocaleString()} | Bought: KSH ${boughtTotal.toLocaleString()}</div>
+                            <div style="font-size: 11px; color: ${net >= 0 ? '#2d6a4f' : '#dc3545'};">Net: ${net >= 0 ? '+' : '-'}KSH ${Math.abs(net).toLocaleString()}</div>
+                            <div style="font-size: 10px; color: #6c757d;">${data.sold.length} items sold, ${data.bought.length} items bought</div>
                         </div>
                     `;
                 });
@@ -1084,12 +1112,12 @@
             const percentOfGoal = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
             if (todaySales > 0) {
                 if (todaySales >= dailyGoal) {
-                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">🎉 ${percentOfGoal}% ABOVE GOAL! 🎉</span>`;
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 16px; font-size: 12px;">🎉 ${percentOfGoal}% ABOVE GOAL! 🎉</span>`;
                 } else {
-                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">📊 ${percentOfGoal}% of goal</span>`;
+                    document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 16px; font-size: 12px;">📊 ${percentOfGoal}% of goal</span>`;
                 }
             } else {
-                document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">✨ Record your first sale!</span>`;
+                document.getElementById('goalStatus').innerHTML = `<span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 16px; font-size: 12px;">✨ Record your first sale!</span>`;
             }
             
             document.getElementById('streakDisplay').innerHTML = streak > 0 ? `🔥 ${streak} DAY STREAK! 🔥` : '✨ Start a streak!';
@@ -1177,10 +1205,10 @@
             if (monthTotal > 0 || lastMonthTotal > 0) {
                 vsLastMonthHtml = `
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
-                        <div>This Month: KSH ${monthTotal.toLocaleString()}</div>
-                        <div>Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
-                        <div style="margin-top: 10px;">${vsLastMonthPercent >= 0 ? '🎉 BETTER!' : '📉 NEED IMPROVEMENT'}</div>
+                        <div style="font-size: 20px; font-weight: bold; color: #2d6a4f;">${vsLastMonthPercent >= 0 ? '+' : ''}${vsLastMonthPercent}%</div>
+                        <div style="font-size: 12px;">This Month: KSH ${monthTotal.toLocaleString()}</div>
+                        <div style="font-size: 12px;">Last Month: KSH ${lastMonthTotal.toLocaleString()}</div>
+                        <div style="margin-top: 8px; font-size: 12px;">${vsLastMonthPercent >= 0 ? '🎉 BETTER!' : '📉 NEED IMPROVEMENT'}</div>
                     </div>
                 `;
             } else {
@@ -1204,10 +1232,10 @@
             if (monthTotal > 0) {
                 monthlyForecastHtml = `
                     <div style="text-align: center;">
-                        <div>Current month total: KSH ${monthTotal.toLocaleString()}</div>
-                        <div>Days recorded: ${Object.keys(salesData).filter(d => new Date(d).getMonth() === new Date().getMonth()).length} days</div>
-                        <div>Projected total: KSH ${projectedMonth.toLocaleString()}</div>
-                        <div style="margin-top: 10px; font-weight: bold;">${projectedMonth > monthTotal ? '📈 ON TRACK FOR GROWTH!' : '📊 Keep recording sales!'}</div>
+                        <div style="font-size: 13px;">Current month total: KSH ${monthTotal.toLocaleString()}</div>
+                        <div style="font-size: 13px;">Days recorded: ${Object.keys(salesData).filter(d => new Date(d).getMonth() === new Date().getMonth()).length} days</div>
+                        <div style="font-size: 13px;">Projected total: KSH ${projectedMonth.toLocaleString()}</div>
+                        <div style="margin-top: 8px; font-weight: bold; font-size: 12px;">${projectedMonth > monthTotal ? '📈 ON TRACK FOR GROWTH!' : '📊 Keep recording sales!'}</div>
                     </div>
                 `;
             } else {
@@ -1238,7 +1266,7 @@
             document.getElementById('stockDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('recordDate').value = getTodayKey();
             document.getElementById('dailyGoalInput').value = settings.dailyGoal;
-            document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
+            document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '').replace('🏪', '');
             document.getElementById('managerNameInput').value = settings.managerName;
             document.getElementById('reminderToggle').checked = settings.reminderEnabled;
             document.getElementById('soundToggle').checked = settings.soundEnabled;
