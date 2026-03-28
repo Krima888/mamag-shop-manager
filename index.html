@@ -68,27 +68,44 @@
             opacity: 0.8;
         }
 
+        /* TABS - HORIZONTAL SCROLLABLE */
         .nav-bar {
             background: white;
             display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 12px;
             border-bottom: 1px solid #e0e0e0;
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
+            scrollbar-width: thin;
+            gap: 5px;
+        }
+
+        .nav-bar::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .nav-bar::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        .nav-bar::-webkit-scrollbar-thumb {
+            background: #2d6a4f;
+            border-radius: 3px;
         }
 
         .nav-btn {
             background: none;
             border: none;
             font-size: 14px;
-            padding: 8px 12px;
+            padding: 10px 16px;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
+            flex-shrink: 0;
         }
 
         .nav-btn.active {
@@ -151,6 +168,17 @@
             font-size: 13px;
             color: #2d6a4f;
             text-align: center;
+        }
+
+        .hours-worked {
+            background: #d4edda;
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #155724;
+            text-align: center;
+            font-weight: bold;
         }
 
         .bar-container {
@@ -349,12 +377,10 @@
             background: white;
             border-radius: 30px;
             padding: 25px;
-            max-width: 400px;
+            max-width: 380px;
             width: 90%;
             text-align: center;
             animation: slideUp 0.3s;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -362,29 +388,28 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 15px 0;
+        .calc-simple {
+            margin-top: 10px;
         }
 
-        .calc-btn {
-            background: #e9ecef;
-            color: #2d6a4f;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .calc-display {
-            font-size: 32px;
-            text-align: right;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 15px;
+        .calc-simple .form-group {
             margin-bottom: 15px;
+        }
+
+        .calc-simple input {
+            text-align: center;
+            font-size: 20px;
             font-weight: bold;
+        }
+
+        .calc-result {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d6a4f;
+            padding: 15px;
+            background: #e8f0fe;
+            border-radius: 15px;
+            margin-top: 15px;
         }
 
         .stats-grid {
@@ -426,7 +451,6 @@
             margin-top: 10px;
             text-align: center;
             font-size: 14px;
-            animation: fadeIn 0.3s;
         }
 
         .footer {
@@ -440,7 +464,7 @@
 
         @media (max-width: 500px) {
             .sales-amount { font-size: 36px; }
-            .nav-btn { font-size: 11px; padding: 6px 8px; }
+            .nav-btn { font-size: 12px; padding: 8px 14px; }
             .shop-name { font-size: 18px; }
         }
     </style>
@@ -458,6 +482,7 @@
             <div class="date" id="currentDate"></div>
         </div>
 
+        <!-- HORIZONTAL TABS -->
         <div class="nav-bar">
             <button class="nav-btn active" data-page="dashboard">🏠 Home</button>
             <button class="nav-btn" data-page="record">💰 Record</button>
@@ -480,6 +505,9 @@
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 10px;"></div>
                 <div id="startTimeDisplay" class="start-time-display">
                     ⏰ Start: <strong id="startTimeValue">Not set</strong> | 🔒 Close: <strong id="closingTimeValue">Not set</strong>
+                </div>
+                <div id="hoursWorkedDisplay" class="hours-worked">
+                    ⏱️ Hours Worked: <strong id="hoursWorkedValue">0 hrs</strong>
                 </div>
             </div>
 
@@ -655,46 +683,26 @@
         </div>
     </div>
 
-    <!-- Calculator Modal -->
+    <!-- SIMPLE CALCULATOR MODAL -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="color: #2d6a4f;">🧮 CALCULATOR</h3>
+                <h3 style="color: #2d6a4f;">🧮 CALCULATE CHANGE</h3>
                 <button id="closeCalculatorBtn" style="width: auto; background: none; color: #6c757d; font-size: 24px;">✖</button>
             </div>
-            <div class="calc-display" id="calcDisplay">0</div>
-            <div class="calc-buttons">
-                <button class="calc-btn" data-val="7">7</button>
-                <button class="calc-btn" data-val="8">8</button>
-                <button class="calc-btn" data-val="9">9</button>
-                <button class="calc-btn" data-val="/">÷</button>
-                <button class="calc-btn" data-val="C">C</button>
-                <button class="calc-btn" data-val="4">4</button>
-                <button class="calc-btn" data-val="5">5</button>
-                <button class="calc-btn" data-val="6">6</button>
-                <button class="calc-btn" data-val="*">×</button>
-                <button class="calc-btn" data-val="back">⌫</button>
-                <button class="calc-btn" data-val="1">1</button>
-                <button class="calc-btn" data-val="2">2</button>
-                <button class="calc-btn" data-val="3">3</button>
-                <button class="calc-btn" data-val="-">-</button>
-                <button class="calc-btn" data-val="=">=</button>
-                <button class="calc-btn" data-val="0">0</button>
-                <button class="calc-btn" data-val=".">.</button>
-                <button class="calc-btn" data-val="+">+</button>
-            </div>
-            <div style="border-top: 1px solid #e9ecef; padding-top: 15px;">
-                <h4 style="color: #2d6a4f;">💡 Calculate Change</h4>
+            <div class="calc-simple">
                 <div class="form-group">
-                    <label>Amount Paid (KSH)</label>
-                    <input type="number" id="amountPaid" placeholder="0">
+                    <label>💰 Amount Paid (KSH)</label>
+                    <input type="number" id="amountPaid" placeholder="0" style="font-size: 20px;">
                 </div>
                 <div class="form-group">
-                    <label>Total Due (KSH)</label>
-                    <input type="number" id="totalDue" placeholder="0">
+                    <label>📝 Total Due (KSH)</label>
+                    <input type="number" id="totalDue" placeholder="0" style="font-size: 20px;">
                 </div>
-                <button id="calculateChangeBtn">CALCULATE CHANGE</button>
-                <div style="margin-top: 10px; font-size: 18px; font-weight: bold; text-align: center; color: #2d6a4f;" id="changeResult">Change: KSH 0</div>
+                <button id="calculateChangeBtn">🔢 CALCULATE CHANGE</button>
+                <div class="calc-result" id="changeResult">
+                    Change: KSH 0
+                </div>
             </div>
         </div>
     </div>
@@ -760,8 +768,6 @@
         };
 
         let currentItemType = 'sold';
-        let calcDisplay = '0';
-        let calcExpression = '';
 
         // Helper Functions
         function formatDate(date) {
@@ -775,6 +781,19 @@
 
         function getTodayKey() {
             return formatDate(new Date());
+        }
+
+        function calculateHoursWorked(startTime, closingTime) {
+            if (!startTime || !closingTime) return 0;
+            const [startHour, startMinute] = startTime.split(':').map(Number);
+            const [closeHour, closeMinute] = closingTime.split(':').map(Number);
+            let hours = closeHour - startHour;
+            let minutes = closeMinute - startMinute;
+            if (minutes < 0) {
+                hours--;
+                minutes += 60;
+            }
+            return hours + (minutes / 60);
         }
 
         function getWeekDates() {
@@ -918,7 +937,7 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        function showSaveMessage(elementId, message, isSuccess = true) {
+        function showSaveMessage(elementId, message) {
             const element = document.getElementById(elementId);
             if (element) {
                 element.innerHTML = `<div class="success-message">${message}</div>`;
@@ -938,7 +957,6 @@
             const todayKey = getTodayKey();
             const todayStock = stockData[todayKey] || { sold: [], bought: [] };
             
-            // Display Sold Items
             const soldContainer = document.getElementById('soldItemsList');
             if (todayStock.sold.length === 0) {
                 soldContainer.innerHTML = '<div class="empty-state">No items sold yet today</div>';
@@ -954,7 +972,6 @@
                 document.getElementById('soldTotal').innerHTML = `TOTAL: KSH ${soldTotal.toLocaleString()}`;
             }
             
-            // Display Bought Items
             const boughtContainer = document.getElementById('boughtItemsList');
             if (todayStock.bought.length === 0) {
                 boughtContainer.innerHTML = '<div class="empty-state">No items bought yet today</div>';
@@ -970,7 +987,6 @@
                 document.getElementById('boughtTotal').innerHTML = `TOTAL: KSH ${boughtTotal.toLocaleString()}`;
             }
             
-            // Summary
             const soldTotalElem = document.getElementById('soldTotal');
             const boughtTotalElem = document.getElementById('boughtTotal');
             const soldTotal = soldTotalElem ? parseInt(soldTotalElem.innerText.replace(/[^0-9]/g, '')) || 0 : 0;
@@ -1044,49 +1060,13 @@
             document.getElementById('stockHistoryModal').classList.add('active');
         }
 
-        // Calculator Functions
-        function updateCalcDisplay() {
-            document.getElementById('calcDisplay').innerText = calcDisplay;
-        }
-
-        function handleCalcButton(value) {
-            if (value === 'C') {
-                calcDisplay = '0';
-                calcExpression = '';
-            } else if (value === 'back') {
-                if (calcDisplay.length > 1) {
-                    calcDisplay = calcDisplay.slice(0, -1);
-                } else {
-                    calcDisplay = '0';
-                }
-            } else if (value === '=') {
-                try {
-                    calcDisplay = eval(calcExpression).toString();
-                    calcExpression = calcDisplay;
-                } catch(e) {
-                    calcDisplay = 'Error';
-                    calcExpression = '';
-                }
-            } else if (['+', '-', '*', '/'].includes(value)) {
-                calcExpression = calcDisplay + value;
-                calcDisplay = calcDisplay + value;
-            } else {
-                if (calcDisplay === '0') {
-                    calcDisplay = value;
-                } else {
-                    calcDisplay += value;
-                }
-                calcExpression = calcDisplay;
-            }
-            updateCalcDisplay();
-        }
-
         // Dashboard Update
         function updateDashboard() {
             const todayKey = getTodayKey();
             const todaySales = salesData[todayKey] || 0;
             const todayStartTime = startTimeData[todayKey] || 'Not set';
             const todayClosingTime = closingTimeData[todayKey] || 'Not set';
+            const hoursWorked = calculateHoursWorked(todayStartTime, todayClosingTime);
             const dailyGoal = settings.dailyGoal;
             const streak = getStreak();
             const weekTotal = getWeekTotal();
@@ -1098,6 +1078,7 @@
             document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
             document.getElementById('startTimeValue').innerHTML = todayStartTime;
             document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
+            document.getElementById('hoursWorkedValue').innerHTML = hoursWorked > 0 ? `${hoursWorked.toFixed(1)} hrs` : 'Not set';
             document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
             
             const percentOfGoal = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
@@ -1168,11 +1149,12 @@
                     const displayDate = formatDisplayDate(date);
                     const startTime = startTimeData[date] || 'Not set';
                     const closingTime = closingTimeData[date] || 'Not set';
+                    const hrsWorked = calculateHoursWorked(startTime, closingTime);
                     historyHtml += `
                         <div class="history-item">
                             <div>
                                 <span class="history-date">📅 ${displayDate}</span><br>
-                                <span class="history-time">⏰ ${startTime} - 🔒 ${closingTime}</span>
+                                <span class="history-time">⏰ ${startTime} - 🔒 ${closingTime} (${hrsWorked > 0 ? hrsWorked.toFixed(1) + ' hrs' : 'No hours'})</span>
                             </div>
                             <span class="history-amount">💰 KSH ${amount.toLocaleString()}</span>
                         </div>
@@ -1191,7 +1173,6 @@
             const daysInMonth = new Date().getDate();
             const projectedMonth = monthTotal > 0 ? Math.round(monthTotal / daysInMonth * 30) : 0;
             
-            // VS LAST MONTH
             let vsLastMonthHtml = '';
             if (monthTotal > 0 || lastMonthTotal > 0) {
                 vsLastMonthHtml = `
@@ -1203,16 +1184,10 @@
                     </div>
                 `;
             } else {
-                vsLastMonthHtml = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📊</div>
-                        <div>Record sales to see monthly comparison</div>
-                    </div>
-                `;
+                vsLastMonthHtml = `<div class="empty-state">Record sales to see monthly comparison</div>`;
             }
             document.getElementById('vsLastMonth').innerHTML = vsLastMonthHtml;
             
-            // BEST DAYS ANALYSIS
             let bestDaysHtml = '';
             if (bestDayAnalysis.hasData) {
                 bestDaysHtml = `
@@ -1221,16 +1196,10 @@
                     <div class="insight-item"><span>📈 Trend:</span><strong>${vsLastMonthPercent >= 0 ? `+${vsLastMonthPercent}% this month!` : `${vsLastMonthPercent}% decline`}</strong></div>
                 `;
             } else {
-                bestDaysHtml = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⭐</div>
-                        <div>Add sales to see your best performing days</div>
-                    </div>
-                `;
+                bestDaysHtml = `<div class="empty-state">Add sales to see best days</div>`;
             }
             document.getElementById('bestDays').innerHTML = bestDaysHtml;
             
-            // MONTHLY FORECAST
             let monthlyForecastHtml = '';
             if (monthTotal > 0) {
                 monthlyForecastHtml = `
@@ -1242,34 +1211,20 @@
                     </div>
                 `;
             } else {
-                monthlyForecastHtml = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📈</div>
-                        <div>Start recording daily sales to see your monthly forecast</div>
-                        <div style="margin-top: 10px; font-size: 12px;">📝 Go to Record page to add your first sale</div>
-                    </div>
-                `;
+                monthlyForecastHtml = `<div class="empty-state">Start recording daily sales to see your monthly forecast</div>`;
             }
             document.getElementById('monthlyForecast').innerHTML = monthlyForecastHtml;
             
-            // BUSINESS INSIGHTS
             let insightsHtml = '';
             if (bestDayAnalysis.hasData) {
                 insightsHtml = `
-                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day - stock up extra on ${bestDayAnalysis.bestDay.toLowerCase()}!"</div>
-                    <div class="insight-item">💡 "${bestDayAnalysis.slowDay}s are slower - consider running a small promotion on ${bestDayAnalysis.slowDay.toLowerCase()}s!"</div>
+                    <div class="insight-item">💡 "${bestDayAnalysis.bestDay}s are your best day - stock up extra!"</div>
+                    <div class="insight-item">💡 "${bestDayAnalysis.slowDay}s are slower - consider a small promo!"</div>
                     <div class="insight-item">💡 "You're ${Math.abs(vsLastMonthPercent)}% ${vsLastMonthPercent >= 0 ? 'ahead' : 'behind'} compared to last month!"</div>
-                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep the momentum going!"</div>
-                    <div class="insight-item">💡 "Your average daily sale is KSH ${Math.round(monthTotal / Object.keys(salesData).length || 0).toLocaleString()}"</div>
+                    <div class="insight-item">💡 "🔥 ${streak} day streak! Keep it going!"</div>
                 `;
             } else {
-                insightsHtml = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💡</div>
-                        <div>No data yet! Record your first sale to get personalized business insights</div>
-                        <div style="margin-top: 10px;">→ Go to Record page and enter today's sales</div>
-                    </div>
-                `;
+                insightsHtml = `<div class="empty-state">Record sales for insights</div>`;
             }
             document.getElementById('businessInsights').innerHTML = insightsHtml;
         }
@@ -1429,9 +1384,6 @@
         document.getElementById('closeCalculatorBtn').addEventListener('click', () => {
             document.getElementById('calculatorModal').classList.remove('active');
         });
-        document.querySelectorAll('.calc-btn').forEach(btn => {
-            btn.addEventListener('click', () => handleCalcButton(btn.getAttribute('data-val')));
-        });
         document.getElementById('calculateChangeBtn').addEventListener('click', () => {
             const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
             const due = parseFloat(document.getElementById('totalDue').value) || 0;
@@ -1469,7 +1421,6 @@
             if (e.key === 'Enter') saveSale();
         });
 
-        // Make functions global for onclick
         window.openAddItemModal = openAddItemModal;
 
         updateAll();
