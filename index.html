@@ -353,6 +353,26 @@
             background: #f8d7da;
             color: #721c24;
         }
+
+        .time-info {
+            background: #e8f0fe;
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .hours-worked {
+            background: #d4edda;
+            padding: 6px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #155724;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -387,6 +407,12 @@
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES</div>
                 <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px; color: #2d6a4f;">KSH 0</div>
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 6px; font-size: 11px;"></div>
+                <div id="startTimeDisplay" class="time-info">
+                    ⏰ Opening Time: <strong id="startTimeValue">Not set</strong> | 🔒 Closing Time: <strong id="closingTimeValue">Not set</strong>
+                </div>
+                <div id="hoursWorkedDisplay" class="hours-worked">
+                    ⏱️ Hours Worked: <strong id="hoursWorkedValue">0 hrs</strong>
+                </div>
             </div>
             <div class="card">
                 <div style="font-weight: bold; margin-bottom: 10px;">📊 THIS WEEK</div>
@@ -395,7 +421,7 @@
             <button id="calculatorBtn" style="margin-top: 6px; background: #40916c;">🧮 CALCULATOR</button>
         </div>
 
-        <!-- RECORD PAGE -->
+        <!-- RECORD PAGE - WITH OPENING AND CLOSING TIME SECTION -->
         <div id="record" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f; margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
@@ -404,23 +430,35 @@
                     <input type="date" id="recordDate">
                 </div>
                 <div class="form-group">
+                    <label>⏰ Opening Time (when you opened the shop)</label>
+                    <input type="time" id="startTimeInput" placeholder="e.g., 08:00">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Closing Time (when you closed the shop)</label>
+                    <input type="time" id="closingTimeInput" placeholder="e.g., 18:00">
+                </div>
+                <div class="form-group">
                     <label>💰 Total Sales (KSH)</label>
                     <input type="number" id="saleAmount" placeholder="Enter amount" step="100">
                 </div>
-                <button id="saveSaleBtn">💾 SAVE SALES</button>
+                <button id="saveSaleBtn">💾 SAVE SALES RECORD</button>
                 <div id="recordMessage" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- REPORTS PAGE (simplified) -->
+        <!-- REPORTS PAGE -->
         <div id="reports" class="page">
             <div class="card">
                 <h3>📈 Monthly Summary</h3>
                 <div id="monthlyReport"></div>
             </div>
+            <div class="card">
+                <h3>⏱️ Hours Analysis</h3>
+                <div id="hoursAnalysis"></div>
+            </div>
         </div>
 
-        <!-- STOCK PAGE - FIXED VERSION -->
+        <!-- STOCK PAGE -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
@@ -520,7 +558,7 @@
         </div>
     </div>
 
-    <!-- ADD ITEM MODAL - FIXED -->
+    <!-- ADD ITEM MODAL -->
     <div id="addItemModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -568,6 +606,8 @@
     <script>
         // ========== DATA STORAGE ==========
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
+        let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
+        let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
         let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
             shopName: "🏪 MAMA G'S GENERAL SHOP",
@@ -577,7 +617,7 @@
             celebrationEnabled: true
         };
 
-        let currentItemType = 'sold'; // 'sold' or 'bought'
+        let currentItemType = 'sold';
 
         // Helper Functions
         function formatDate(date) {
@@ -591,6 +631,19 @@
 
         function getTodayKey() {
             return formatDate(new Date());
+        }
+
+        function calculateHoursWorked(startTime, closingTime) {
+            if (!startTime || !closingTime) return 0;
+            const [startHour, startMinute] = startTime.split(':').map(Number);
+            const [closeHour, closeMinute] = closingTime.split(':').map(Number);
+            let hours = closeHour - startHour;
+            let minutes = closeMinute - startMinute;
+            if (minutes < 0) {
+                hours--;
+                minutes += 60;
+            }
+            return hours + (minutes / 60);
         }
 
         function playChaChing() {
@@ -617,19 +670,18 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // STOCK FUNCTIONS - FIXED: Now properly saves items
+        // STOCK FUNCTIONS
         function updateStockDisplay() {
             const todayKey = getTodayKey();
             const todayStock = stockData[todayKey] || { sold: [], bought: [] };
             
-            // Display SOLD items
             const soldContainer = document.getElementById('soldItemsList');
             if (!todayStock.sold || todayStock.sold.length === 0) {
                 soldContainer.innerHTML = '<div class="empty-state">✨ No items sold yet today</div>';
             } else {
                 let soldHtml = '';
                 let soldTotal = 0;
-                todayStock.sold.forEach((item, idx) => {
+                todayStock.sold.forEach((item) => {
                     const total = item.quantity * item.price;
                     soldTotal += total;
                     soldHtml += `<div class="stock-item"><span>📦 ${item.name} x${item.quantity} @ KSH ${item.price}</span><span><strong>KSH ${total.toLocaleString()}</strong></span></div>`;
@@ -638,7 +690,6 @@
                 document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
             }
             
-            // Display BOUGHT items
             const boughtContainer = document.getElementById('boughtItemsList');
             if (!todayStock.bought || todayStock.bought.length === 0) {
                 boughtContainer.innerHTML = '<div class="empty-state">🛒 No items bought yet today</div>';
@@ -654,7 +705,6 @@
                 document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH ${boughtTotal.toLocaleString()}`;
             }
             
-            // Calculate totals for summary
             const soldTotalElem = document.getElementById('soldTotal');
             const boughtTotalElem = document.getElementById('boughtTotal');
             let soldTotalVal = 0, boughtTotalVal = 0;
@@ -678,7 +728,6 @@
             `;
         }
 
-        // FIXED: Core function to add item - now properly saves and persists
         function addStockItem(type) {
             const name = document.getElementById('itemName').value.trim();
             const quantity = parseInt(document.getElementById('itemQuantity').value);
@@ -698,51 +747,28 @@
             }
             
             const todayKey = getTodayKey();
-            // Initialize today's stock entry if not exists
             if (!stockData[todayKey]) {
                 stockData[todayKey] = { sold: [], bought: [] };
             }
             
-            // Add the item to the correct array
-            const newItem = { 
-                name: name, 
-                quantity: quantity, 
-                price: price,
-                timestamp: new Date().toISOString()
-            };
-            
+            const newItem = { name: name, quantity: quantity, price: price, timestamp: new Date().toISOString() };
             stockData[todayKey][type].push(newItem);
-            
-            // Save to localStorage
             localStorage.setItem('mamag_stock', JSON.stringify(stockData));
-            
-            // Play sound for feedback
             playChaChing();
-            
-            // Show quick success message
             const itemTotal = quantity * price;
             showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${quantity} x ${name} = KSH ${itemTotal.toLocaleString()}`);
-            
-            // Refresh display
             updateStockDisplay();
-            
             return true;
         }
 
         function openAddItemModal(type) {
             currentItemType = type;
             const modalTitle = document.getElementById('modalTitle');
-            if (type === 'sold') {
-                modalTitle.innerHTML = '➕ ADD ITEM SOLD';
-            } else {
-                modalTitle.innerHTML = '🛒 ADD ITEM BOUGHT';
-            }
-            // Clear form
+            modalTitle.innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
             document.getElementById('itemName').value = '';
             document.getElementById('itemQuantity').value = '';
             document.getElementById('itemPrice').value = '';
             document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
-            // Show modal
             document.getElementById('addItemModal').classList.add('active');
         }
 
@@ -775,41 +801,68 @@
             document.getElementById('stockHistoryModal').classList.add('active');
         }
 
-        // Sales functions
+        // Sales functions with time support
         function saveSale() {
             const todayKey = document.getElementById('recordDate').value;
             const amount = parseInt(document.getElementById('saleAmount').value);
+            const startTime = document.getElementById('startTimeInput').value;
+            const closingTime = document.getElementById('closingTimeInput').value;
+            
             if (isNaN(amount) || amount <= 0) {
                 document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Enter valid amount</span>';
                 return;
             }
+            
             salesData[todayKey] = amount;
+            if (startTime) startTimeData[todayKey] = startTime;
+            if (closingTime) closingTimeData[todayKey] = closingTime;
+            
             localStorage.setItem('mamag_sales', JSON.stringify(salesData));
+            localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
+            localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
+            
             playChaChing();
-            if (amount >= settings.dailyGoal) {
-                showCelebration('🎉 GOAL ACHIEVED!', `KSH ${amount.toLocaleString()} recorded! You hit the target!`);
-            } else {
-                showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(todayKey)}`);
+            
+            const hoursWorked = calculateHoursWorked(startTime, closingTime);
+            let timeMessage = '';
+            if (startTime && closingTime) {
+                timeMessage = `<br>⏱️ Hours worked: ${hoursWorked.toFixed(1)} hours`;
             }
+            
+            if (amount >= settings.dailyGoal) {
+                showCelebration('🎉 GOAL ACHIEVED!', `KSH ${amount.toLocaleString()} recorded! You hit the target!${timeMessage}`);
+            } else {
+                showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(todayKey)}${timeMessage}`);
+            }
+            
             document.getElementById('saleAmount').value = '';
-            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded!</span>';
+            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded with time!</span>';
             setTimeout(() => document.getElementById('recordMessage').innerHTML = '', 2000);
             updateDashboard();
+            updateReports();
         }
 
         function updateDashboard() {
             const todayKey = getTodayKey();
             const todaySales = salesData[todayKey] || 0;
             const dailyGoal = settings.dailyGoal;
+            const todayStartTime = startTimeData[todayKey] || 'Not set';
+            const todayClosingTime = closingTimeData[todayKey] || 'Not set';
+            const hoursWorked = calculateHoursWorked(todayStartTime, todayClosingTime);
+            
             document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
             document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
+            document.getElementById('startTimeValue').innerHTML = todayStartTime;
+            document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
+            document.getElementById('hoursWorkedValue').innerHTML = hoursWorked > 0 ? `${hoursWorked.toFixed(1)} hrs` : 'Not set';
+            
             const percent = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
             if (todaySales > 0) {
                 document.getElementById('goalStatus').innerHTML = `<span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:14px;">${percent}% of goal</span>`;
             } else {
                 document.getElementById('goalStatus').innerHTML = `<span>✨ Record your first sale!</span>`;
             }
-            // Weekly graph simple
+            
             const weekDates = [];
             const today = new Date();
             for (let i = 6; i >= 0; i--) {
@@ -824,12 +877,35 @@
             });
             graphHtml += '</div>';
             document.getElementById('weeklyGraph').innerHTML = graphHtml;
-            document.getElementById('streakDisplay').innerHTML = `🔥 ${Object.keys(salesData).length} days recorded!`;
+            
+            const daysWithSales = Object.keys(salesData).length;
+            document.getElementById('streakDisplay').innerHTML = `📊 ${daysWithSales} days with sales recorded!`;
         }
 
         function updateReports() {
             const monthTotal = Object.values(salesData).reduce((a,b)=>a+b,0);
             document.getElementById('monthlyReport').innerHTML = `<div style="text-align:center"><div style="font-size:24px; font-weight:bold;">KSH ${monthTotal.toLocaleString()}</div><div>Total Sales All Time</div></div>`;
+            
+            // Hours analysis
+            let totalHours = 0;
+            let daysWithHours = 0;
+            Object.keys(startTimeData).forEach(date => {
+                if (startTimeData[date] && closingTimeData[date]) {
+                    const hours = calculateHoursWorked(startTimeData[date], closingTimeData[date]);
+                    if (hours > 0) {
+                        totalHours += hours;
+                        daysWithHours++;
+                    }
+                }
+            });
+            const avgHours = daysWithHours > 0 ? (totalHours / daysWithHours).toFixed(1) : 0;
+            document.getElementById('hoursAnalysis').innerHTML = `
+                <div style="text-align:center">
+                    <div style="font-size: 18px; font-weight: bold; color: #2d6a4f;">⏱️ ${totalHours.toFixed(1)} hrs</div>
+                    <div style="font-size: 11px;">Total hours worked across ${daysWithHours} days</div>
+                    <div style="font-size: 11px; margin-top: 5px;">Average: ${avgHours} hours/day</div>
+                </div>
+            `;
         }
 
         function updateAll() {
@@ -846,6 +922,10 @@
             document.getElementById('managerNameInput').value = settings.managerName;
             document.getElementById('soundToggle').checked = settings.soundEnabled;
             document.getElementById('celebrationToggle').checked = settings.celebrationEnabled;
+            
+            const todayKey = getTodayKey();
+            if (startTimeData[todayKey]) document.getElementById('startTimeInput').value = startTimeData[todayKey];
+            if (closingTimeData[todayKey]) document.getElementById('closingTimeInput').value = closingTimeData[todayKey];
         }
 
         function saveShopInfo() {
@@ -857,6 +937,7 @@
             updateAll();
             alert('✅ Shop info saved');
         }
+        
         function saveDailyGoal() {
             let goal = parseInt(document.getElementById('dailyGoalInput').value);
             if (goal > 0) settings.dailyGoal = goal;
@@ -864,14 +945,16 @@
             updateAll();
             alert('✅ Goal saved');
         }
+        
         function saveNotifications() {
             settings.soundEnabled = document.getElementById('soundToggle').checked;
             settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
             alert('✅ Settings saved');
         }
+        
         function exportData() {
-            const data = { sales: salesData, stock: stockData, settings };
+            const data = { sales: salesData, startTimes: startTimeData, closingTimes: closingTimeData, stock: stockData, settings };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -879,18 +962,22 @@
             a.click();
             URL.revokeObjectURL(a.href);
         }
+        
         function resetData() {
             if (confirm('⚠️ Delete ALL data?')) {
                 salesData = {};
+                startTimeData = {};
+                closingTimeData = {};
                 stockData = {};
                 localStorage.setItem('mamag_sales', '{}');
+                localStorage.setItem('mamag_start_times', '{}');
+                localStorage.setItem('mamag_closing_times', '{}');
                 localStorage.setItem('mamag_stock', '{}');
                 updateAll();
                 alert('✅ Data reset');
             }
         }
 
-        // Navigation
         function navigateTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -915,21 +1002,17 @@
             document.getElementById('changeResult').innerHTML = `Change: KSH ${(paid - due >= 0 ? (paid-due).toLocaleString() : 'Insufficient')}`;
         });
         
-        // STOCK MODALS
         document.getElementById('viewStockHistoryBtn').addEventListener('click', showStockHistory);
         document.getElementById('closeItemModalBtn').addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
         document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
         
-        // FIXED: Save item button now calls addStockItem correctly
         document.getElementById('saveItemBtn').addEventListener('click', () => {
             if (addStockItem(currentItemType)) {
                 document.getElementById('addItemModal').classList.remove('active');
-                // Clear preview
                 document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
             }
         });
         
-        // Preview total
         function updatePreview() {
             const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
             const price = parseInt(document.getElementById('itemPrice').value) || 0;
@@ -944,4 +1027,3 @@
     </script>
 </body>
 </html>
-```
