@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Mama G's General Shop - Fixed Stock</title>
+    <title>Mama G's General Shop</title>
     
-    <!-- PWA Manifest and Meta Tags -->
+    <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Mama G Shop">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d6a4f'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E🛒%3C/text%3E%3C/svg%3E">
     <meta name="theme-color" content="#2d6a4f">
     
     <style>
@@ -26,6 +25,7 @@
             font-family: 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
+            overscroll-behavior-y: contain;
         }
 
         .app-container {
@@ -219,10 +219,6 @@
             transform: scale(1.01);
         }
 
-        .btn-secondary {
-            background: #6c757d;
-        }
-
         .btn-edit {
             background: #ffc107;
             color: #2d6a4f;
@@ -252,7 +248,6 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s;
         }
 
         .modal.active {
@@ -267,7 +262,6 @@
             max-width: 320px;
             width: 90%;
             text-align: center;
-            animation: slideUp 0.3s;
             border: 1px solid #ffd966;
         }
 
@@ -283,17 +277,6 @@
             color: white;
         }
 
-        #addItemModal input:focus,
-        #editItemModal input:focus {
-            border-color: #ffd966;
-            outline: none;
-        }
-
-        #addItemModal h3,
-        #editItemModal h3 {
-            color: #ffd966;
-        }
-
         .calc-result {
             font-size: 24px;
             font-weight: bold;
@@ -302,26 +285,6 @@
             background: #2a2a35;
             border-radius: 10px;
             margin-top: 10px;
-        }
-
-        .close-modal-btn {
-            background: none;
-            color: #ffd966;
-            font-size: 20px;
-            width: auto;
-            padding: 0;
-            margin: 0;
-        }
-
-        .close-modal-btn:hover {
-            background: none;
-            transform: none;
-            color: white;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .stock-item {
@@ -386,9 +349,30 @@
             text-align: center;
             font-weight: bold;
         }
+
+        .offline-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .offline-badge.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <div class="offline-badge" id="offlineBadge">📴 OFFLINE MODE</div>
+    
     <div class="app-container">
         <div class="header">
             <div class="shop-name">
@@ -409,22 +393,21 @@
             <button class="nav-btn" data-page="settings">⚙️ Settings</button>
         </div>
 
-        <!-- DASHBOARD PAGE -->
         <div id="dashboard" class="page active">
             <div class="card sales-card">
                 <div>🎯 DAILY GOAL</div>
                 <div class="sales-amount" id="dailyGoalDisplay">KSH 0</div>
                 <div id="goalStatus"></div>
             </div>
-            <div class="card today-sales-card" style="background: white; border-left: 4px solid #2d6a4f;">
+            <div class="card" style="background: white; border-left: 4px solid #2d6a4f;">
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES</div>
                 <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px; color: #2d6a4f;">KSH 0</div>
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 6px; font-size: 11px;"></div>
                 <div id="startTimeDisplay" class="time-info">
-                    ⏰ Opening Time: <strong id="startTimeValue">Not set</strong> | 🔒 Closing Time: <strong id="closingTimeValue">Not set</strong>
+                    ⏰ Opening: <strong id="startTimeValue">Not set</strong> | 🔒 Closing: <strong id="closingTimeValue">Not set</strong>
                 </div>
                 <div id="hoursWorkedDisplay" class="hours-worked">
-                    ⏱️ Hours Worked: <strong id="hoursWorkedValue">0 hrs</strong>
+                    ⏱️ Hours: <strong id="hoursWorkedValue">0 hrs</strong>
                 </div>
             </div>
             <div class="card">
@@ -434,7 +417,6 @@
             <button id="calculatorBtn" style="margin-top: 6px; background: #40916c;">🧮 CALCULATOR</button>
         </div>
 
-        <!-- RECORD PAGE -->
         <div id="record" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f; margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
@@ -443,12 +425,12 @@
                     <input type="date" id="recordDate">
                 </div>
                 <div class="form-group">
-                    <label>⏰ Opening Time (when you opened the shop)</label>
-                    <input type="time" id="startTimeInput" placeholder="e.g., 08:00">
+                    <label>⏰ Opening Time</label>
+                    <input type="time" id="startTimeInput">
                 </div>
                 <div class="form-group">
-                    <label>🔒 Closing Time (when you closed the shop)</label>
-                    <input type="time" id="closingTimeInput" placeholder="e.g., 18:00">
+                    <label>🔒 Closing Time</label>
+                    <input type="time" id="closingTimeInput">
                 </div>
                 <div class="form-group">
                     <label>💰 Total Sales (KSH)</label>
@@ -459,7 +441,6 @@
             </div>
         </div>
 
-        <!-- REPORTS PAGE -->
         <div id="reports" class="page">
             <div class="card">
                 <h3>📈 Monthly Summary</h3>
@@ -471,13 +452,11 @@
             </div>
         </div>
 
-        <!-- STOCK PAGE -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
-                <p style="color: #6c757d; font-size: 10px; margin-top: 3px;">📅 <span id="stockDate"></span></p>
+                <p style="color: #6c757d; font-size: 10px;">📅 <span id="stockDate"></span></p>
             </div>
-
             <div class="action-buttons">
                 <div class="action-card" onclick="openAddItemModal('sold')">
                     <h3>📦 ITEMS SOLD</h3>
@@ -488,23 +467,19 @@
                     <p>Add restock purchases</p>
                 </div>
             </div>
-
             <div class="card">
-                <h4 style="color: #2d6a4f; margin-bottom: 8px; font-size: 13px;">📝 SOLD TODAY</h4>
+                <h4 style="color: #2d6a4f;">📝 SOLD TODAY</h4>
                 <div id="soldItemsList"></div>
                 <div id="soldTotal" class="stock-total"></div>
             </div>
-
             <div class="card">
-                <h4 style="color: #2d6a4f; margin-bottom: 8px; font-size: 13px;">🛒 BOUGHT TODAY</h4>
+                <h4 style="color: #2d6a4f;">🛒 BOUGHT TODAY</h4>
                 <div id="boughtItemsList"></div>
                 <div id="boughtTotal" class="stock-total"></div>
             </div>
-
             <button id="viewStockHistoryBtn" style="background: #40916c;">📜 VIEW STOCK HISTORY</button>
         </div>
 
-        <!-- SETTINGS PAGE -->
         <div id="settings" class="page">
             <div class="card">
                 <h3>🏪 SHOP INFO</h3>
@@ -528,10 +503,10 @@
             </div>
             <div class="card">
                 <h3>🔔 NOTIFICATIONS</h3>
-                <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                <label style="display: flex; align-items: center; gap: 6px;">
                     <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects
                 </label>
-                <label style="display: flex; align-items: center; gap: 6px;">
+                <label style="display: flex; align-items: center; gap: 6px; margin-top: 6px;">
                     <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration
                 </label>
                 <button id="saveNotificationsBtn" style="margin-top: 10px;">💾 SAVE</button>
@@ -542,11 +517,10 @@
                 <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
             </div>
         </div>
-
         <div class="footer">Mama G's General Shop | Smart Business Manager</div>
     </div>
 
-    <!-- CALCULATOR MODAL -->
+    <!-- MODALS -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
@@ -555,47 +529,45 @@
             </div>
             <div class="form-group">
                 <label style="color:#ffd966;">💰 Amount Paid</label>
-                <input type="number" id="amountPaid" placeholder="0">
+                <input type="number" id="amountPaid">
             </div>
             <div class="form-group">
                 <label style="color:#ffd966;">📝 Total Due</label>
-                <input type="number" id="totalDue" placeholder="0">
+                <input type="number" id="totalDue">
             </div>
             <button id="calculateChangeBtn" style="background:#ffd966; color:#1a1a1a;">CALCULATE</button>
             <div class="calc-result" id="changeResult">Change: KSH 0</div>
         </div>
     </div>
 
-    <!-- ADD ITEM MODAL -->
     <div id="addItemModal" class="modal">
         <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between;">
                 <h3 id="modalTitle">➕ ADD ITEM</h3>
-                <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
+                <button id="closeItemModalBtn" style="width: auto; background: none; color: #ffd966;">✖</button>
             </div>
             <div class="form-group">
                 <label>Item Name</label>
-                <input type="text" id="itemName" placeholder="e.g., Milk, Bread, Sugar">
+                <input type="text" id="itemName">
             </div>
             <div class="form-group">
                 <label>Quantity</label>
-                <input type="number" id="itemQuantity" placeholder="How many?" min="1">
+                <input type="number" id="itemQuantity" min="1">
             </div>
             <div class="form-group">
-                <label>Price per Unit (KSH)</label>
-                <input type="number" id="itemPrice" placeholder="Price per item">
+                <label>Price per Unit</label>
+                <input type="number" id="itemPrice">
             </div>
-            <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; margin-bottom: 10px; color: #ffd966;">Total: KSH 0</div>
-            <button id="saveItemBtn" style="background: #ffd966; color: #1a1a1a; font-weight: bold;">💾 SAVE ITEM</button>
+            <div id="itemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; color: #ffd966;">Total: KSH 0</div>
+            <button id="saveItemBtn" style="background: #ffd966; color: #1a1a1a;">💾 SAVE ITEM</button>
         </div>
     </div>
 
-    <!-- EDIT ITEM MODAL -->
     <div id="editItemModal" class="modal">
         <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between;">
                 <h3>✏️ EDIT ITEM</h3>
-                <button id="closeEditModalBtn" style="width: auto; background: none; color: #ffd966; font-size: 20px;">✖</button>
+                <button id="closeEditModalBtn" style="width: auto; background: none; color: #ffd966;">✖</button>
             </div>
             <div class="form-group">
                 <label>Item Name</label>
@@ -603,20 +575,19 @@
             </div>
             <div class="form-group">
                 <label>Quantity</label>
-                <input type="number" id="editItemQuantity" min="1">
+                <input type="number" id="editItemQuantity">
             </div>
             <div class="form-group">
-                <label>Price per Unit (KSH)</label>
-                <input type="number" id="editItemPrice" min="1">
+                <label>Price per Unit</label>
+                <input type="number" id="editItemPrice">
             </div>
-            <div id="editItemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; margin-bottom: 10px; color: #ffd966;">Total: KSH 0</div>
-            <button id="updateItemBtn" style="background: #ffd966; color: #1a1a1a; font-weight: bold;">💾 UPDATE ITEM</button>
+            <div id="editItemTotalPreview" style="text-align: center; padding: 6px; background: #2d2d2d; border-radius: 8px; color: #ffd966;">Total: KSH 0</div>
+            <button id="updateItemBtn" style="background: #ffd966; color: #1a1a1a;">💾 UPDATE ITEM</button>
         </div>
     </div>
 
-    <!-- STOCK HISTORY MODAL -->
     <div id="stockHistoryModal" class="modal">
-        <div class="modal-content" style="background: #1a1a1a; max-width: 380px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <div class="modal-content" style="max-width: 380px; width: 90%; max-height: 80vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between;">
                 <h3 style="color:#ffd966;">📜 STOCK HISTORY</h3>
                 <button id="closeHistoryModalBtn" style="width: auto; background: none; color:#ffd966;">✖</button>
@@ -625,18 +596,17 @@
         </div>
     </div>
 
-    <!-- CELEBRATION MODAL -->
     <div id="celebrationModal" class="modal">
         <div class="modal-content" style="background: white;">
             <div style="font-size: 36px;">🎉 🎉 🎉</div>
-            <div style="font-size: 18px; font-weight: bold; color: #2d6a4f; margin: 10px 0;" id="celebrationTitle"></div>
+            <div style="font-size: 18px; font-weight: bold; color: #2d6a4f;" id="celebrationTitle"></div>
             <div id="celebrationMessage" style="margin: 10px 0;"></div>
             <button id="closeModalBtn" style="background: #2d6a4f;">Continue</button>
         </div>
     </div>
 
     <script>
-        // ========== DATA STORAGE ==========
+        // DATA STORAGE
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
         let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
@@ -650,389 +620,215 @@
         };
 
         let currentItemType = 'sold';
-        let currentEditInfo = { type: '', index: null, dateKey: '' };
-        
-        // Sound function
-        let audioCtx = null;
-        
-        function initAudio() {
-            if (!audioCtx && settings.soundEnabled) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch(e) {
-                    console.log('Web Audio API not supported');
-                }
-            }
-        }
-        
-        function playChaChing() {
-            if (!settings.soundEnabled) return;
-            
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume().then(() => {
-                        playSound();
-                    }).catch(e => console.log('Audio resume failed:', e));
-                } else {
-                    playSound();
-                }
-            } catch(e) {
-                console.log('Sound error:', e);
-            }
-        }
-        
-        function playSound() {
-            if (!audioCtx) return;
-            
-            const now = audioCtx.currentTime;
-            const oscillator = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            oscillator.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            oscillator.frequency.value = 880;
-            gain.gain.value = 0.3;
-            
-            oscillator.start();
-            gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
-            oscillator.stop(now + 0.3);
-        }
-        
-        function formatDate(date) {
-            return date.toISOString().split('T')[0];
-        }
+        let currentEditInfo = {};
 
+        // Helper Functions
+        function formatDate(d) { return d.toISOString().split('T')[0]; }
+        function getTodayKey() { return formatDate(new Date()); }
+        
         function formatDisplayDate(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
 
-        function getTodayKey() {
-            return formatDate(new Date());
-        }
-
-        function calculateHoursWorked(startTime, closingTime) {
-            if (!startTime || !closingTime) return 0;
-            const [startHour, startMinute] = startTime.split(':').map(Number);
-            const [closeHour, closeMinute] = closingTime.split(':').map(Number);
-            let hours = closeHour - startHour;
-            let minutes = closeMinute - startMinute;
-            if (minutes < 0) {
-                hours--;
-                minutes += 60;
-            }
+        function calculateHoursWorked(start, close) {
+            if (!start || !close) return 0;
+            let [sh, sm] = start.split(':').map(Number);
+            let [ch, cm] = close.split(':').map(Number);
+            let hours = ch - sh;
+            let minutes = cm - sm;
+            if (minutes < 0) { hours--; minutes += 60; }
             return hours + (minutes / 60);
         }
 
-        function showCelebration(title, message) {
+        // Sound
+        let audioCtx = null;
+        function playChaChing() {
+            if (!settings.soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.2;
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {}
+        }
+
+        function showCelebration(title, msg) {
             if (!settings.celebrationEnabled) return;
             document.getElementById('celebrationTitle').innerText = title;
-            document.getElementById('celebrationMessage').innerHTML = message;
+            document.getElementById('celebrationMessage').innerHTML = msg;
             document.getElementById('celebrationModal').classList.add('active');
         }
 
+        // Stock Functions
         function updateStockDisplay() {
-            const todayKey = getTodayKey();
-            const todayStock = stockData[todayKey] || { sold: [], bought: [] };
+            const today = getTodayKey();
+            const stock = stockData[today] || { sold: [], bought: [] };
             
-            const soldContainer = document.getElementById('soldItemsList');
-            if (!todayStock.sold || todayStock.sold.length === 0) {
-                soldContainer.innerHTML = '<div class="empty-state">✨ No items sold yet today</div>';
-                document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH 0`;
-            } else {
-                let soldHtml = '';
-                let soldTotal = 0;
-                todayStock.sold.forEach((item, idx) => {
-                    const total = item.quantity * item.price;
-                    soldTotal += total;
-                    soldHtml += `
-                        <div class="stock-item">
-                            <div class="stock-item-info">
-                                📦 ${item.name} x${item.quantity} @ KSH ${item.price} = <strong>KSH ${total.toLocaleString()}</strong>
-                            </div>
-                            <div class="stock-item-actions">
-                                <button class="btn-edit" onclick="openEditModal('sold', ${idx})">✏️</button>
-                                <button class="btn-delete" onclick="deleteStockItem('sold', ${idx})">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                soldContainer.innerHTML = soldHtml;
-                document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
-            }
+            let soldTotal = 0, boughtTotal = 0;
+            let soldHtml = '', boughtHtml = '';
             
-            const boughtContainer = document.getElementById('boughtItemsList');
-            if (!todayStock.bought || todayStock.bought.length === 0) {
-                boughtContainer.innerHTML = '<div class="empty-state">🛒 No items bought yet today</div>';
-                document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH 0`;
-            } else {
-                let boughtHtml = '';
-                let boughtTotal = 0;
-                todayStock.bought.forEach((item, idx) => {
-                    const total = item.quantity * item.price;
-                    boughtTotal += total;
-                    boughtHtml += `
-                        <div class="stock-item">
-                            <div class="stock-item-info">
-                                🛒 ${item.name} x${item.quantity} @ KSH ${item.price} = <strong>KSH ${total.toLocaleString()}</strong>
-                            </div>
-                            <div class="stock-item-actions">
-                                <button class="btn-edit" onclick="openEditModal('bought', ${idx})">✏️</button>
-                                <button class="btn-delete" onclick="deleteStockItem('bought', ${idx})">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                boughtContainer.innerHTML = boughtHtml;
-                document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH ${boughtTotal.toLocaleString()}`;
-            }
+            stock.sold.forEach((item, i) => {
+                let total = item.quantity * item.price;
+                soldTotal += total;
+                soldHtml += `<div class="stock-item"><div class="stock-item-info">📦 ${item.name} x${item.quantity} @ KSH ${item.price} = KSH ${total.toLocaleString()}</div><div class="stock-item-actions"><button class="btn-edit" onclick="openEditModal('sold',${i})">✏️</button><button class="btn-delete" onclick="deleteStockItem('sold',${i})">🗑️</button></div></div>`;
+            });
+            
+            stock.bought.forEach((item, i) => {
+                let total = item.quantity * item.price;
+                boughtTotal += total;
+                boughtHtml += `<div class="stock-item"><div class="stock-item-info">🛒 ${item.name} x${item.quantity} @ KSH ${item.price} = KSH ${total.toLocaleString()}</div><div class="stock-item-actions"><button class="btn-edit" onclick="openEditModal('bought',${i})">✏️</button><button class="btn-delete" onclick="deleteStockItem('bought',${i})">🗑️</button></div></div>`;
+            });
+            
+            document.getElementById('soldItemsList').innerHTML = soldHtml || '<div class="empty-state">✨ No items sold yet</div>';
+            document.getElementById('boughtItemsList').innerHTML = boughtHtml || '<div class="empty-state">🛒 No items bought yet</div>';
+            document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
+            document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH ${boughtTotal.toLocaleString()}`;
         }
 
         function addStockItem(type) {
-            const name = document.getElementById('itemName').value.trim();
-            const quantity = parseInt(document.getElementById('itemQuantity').value);
-            const price = parseInt(document.getElementById('itemPrice').value);
+            let name = document.getElementById('itemName').value.trim();
+            let qty = parseInt(document.getElementById('itemQuantity').value);
+            let price = parseInt(document.getElementById('itemPrice').value);
+            if (!name || !qty || !price) { alert('Fill all fields'); return false; }
             
-            if (!name) {
-                alert('❌ Please enter item name');
-                return false;
-            }
-            if (isNaN(quantity) || quantity <= 0) {
-                alert('❌ Please enter a valid quantity (minimum 1)');
-                return false;
-            }
-            if (isNaN(price) || price <= 0) {
-                alert('❌ Please enter a valid price per unit (minimum 1 KSH)');
-                return false;
-            }
-            
-            const todayKey = getTodayKey();
-            if (!stockData[todayKey]) {
-                stockData[todayKey] = { sold: [], bought: [] };
-            }
-            
-            const newItem = { name: name, quantity: quantity, price: price, timestamp: new Date().toISOString() };
-            stockData[todayKey][type].push(newItem);
+            let today = getTodayKey();
+            if (!stockData[today]) stockData[today] = { sold: [], bought: [] };
+            stockData[today][type].push({ name, quantity: qty, price });
             localStorage.setItem('mamag_stock', JSON.stringify(stockData));
-            playChaChing();
-            const itemTotal = quantity * price;
-            showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${quantity} x ${name} = KSH ${itemTotal.toLocaleString()}`);
             updateStockDisplay();
+            playChaChing();
+            showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${qty} x ${name}`);
             return true;
         }
 
-        function deleteStockItem(type, index) {
-            if (confirm(`Are you sure you want to delete this ${type === 'sold' ? 'sold' : 'purchased'} item?`)) {
-                const todayKey = getTodayKey();
-                if (stockData[todayKey] && stockData[todayKey][type]) {
-                    stockData[todayKey][type].splice(index, 1);
-                    localStorage.setItem('mamag_stock', JSON.stringify(stockData));
-                    updateStockDisplay();
-                    playChaChing();
-                    showCelebration('🗑️ ITEM DELETED', 'Item has been removed from the list');
-                }
+        function deleteStockItem(type, idx) {
+            if (!confirm('Delete this item?')) return;
+            let today = getTodayKey();
+            if (stockData[today] && stockData[today][type]) {
+                stockData[today][type].splice(idx, 1);
+                localStorage.setItem('mamag_stock', JSON.stringify(stockData));
+                updateStockDisplay();
+                playChaChing();
             }
         }
 
-        function openEditModal(type, index) {
-            const todayKey = getTodayKey();
-            const item = stockData[todayKey][type][index];
-            if (!item) return;
-            
-            currentEditInfo = { type, index, dateKey: todayKey };
-            
+        function openEditModal(type, idx) {
+            let today = getTodayKey();
+            let item = stockData[today][type][idx];
+            currentEditInfo = { type, idx, date: today };
             document.getElementById('editItemName').value = item.name;
             document.getElementById('editItemQuantity').value = item.quantity;
             document.getElementById('editItemPrice').value = item.price;
-            updateEditPreview();
-            
             document.getElementById('editItemModal').classList.add('active');
         }
 
-        function updateEditPreview() {
-            const qty = parseInt(document.getElementById('editItemQuantity').value) || 0;
-            const price = parseInt(document.getElementById('editItemPrice').value) || 0;
-            document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
-        }
-
         function updateStockItem() {
-            const { type, index, dateKey } = currentEditInfo;
-            const name = document.getElementById('editItemName').value.trim();
-            const quantity = parseInt(document.getElementById('editItemQuantity').value);
-            const price = parseInt(document.getElementById('editItemPrice').value);
-            
-            if (!name) {
-                alert('❌ Please enter item name');
-                return;
-            }
-            if (isNaN(quantity) || quantity <= 0) {
-                alert('❌ Please enter a valid quantity');
-                return;
-            }
-            if (isNaN(price) || price <= 0) {
-                alert('❌ Please enter a valid price');
-                return;
-            }
-            
-            if (stockData[dateKey] && stockData[dateKey][type] && stockData[dateKey][type][index]) {
-                stockData[dateKey][type][index] = { 
-                    name, quantity, price, 
-                    timestamp: new Date().toISOString(),
-                    updated: true 
-                };
-                localStorage.setItem('mamag_stock', JSON.stringify(stockData));
-                updateStockDisplay();
-                document.getElementById('editItemModal').classList.remove('active');
-                playChaChing();
-                showCelebration('✏️ ITEM UPDATED', `${name} updated to ${quantity} x KSH ${price} = KSH ${quantity * price}`);
-            }
+            let { type, idx, date } = currentEditInfo;
+            let name = document.getElementById('editItemName').value.trim();
+            let qty = parseInt(document.getElementById('editItemQuantity').value);
+            let price = parseInt(document.getElementById('editItemPrice').value);
+            if (!name || !qty || !price) { alert('Fill all fields'); return; }
+            stockData[date][type][idx] = { name, quantity: qty, price };
+            localStorage.setItem('mamag_stock', JSON.stringify(stockData));
+            updateStockDisplay();
+            document.getElementById('editItemModal').classList.remove('active');
+            playChaChing();
         }
 
         function openAddItemModal(type) {
             currentItemType = type;
-            const modalTitle = document.getElementById('modalTitle');
-            modalTitle.innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
+            document.getElementById('modalTitle').innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
             document.getElementById('itemName').value = '';
             document.getElementById('itemQuantity').value = '';
             document.getElementById('itemPrice').value = '';
-            document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
             document.getElementById('addItemModal').classList.add('active');
         }
 
         function showStockHistory() {
-            const historyContainer = document.getElementById('stockHistoryList');
-            const sortedDates = Object.keys(stockData).sort().reverse();
-            
-            if (sortedDates.length === 0) {
-                historyContainer.innerHTML = '<div class="empty-state">📭 No stock records yet</div>';
-                document.getElementById('stockHistoryModal').classList.add('active');
-                return;
-            }
-            
-            let historyHtml = '';
-            sortedDates.forEach(date => {
-                const data = stockData[date];
-                const soldTotal = (data.sold || []).reduce((sum, i) => sum + (i.quantity * i.price), 0);
-                const boughtTotal = (data.bought || []).reduce((sum, i) => sum + (i.quantity * i.price), 0);
-                historyHtml += `
-                    <div style="background: #2d2d2d; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
-                        <div style="color: #ffd966; font-weight: bold;">📅 ${formatDisplayDate(date)}</div>
-                        <div style="font-size: 11px; margin-top: 5px;">💰 Sold: KSH ${soldTotal.toLocaleString()} (${(data.sold || []).length} items)</div>
-                        <div style="font-size: 11px;">🛒 Purchased: KSH ${boughtTotal.toLocaleString()} (${(data.bought || []).length} items)</div>
-                    </div>
-                `;
+            let dates = Object.keys(stockData).sort().reverse();
+            let html = '';
+            dates.forEach(d => {
+                let data = stockData[d];
+                let sold = (data.sold || []).reduce((s,i)=> s + (i.quantity*i.price),0);
+                let bought = (data.bought || []).reduce((s,i)=> s + (i.quantity*i.price),0);
+                html += `<div style="background:#2d2d2d; border-radius:12px; padding:10px; margin-bottom:10px;"><div style="color:#ffd966;">📅 ${formatDisplayDate(d)}</div><div>💰 Sold: KSH ${sold.toLocaleString()}</div><div>🛒 Bought: KSH ${bought.toLocaleString()}</div></div>`;
             });
-            historyContainer.innerHTML = historyHtml;
+            document.getElementById('stockHistoryList').innerHTML = html || '<div class="empty-state">No records</div>';
             document.getElementById('stockHistoryModal').classList.add('active');
         }
 
+        // Sales Functions
         function saveSale() {
-            const todayKey = document.getElementById('recordDate').value;
-            const amount = parseInt(document.getElementById('saleAmount').value);
-            const startTime = document.getElementById('startTimeInput').value;
-            const closingTime = document.getElementById('closingTimeInput').value;
+            let date = document.getElementById('recordDate').value;
+            let amount = parseInt(document.getElementById('saleAmount').value);
+            let start = document.getElementById('startTimeInput').value;
+            let close = document.getElementById('closingTimeInput').value;
+            if (!amount || amount <= 0) { alert('Enter valid amount'); return; }
             
-            if (isNaN(amount) || amount <= 0) {
-                document.getElementById('recordMessage').innerHTML = '<span style="color: red;">❌ Enter valid amount</span>';
-                return;
-            }
-            
-            salesData[todayKey] = amount;
-            if (startTime) startTimeData[todayKey] = startTime;
-            if (closingTime) closingTimeData[todayKey] = closingTime;
+            salesData[date] = amount;
+            if (start) startTimeData[date] = start;
+            if (close) closingTimeData[date] = close;
             
             localStorage.setItem('mamag_sales', JSON.stringify(salesData));
             localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
             localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
             
             playChaChing();
-            
-            const hoursWorked = calculateHoursWorked(startTime, closingTime);
-            let timeMessage = '';
-            if (startTime && closingTime) {
-                timeMessage = `<br>⏱️ Hours worked: ${hoursWorked.toFixed(1)} hours`;
-            }
-            
-            if (amount >= settings.dailyGoal) {
-                showCelebration('🎉 GOAL ACHIEVED!', `KSH ${amount.toLocaleString()} recorded! You hit the target!${timeMessage}`);
-            } else {
-                showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(todayKey)}${timeMessage}`);
-            }
-            
+            showCelebration('✅ SALES SAVED', `KSH ${amount.toLocaleString()} for ${formatDisplayDate(date)}`);
             document.getElementById('saleAmount').value = '';
-            document.getElementById('recordMessage').innerHTML = '<span style="color: green;">✅ Sale recorded with time!</span>';
-            setTimeout(() => document.getElementById('recordMessage').innerHTML = '', 2000);
             updateDashboard();
             updateReports();
         }
 
         function updateDashboard() {
-            const todayKey = getTodayKey();
-            const todaySales = salesData[todayKey] || 0;
-            const dailyGoal = settings.dailyGoal;
-            const todayStartTime = startTimeData[todayKey] || 'Not set';
-            const todayClosingTime = closingTimeData[todayKey] || 'Not set';
-            const hoursWorked = calculateHoursWorked(todayStartTime, todayClosingTime);
+            let today = getTodayKey();
+            let sales = salesData[today] || 0;
+            let goal = settings.dailyGoal;
+            let start = startTimeData[today] || 'Not set';
+            let close = closingTimeData[today] || 'Not set';
+            let hours = calculateHoursWorked(start, close);
             
-            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${todaySales.toLocaleString()}`;
-            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${dailyGoal.toLocaleString()}`;
-            document.getElementById('startTimeValue').innerHTML = todayStartTime;
-            document.getElementById('closingTimeValue').innerHTML = todayClosingTime;
-            document.getElementById('hoursWorkedValue').innerHTML = hoursWorked > 0 ? `${hoursWorked.toFixed(1)} hrs` : 'Not set';
+            document.getElementById('todaySalesDisplay').innerHTML = `KSH ${sales.toLocaleString()}`;
+            document.getElementById('dailyGoalDisplay').innerHTML = `KSH ${goal.toLocaleString()}`;
+            document.getElementById('startTimeValue').innerHTML = start;
+            document.getElementById('closingTimeValue').innerHTML = close;
+            document.getElementById('hoursWorkedValue').innerHTML = hours > 0 ? `${hours.toFixed(1)} hrs` : 'Not set';
             
-            const percent = dailyGoal > 0 ? (todaySales / dailyGoal * 100).toFixed(0) : 0;
-            if (todaySales > 0) {
-                document.getElementById('goalStatus').innerHTML = `<span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:14px;">${percent}% of goal</span>`;
-            } else {
-                document.getElementById('goalStatus').innerHTML = `<span>✨ Record your first sale!</span>`;
+            let percent = goal > 0 ? (sales/goal*100).toFixed(0) : 0;
+            document.getElementById('goalStatus').innerHTML = sales > 0 ? `<span style="background:rgba(255,255,255,0.2);padding:3px 8px;border-radius:14px;">${percent}% of goal</span>` : '<span>✨ Record first sale!</span>';
+            
+            let weekHtml = '';
+            let todayDate = new Date();
+            for(let i = 6; i >= 0; i--) {
+                let d = new Date(todayDate);
+                d.setDate(todayDate.getDate() - i);
+                let key = formatDate(d);
+                let sale = salesData[key] || 0;
+                weekHtml += `<div style="display:flex; justify-content:space-between; margin:4px 0;"><span>${formatDisplayDate(key)}</span><strong>KSH ${sale.toLocaleString()}</strong></div>`;
             }
-            
-            const weekDates = [];
-            const today = new Date();
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date(today);
-                d.setDate(today.getDate() - i);
-                weekDates.push(formatDate(d));
-            }
-            let graphHtml = '<div class="bar-container">';
-            weekDates.forEach(date => {
-                const sale = salesData[date] || 0;
-                graphHtml += `<div style="display:flex; justify-content:space-between; font-size:11px; margin:4px 0;"><span>${formatDisplayDate(date)}</span><strong>KSH ${sale.toLocaleString()}</strong></div>`;
-            });
-            graphHtml += '</div>';
-            document.getElementById('weeklyGraph').innerHTML = graphHtml;
-            
-            const daysWithSales = Object.keys(salesData).length;
-            document.getElementById('streakDisplay').innerHTML = `📊 ${daysWithSales} days with sales recorded!`;
+            document.getElementById('weeklyGraph').innerHTML = weekHtml;
+            document.getElementById('streakDisplay').innerHTML = `📊 ${Object.keys(salesData).length} days recorded`;
         }
 
         function updateReports() {
-            const monthTotal = Object.values(salesData).reduce((a,b)=>a+b,0);
-            document.getElementById('monthlyReport').innerHTML = `<div style="text-align:center"><div style="font-size:24px; font-weight:bold;">KSH ${monthTotal.toLocaleString()}</div><div>Total Sales All Time</div></div>`;
+            let total = Object.values(salesData).reduce((a,b)=>a+b,0);
+            document.getElementById('monthlyReport').innerHTML = `<div style="text-align:center"><div style="font-size:24px;font-weight:bold;">KSH ${total.toLocaleString()}</div><div>Total Sales</div></div>`;
             
-            let totalHours = 0;
-            let daysWithHours = 0;
-            Object.keys(startTimeData).forEach(date => {
-                if (startTimeData[date] && closingTimeData[date]) {
-                    const hours = calculateHoursWorked(startTimeData[date], closingTimeData[date]);
-                    if (hours > 0) {
-                        totalHours += hours;
-                        daysWithHours++;
-                    }
+            let totalHours = 0, days = 0;
+            Object.keys(startTimeData).forEach(d => {
+                if(startTimeData[d] && closingTimeData[d]) {
+                    let h = calculateHoursWorked(startTimeData[d], closingTimeData[d]);
+                    if(h > 0) { totalHours += h; days++; }
                 }
             });
-            const avgHours = daysWithHours > 0 ? (totalHours / daysWithHours).toFixed(1) : 0;
-            document.getElementById('hoursAnalysis').innerHTML = `
-                <div style="text-align:center">
-                    <div style="font-size: 18px; font-weight: bold; color: #2d6a4f;">⏱️ ${totalHours.toFixed(1)} hrs</div>
-                    <div style="font-size: 11px;">Total hours worked across ${daysWithHours} days</div>
-                    <div style="font-size: 11px; margin-top: 5px;">Average: ${avgHours} hours/day</div>
-                </div>
-            `;
+            document.getElementById('hoursAnalysis').innerHTML = `<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#2d6a4f;">⏱️ ${totalHours.toFixed(1)} hrs</div><div>Over ${days} days</div><div>Avg: ${days>0?(totalHours/days).toFixed(1):0} hrs/day</div></div>`;
         }
 
         function updateAll() {
@@ -1050,88 +846,78 @@
             document.getElementById('soundToggle').checked = settings.soundEnabled;
             document.getElementById('celebrationToggle').checked = settings.celebrationEnabled;
             
-            const todayKey = getTodayKey();
-            if (startTimeData[todayKey]) document.getElementById('startTimeInput').value = startTimeData[todayKey];
-            if (closingTimeData[todayKey]) document.getElementById('closingTimeInput').value = closingTimeData[todayKey];
+            let today = getTodayKey();
+            if(startTimeData[today]) document.getElementById('startTimeInput').value = startTimeData[today];
+            if(closingTimeData[today]) document.getElementById('closingTimeInput').value = closingTimeData[today];
         }
 
+        // Settings
         function saveShopInfo() {
             let shop = document.getElementById('shopNameInput').value.trim();
             let manager = document.getElementById('managerNameInput').value.trim();
-            if (shop) settings.shopName = `🏪 ${shop.toUpperCase()}`;
-            if (manager) settings.managerName = manager;
+            if(shop) settings.shopName = `🏪 ${shop.toUpperCase()}`;
+            if(manager) settings.managerName = manager;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
             updateAll();
-            alert('✅ Shop info saved');
+            alert('✅ Saved');
         }
-        
         function saveDailyGoal() {
             let goal = parseInt(document.getElementById('dailyGoalInput').value);
-            if (goal > 0) settings.dailyGoal = goal;
+            if(goal > 0) settings.dailyGoal = goal;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
             updateAll();
             alert('✅ Goal saved');
         }
-        
         function saveNotifications() {
             settings.soundEnabled = document.getElementById('soundToggle').checked;
             settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
-            
-            if (settings.soundEnabled && !audioCtx) {
-                initAudio();
-            }
-            
             alert('✅ Settings saved');
         }
-        
         function exportData() {
-            const data = { sales: salesData, startTimes: startTimeData, closingTimes: closingTimeData, stock: stockData, settings };
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const a = document.createElement('a');
+            let data = { sales: salesData, stock: stockData, settings };
+            let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `mamag_backup_${getTodayKey()}.json`;
             a.click();
-            URL.revokeObjectURL(a.href);
         }
-        
         function resetData() {
-            if (confirm('⚠️ Delete ALL data?')) {
-                salesData = {};
-                startTimeData = {};
-                closingTimeData = {};
-                stockData = {};
-                localStorage.setItem('mamag_sales', '{}');
-                localStorage.setItem('mamag_start_times', '{}');
-                localStorage.setItem('mamag_closing_times', '{}');
-                localStorage.setItem('mamag_stock', '{}');
+            if(confirm('⚠️ Delete ALL data?')) {
+                salesData = {}; startTimeData = {}; closingTimeData = {}; stockData = {};
+                localStorage.clear();
                 updateAll();
-                alert('✅ Data reset');
+                alert('✅ Reset complete');
             }
         }
 
-        function navigateTo(pageId) {
+        function navigateTo(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(page).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.nav-btn[data-page="${pageId}"]`).classList.add('active');
+            document.querySelector(`.nav-btn[data-page="${page}"]`).classList.add('active');
         }
 
+        // Offline detection
+        function updateOfflineStatus() {
+            const badge = document.getElementById('offlineBadge');
+            if (!navigator.onLine) {
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+        
+        window.addEventListener('online', updateOfflineStatus);
+        window.addEventListener('offline', updateOfflineStatus);
+        updateOfflineStatus();
+
+        // Make functions global
         window.openAddItemModal = openAddItemModal;
         window.openEditModal = openEditModal;
         window.deleteStockItem = deleteStockItem;
 
-        function initAudioOnFirstClick() {
-            if (settings.soundEnabled && (!audioCtx || audioCtx.state === 'suspended')) {
-                initAudio();
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume().catch(e => console.log('Audio resume failed:', e));
-                }
-            }
-        }
-        
-        document.body.addEventListener('click', initAudioOnFirstClick, { once: true });
-
+        // Event listeners
         document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
         document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
         document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
@@ -1143,171 +929,43 @@
         document.getElementById('calculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.add('active'));
         document.getElementById('closeCalculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.remove('active'));
         document.getElementById('calculateChangeBtn').addEventListener('click', () => {
-            const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            const due = parseFloat(document.getElementById('totalDue').value) || 0;
-            document.getElementById('changeResult').innerHTML = `Change: KSH ${(paid - due >= 0 ? (paid-due).toLocaleString() : 'Insufficient')}`;
+            let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            let due = parseFloat(document.getElementById('totalDue').value) || 0;
+            document.getElementById('changeResult').innerHTML = `Change: KSH ${paid >= due ? (paid-due).toLocaleString() : 'Insufficient'}`;
         });
-        
         document.getElementById('viewStockHistoryBtn').addEventListener('click', showStockHistory);
         document.getElementById('closeItemModalBtn').addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
         document.getElementById('closeEditModalBtn').addEventListener('click', () => document.getElementById('editItemModal').classList.remove('active'));
         document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
-        
         document.getElementById('saveItemBtn').addEventListener('click', () => {
-            if (addStockItem(currentItemType)) {
+            if(addStockItem(currentItemType)) {
                 document.getElementById('addItemModal').classList.remove('active');
-                document.getElementById('itemTotalPreview').innerHTML = 'Total: KSH 0';
             }
         });
-        
         document.getElementById('updateItemBtn').addEventListener('click', updateStockItem);
         
-        function updatePreview() {
-            const qty = parseInt(document.getElementById('itemQuantity').value) || 0;
-            const price = parseInt(document.getElementById('itemPrice').value) || 0;
-            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(qty * price).toLocaleString()}`;
-        }
-        
-        document.getElementById('itemQuantity').addEventListener('input', updatePreview);
-        document.getElementById('itemPrice').addEventListener('input', updatePreview);
-        document.getElementById('editItemQuantity').addEventListener('input', updateEditPreview);
-        document.getElementById('editItemPrice').addEventListener('input', updateEditPreview);
+        document.getElementById('itemQuantity').addEventListener('input', () => {
+            let q = parseInt(document.getElementById('itemQuantity').value) || 0;
+            let p = parseInt(document.getElementById('itemPrice').value) || 0;
+            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+        });
+        document.getElementById('itemPrice').addEventListener('input', () => {
+            let q = parseInt(document.getElementById('itemQuantity').value) || 0;
+            let p = parseInt(document.getElementById('itemPrice').value) || 0;
+            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+        });
+        document.getElementById('editItemQuantity').addEventListener('input', () => {
+            let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
+            let p = parseInt(document.getElementById('editItemPrice').value) || 0;
+            document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+        });
+        document.getElementById('editItemPrice').addEventListener('input', () => {
+            let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
+            let p = parseInt(document.getElementById('editItemPrice').value) || 0;
+            document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+        });
         
         updateAll();
     </script>
-    
-    <!-- PWA Installation Script -->
-    <script>
-        (function() {
-            // Register Service Worker
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
-                    });
-            }
-            
-            // Create Install Button
-            let deferredPrompt;
-            const installBtn = document.createElement('button');
-            installBtn.id = 'installPWA';
-            installBtn.innerHTML = '📱 Install App';
-            installBtn.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: #2d6a4f;
-                color: white;
-                border: none;
-                border-radius: 50px;
-                padding: 12px 20px;
-                font-size: 14px;
-                font-weight: bold;
-                cursor: pointer;
-                z-index: 2000;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-                display: none;
-                font-family: 'Segoe UI', sans-serif;
-                transition: all 0.3s ease;
-            `;
-            
-            installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.02)';
-            installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
-            
-            document.body.appendChild(installBtn);
-            
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.style.display = 'block';
-                
-                installBtn.onclick = async () => {
-                    installBtn.style.display = 'none';
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`Install prompt: ${outcome}`);
-                    deferredPrompt = null;
-                };
-            });
-            
-            // Hide install button if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                installBtn.style.display = 'none';
-            }
-            
-            // Connection status indicator
-            function showConnectionStatus() {
-                const statusDiv = document.createElement('div');
-                statusDiv.id = 'tempConnectionStatus';
-                statusDiv.style.cssText = `
-                    position: fixed;
-                    bottom: 90px;
-                    right: 20px;
-                    background: ${navigator.onLine ? '#4caf50' : '#f44336'};
-                    color: white;
-                    padding: 6px 12px;
-                    border-radius: 20px;
-                    font-size: 11px;
-                    z-index: 2000;
-                    font-weight: bold;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                    font-family: 'Segoe UI', sans-serif;
-                `;
-                statusDiv.innerHTML = navigator.onLine ? '🌐 Online' : '📴 Offline Mode';
-                
-                const oldStatus = document.getElementById('tempConnectionStatus');
-                if (oldStatus) oldStatus.remove();
-                document.body.appendChild(statusDiv);
-                
-                setTimeout(() => {
-                    const el = document.getElementById('tempConnectionStatus');
-                    if (el) el.remove();
-                }, 3000);
-            }
-            
-            window.addEventListener('online', showConnectionStatus);
-            window.addEventListener('offline', showConnectionStatus);
-        })();
-    </script>
-<!-- Force Service Worker Update and Cache -->
-<script>
-    // Force service worker to update and cache everything for offline use
-    if ('serviceWorker' in navigator) {
-        // Check and update service worker
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.update();
-                console.log('Service worker updated');
-            }
-        });
-        
-        // Wait for page to fully load, then trigger caching
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                navigator.serviceWorker.ready.then(registration => {
-                    if (registration.active) {
-                        registration.active.postMessage('cacheNow');
-                        console.log('Cache triggered - app will work offline');
-                    }
-                });
-            }, 3000);
-        });
-        
-        // Show offline status in console
-        window.addEventListener('offline', function() {
-            console.log('You are offline. App will still work from cache!');
-        });
-        
-        window.addEventListener('online', function() {
-            console.log('Back online! App will sync when needed.');
-        });
-    }
-    
-    // Display message when app is ready for offline
-    console.log('PWA Ready - Open once with internet, then it works offline!');
-</script>
 </body>
 </html>
