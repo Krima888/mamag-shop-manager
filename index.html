@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Mama G's General Shop - Editable Stock</title>
+    <title>Mama G's General Shop - Fixed Stock</title>
     <style>
         * {
             margin: 0;
@@ -232,24 +232,6 @@
             margin-left: 8px;
         }
 
-        .btn-save-edit {
-            background: #28a745;
-            color: white;
-            font-size: 10px;
-            padding: 4px 8px;
-            width: auto;
-            margin-left: 8px;
-        }
-
-        .btn-cancel-edit {
-            background: #6c757d;
-            color: white;
-            font-size: 10px;
-            padding: 4px 8px;
-            width: auto;
-            margin-left: 8px;
-        }
-
         .modal {
             display: none;
             position: fixed;
@@ -365,16 +347,6 @@
             padding: 20px;
             color: #6c757d;
             font-size: 12px;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 8px;
-            border-radius: 8px;
-            margin-top: 6px;
-            text-align: center;
-            font-size: 11px;
         }
 
         .footer {
@@ -497,7 +469,7 @@
             </div>
         </div>
 
-        <!-- STOCK PAGE - WITH EDITABLE ITEMS -->
+        <!-- STOCK PAGE -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
@@ -677,7 +649,58 @@
 
         let currentItemType = 'sold';
         let currentEditInfo = { type: '', index: null, dateKey: '' };
-
+        
+        // FIXED: Sound function with proper AudioContext handling
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx && settings.soundEnabled) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+        }
+        
+        function playChaChing() {
+            if (!settings.soundEnabled) return;
+            
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                
+                // Resume audio context if suspended (browsers require user interaction first)
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(() => {
+                        playSound();
+                    }).catch(e => console.log('Audio resume failed:', e));
+                } else {
+                    playSound();
+                }
+            } catch(e) {
+                console.log('Sound error:', e);
+            }
+        }
+        
+        function playSound() {
+            if (!audioCtx) return;
+            
+            const now = audioCtx.currentTime;
+            const oscillator = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            oscillator.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = 880;
+            gain.gain.value = 0.3;
+            
+            oscillator.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
+            oscillator.stop(now + 0.3);
+        }
+        
         // Helper Functions
         function formatDate(date) {
             return date.toISOString().split('T')[0];
@@ -705,23 +728,6 @@
             return hours + (minutes / 60);
         }
 
-        function playChaChing() {
-            if (!settings.soundEnabled) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                oscillator.connect(gain);
-                gain.connect(audioCtx.destination);
-                oscillator.frequency.value = 880;
-                gain.gain.value = 0.2;
-                oscillator.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
-                oscillator.stop(audioCtx.currentTime + 0.3);
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-            } catch(e) { console.log('Sound error'); }
-        }
-
         function showCelebration(title, message) {
             if (!settings.celebrationEnabled) return;
             document.getElementById('celebrationTitle').innerText = title;
@@ -729,12 +735,11 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // STOCK FUNCTIONS - With Edit and Delete
+        // STOCK FUNCTIONS
         function updateStockDisplay() {
             const todayKey = getTodayKey();
             const todayStock = stockData[todayKey] || { sold: [], bought: [] };
             
-            // Display SOLD items with edit/delete buttons
             const soldContainer = document.getElementById('soldItemsList');
             if (!todayStock.sold || todayStock.sold.length === 0) {
                 soldContainer.innerHTML = '<div class="empty-state">✨ No items sold yet today</div>';
@@ -761,7 +766,6 @@
                 document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
             }
             
-            // Display BOUGHT items with edit/delete buttons
             const boughtContainer = document.getElementById('boughtItemsList');
             if (!todayStock.bought || todayStock.bought.length === 0) {
                 boughtContainer.innerHTML = '<div class="empty-state">🛒 No items bought yet today</div>';
@@ -829,6 +833,7 @@
                     stockData[todayKey][type].splice(index, 1);
                     localStorage.setItem('mamag_stock', JSON.stringify(stockData));
                     updateStockDisplay();
+                    playChaChing();
                     showCelebration('🗑️ ITEM DELETED', 'Item has been removed from the list');
                 }
             }
@@ -946,6 +951,7 @@
             localStorage.setItem('mamag_start_times', JSON.stringify(startTimeData));
             localStorage.setItem('mamag_closing_times', JSON.stringify(closingTimeData));
             
+            // Play sound effect when saving sales
             playChaChing();
             
             const hoursWorked = calculateHoursWorked(startTime, closingTime);
@@ -1074,6 +1080,12 @@
             settings.soundEnabled = document.getElementById('soundToggle').checked;
             settings.celebrationEnabled = document.getElementById('celebrationToggle').checked;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
+            
+            // Reinitialize audio if sound was turned on
+            if (settings.soundEnabled && !audioCtx) {
+                initAudio();
+            }
+            
             alert('✅ Settings saved');
         }
         
@@ -1113,6 +1125,19 @@
         window.openAddItemModal = openAddItemModal;
         window.openEditModal = openEditModal;
         window.deleteStockItem = deleteStockItem;
+
+        // Initialize audio on first user interaction
+        function initAudioOnFirstClick() {
+            if (settings.soundEnabled && (!audioCtx || audioCtx.state === 'suspended')) {
+                initAudio();
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(e => console.log('Audio resume failed:', e));
+                }
+            }
+        }
+        
+        // Add click listener to initialize audio on first user interaction
+        document.body.addEventListener('click', initAudioOnFirstClick, { once: true });
 
         // Event Listeners
         document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
