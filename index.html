@@ -486,6 +486,17 @@
             background: #40916c;
             color: white;
         }
+        
+        .calc-result {
+            text-align: center;
+            padding: 12px;
+            margin-top: 12px;
+            background: #2d2d2d;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd966;
+        }
     </style>
 </head>
 <body>
@@ -695,14 +706,14 @@
             </div>
             <div class="form-group">
                 <label style="color:#ffd966;">💰 Amount Paid</label>
-                <input type="number" id="amountPaid">
+                <input type="number" id="amountPaid" placeholder="Enter amount received">
             </div>
             <div class="form-group">
                 <label style="color:#ffd966;">📝 Total Due</label>
-                <input type="number" id="totalDue">
+                <input type="number" id="totalDue" placeholder="Enter total bill amount">
             </div>
             <button id="calculateChangeBtn" style="background:#ffd966; color:#1a1a1a;">CALCULATE</button>
-            <div class="calc-result" id="changeResult">Change: KSH 0</div>
+            <div class="calc-result" id="changeResult">💰 Change: KSH 0</div>
         </div>
     </div>
 
@@ -788,13 +799,25 @@
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
         let expensesData = JSON.parse(localStorage.getItem('mamag_expenses')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
-        let settings = JSON.parse(localStorage.getItem('mamag_settings')) || {
-            shopName: "🏪 MAMA G'S GENERAL SHOP",
-            managerName: "Priscilla Wambui Kamau",
-            dailyGoal: 3500,
-            soundEnabled: true,
-            celebrationEnabled: true
-        };
+        
+        // Fix settings initialization with proper fallbacks
+        let settings = JSON.parse(localStorage.getItem('mamag_settings'));
+        if (!settings) {
+            settings = {
+                shopName: "🏪 MAMA G'S GENERAL SHOP",
+                managerName: "Priscilla Wambui Kamau",
+                dailyGoal: 3500,
+                soundEnabled: true,
+                celebrationEnabled: true
+            };
+        } else {
+            // Ensure all properties exist even if old data is missing
+            if (settings.shopName === undefined) settings.shopName = "🏪 MAMA G'S GENERAL SHOP";
+            if (settings.managerName === undefined) settings.managerName = "Priscilla Wambui Kamau";
+            if (settings.dailyGoal === undefined) settings.dailyGoal = 3500;
+            if (settings.soundEnabled === undefined) settings.soundEnabled = true;
+            if (settings.celebrationEnabled === undefined) settings.celebrationEnabled = true;
+        }
 
         let currentItemType = 'sold';
         let currentEditInfo = {};
@@ -1332,59 +1355,161 @@
         window.showDateReport = showDateReport;
         window.changeStockViewDate = changeStockViewDate;
         window.changeStockViewDateAndClose = changeStockViewDateAndClose;
+        window.getTodayKey = getTodayKey;
 
-        // Event listeners
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
-        document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
-        document.getElementById('saveInfoBtn').addEventListener('click', saveShopInfo);
-        document.getElementById('saveGoalBtn').addEventListener('click', saveDailyGoal);
-        document.getElementById('saveNotificationsBtn').addEventListener('click', saveNotifications);
-        document.getElementById('exportBtn').addEventListener('click', exportData);
-        document.getElementById('resetBtn').addEventListener('click', resetData);
-        document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('celebrationModal').classList.remove('active'));
-        document.getElementById('calculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.add('active'));
-        document.getElementById('closeCalculatorBtn').addEventListener('click', () => document.getElementById('calculatorModal').classList.remove('active'));
-        document.getElementById('calculateChangeBtn').addEventListener('click', () => {
-            let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            let due = parseFloat(document.getElementById('totalDue').value) || 0;
-            document.getElementById('changeResult').innerHTML = `Change: KSH ${paid >= due ? (paid-due).toLocaleString() : 'Insufficient'}`;
-        });
-        document.getElementById('viewStockHistoryBtn').addEventListener('click', showStockHistory);
-        document.getElementById('closeItemModalBtn').addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
-        document.getElementById('closeEditModalBtn').addEventListener('click', () => document.getElementById('editItemModal').classList.remove('active'));
-        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
-        document.getElementById('closeDateReportBtn').addEventListener('click', () => document.getElementById('dateReportModal').classList.remove('active'));
-        document.getElementById('viewReportBtn').addEventListener('click', viewDailyReport);
-        
-        document.getElementById('saveItemBtn').addEventListener('click', () => {
-            if(addStockItem(currentItemType)) {
-                document.getElementById('addItemModal').classList.remove('active');
+        // Event listeners - DOMContentLoaded ensures all elements exist
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
+            
+            // Sales
+            const saveSaleBtn = document.getElementById('saveSaleBtn');
+            if (saveSaleBtn) saveSaleBtn.addEventListener('click', saveSale);
+            
+            // Settings
+            const saveInfoBtn = document.getElementById('saveInfoBtn');
+            if (saveInfoBtn) saveInfoBtn.addEventListener('click', saveShopInfo);
+            
+            const saveGoalBtn = document.getElementById('saveGoalBtn');
+            if (saveGoalBtn) saveGoalBtn.addEventListener('click', saveDailyGoal);
+            
+            const saveNotificationsBtn = document.getElementById('saveNotificationsBtn');
+            if (saveNotificationsBtn) saveNotificationsBtn.addEventListener('click', saveNotifications);
+            
+            const exportBtn = document.getElementById('exportBtn');
+            if (exportBtn) exportBtn.addEventListener('click', exportData);
+            
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetData);
+            
+            // Modals
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            if (closeModalBtn) closeModalBtn.addEventListener('click', () => document.getElementById('celebrationModal').classList.remove('active'));
+            
+            // Calculator functionality - FIXED
+            const calculatorBtn = document.getElementById('calculatorBtn');
+            if (calculatorBtn) {
+                calculatorBtn.addEventListener('click', function() {
+                    document.getElementById('calculatorModal').classList.add('active');
+                    // Clear previous values
+                    document.getElementById('amountPaid').value = '';
+                    document.getElementById('totalDue').value = '';
+                    document.getElementById('changeResult').innerHTML = '💰 Change: KSH 0';
+                });
             }
+            
+            const closeCalculatorBtn = document.getElementById('closeCalculatorBtn');
+            if (closeCalculatorBtn) {
+                closeCalculatorBtn.addEventListener('click', function() {
+                    document.getElementById('calculatorModal').classList.remove('active');
+                });
+            }
+            
+            const calculateChangeBtn = document.getElementById('calculateChangeBtn');
+            if (calculateChangeBtn) {
+                calculateChangeBtn.addEventListener('click', function() {
+                    let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+                    let due = parseFloat(document.getElementById('totalDue').value) || 0;
+                    let resultElement = document.getElementById('changeResult');
+                    if (paid >= due && due > 0) {
+                        let change = paid - due;
+                        resultElement.innerHTML = `💰 Change: KSH ${change.toLocaleString()}`;
+                        // Play sound if enabled
+                        if (settings.soundEnabled) {
+                            try {
+                                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                                if (audioCtx.state === 'suspended') audioCtx.resume();
+                                const osc = audioCtx.createOscillator();
+                                const gain = audioCtx.createGain();
+                                osc.connect(gain);
+                                gain.connect(audioCtx.destination);
+                                osc.frequency.value = 660;
+                                gain.gain.value = 0.15;
+                                osc.start();
+                                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+                                osc.stop(audioCtx.currentTime + 0.2);
+                            } catch(e) {}
+                        }
+                    } else if (due > 0) {
+                        let needed = due - paid;
+                        resultElement.innerHTML = `⚠️ Insufficient! Need KSH ${needed.toLocaleString()} more`;
+                    } else {
+                        resultElement.innerHTML = `💰 Please enter total due amount`;
+                    }
+                });
+            }
+            
+            // Stock
+            const viewStockHistoryBtn = document.getElementById('viewStockHistoryBtn');
+            if (viewStockHistoryBtn) viewStockHistoryBtn.addEventListener('click', showStockHistory);
+            
+            const closeItemModalBtn = document.getElementById('closeItemModalBtn');
+            if (closeItemModalBtn) closeItemModalBtn.addEventListener('click', () => document.getElementById('addItemModal').classList.remove('active'));
+            
+            const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+            if (closeEditModalBtn) closeEditModalBtn.addEventListener('click', () => document.getElementById('editItemModal').classList.remove('active'));
+            
+            const closeHistoryModalBtn = document.getElementById('closeHistoryModalBtn');
+            if (closeHistoryModalBtn) closeHistoryModalBtn.addEventListener('click', () => document.getElementById('stockHistoryModal').classList.remove('active'));
+            
+            const closeDateReportBtn = document.getElementById('closeDateReportBtn');
+            if (closeDateReportBtn) closeDateReportBtn.addEventListener('click', () => document.getElementById('dateReportModal').classList.remove('active'));
+            
+            const viewReportBtn = document.getElementById('viewReportBtn');
+            if (viewReportBtn) viewReportBtn.addEventListener('click', viewDailyReport);
+            
+            const saveItemBtn = document.getElementById('saveItemBtn');
+            if (saveItemBtn) {
+                saveItemBtn.addEventListener('click', () => {
+                    if(addStockItem(currentItemType)) {
+                        document.getElementById('addItemModal').classList.remove('active');
+                    }
+                });
+            }
+            
+            const updateItemBtn = document.getElementById('updateItemBtn');
+            if (updateItemBtn) updateItemBtn.addEventListener('click', updateStockItem);
+            
+            // Preview updates
+            const itemQuantity = document.getElementById('itemQuantity');
+            if (itemQuantity) {
+                itemQuantity.addEventListener('input', () => {
+                    let q = parseInt(document.getElementById('itemQuantity').value) || 0;
+                    let p = parseInt(document.getElementById('itemPrice').value) || 0;
+                    document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+                });
+            }
+            
+            const itemPrice = document.getElementById('itemPrice');
+            if (itemPrice) {
+                itemPrice.addEventListener('input', () => {
+                    let q = parseInt(document.getElementById('itemQuantity').value) || 0;
+                    let p = parseInt(document.getElementById('itemPrice').value) || 0;
+                    document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+                });
+            }
+            
+            const editItemQuantity = document.getElementById('editItemQuantity');
+            if (editItemQuantity) {
+                editItemQuantity.addEventListener('input', () => {
+                    let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
+                    let p = parseInt(document.getElementById('editItemPrice').value) || 0;
+                    document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+                });
+            }
+            
+            const editItemPrice = document.getElementById('editItemPrice');
+            if (editItemPrice) {
+                editItemPrice.addEventListener('input', () => {
+                    let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
+                    let p = parseInt(document.getElementById('editItemPrice').value) || 0;
+                    document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
+                });
+            }
+            
+            // Initialize
+            updateAll();
         });
-        document.getElementById('updateItemBtn').addEventListener('click', updateStockItem);
-        
-        document.getElementById('itemQuantity').addEventListener('input', () => {
-            let q = parseInt(document.getElementById('itemQuantity').value) || 0;
-            let p = parseInt(document.getElementById('itemPrice').value) || 0;
-            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
-        });
-        document.getElementById('itemPrice').addEventListener('input', () => {
-            let q = parseInt(document.getElementById('itemQuantity').value) || 0;
-            let p = parseInt(document.getElementById('itemPrice').value) || 0;
-            document.getElementById('itemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
-        });
-        document.getElementById('editItemQuantity').addEventListener('input', () => {
-            let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
-            let p = parseInt(document.getElementById('editItemPrice').value) || 0;
-            document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
-        });
-        document.getElementById('editItemPrice').addEventListener('input', () => {
-            let q = parseInt(document.getElementById('editItemQuantity').value) || 0;
-            let p = parseInt(document.getElementById('editItemPrice').value) || 0;
-            document.getElementById('editItemTotalPreview').innerHTML = `Total: KSH ${(q*p).toLocaleString()}`;
-        });
-        
-        updateAll();
     </script>
 </body>
 </html>
