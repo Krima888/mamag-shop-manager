@@ -517,7 +517,6 @@
         <div class="nav-bar">
             <button class="nav-btn active" data-page="dashboard">🏠 Home</button>
             <button class="nav-btn" data-page="record">💰 Record</button>
-            <button class="nav-btn" data-page="reports">📊 Reports</button>
             <button class="nav-btn" data-page="stock">📦 Stock</button>
             <button class="nav-btn" data-page="settings">⚙️ Settings</button>
         </div>
@@ -575,45 +574,6 @@
                 </div>
                 <button id="saveSaleBtn">💾 SAVE SALES RECORD</button>
                 <div id="recordMessage" style="margin-top: 10px;"></div>
-            </div>
-        </div>
-
-        <!-- REPORTS PAGE -->
-        <div id="reports" class="page">
-            <div class="card">
-                <h3>📊 SUMMARY STATS</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div>💰 Total Sales</div>
-                        <div class="stat-value" id="totalSalesStat">KSH 0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div>📅 Total Days</div>
-                        <div class="stat-value" id="totalDaysStat">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div>💸 Total Expenses</div>
-                        <div class="stat-value" id="totalExpensesStat">KSH 0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div>📈 Net Profit</div>
-                        <div class="stat-value" id="netProfitStat">KSH 0</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>📅 DAILY REPORTS</h3>
-                <div class="date-selector">
-                    <input type="date" id="reportDatePicker">
-                    <button id="viewReportBtn">View Report</button>
-                </div>
-                <div id="dailyReportView"></div>
-            </div>
-            
-            <div class="card">
-                <h3>📜 ALL RECORDS</h3>
-                <div id="allRecordsList" style="max-height: 400px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -1189,7 +1149,6 @@
             document.getElementById('saleAmount').value = '';
             document.getElementById('dailyExpenses').value = '';
             updateDashboard();
-            updateReports();
         }
 
         function updateDashboard() {
@@ -1222,51 +1181,8 @@
             document.getElementById('streakDisplay').innerHTML = `📊 ${Object.keys(salesData).length} days recorded`;
         }
 
-        function updateReports() {
-            let totalSales = Object.values(salesData).reduce((a,b)=>a+b,0);
-            let totalExpenses = Object.values(expensesData).reduce((a,b)=>a+b,0);
-            let totalDays = Object.keys(salesData).length;
-            let netProfit = totalSales - totalExpenses;
-            
-            document.getElementById('totalSalesStat').innerHTML = `KSH ${totalSales.toLocaleString()}`;
-            document.getElementById('totalDaysStat').innerHTML = totalDays;
-            document.getElementById('totalExpensesStat').innerHTML = `KSH ${totalExpenses.toLocaleString()}`;
-            document.getElementById('netProfitStat').innerHTML = `KSH ${netProfit.toLocaleString()}`;
-            document.getElementById('netProfitStat').style.color = netProfit >= 0 ? '#2d6a4f' : '#dc3545';
-            
-            let sortedDates = Object.keys(salesData).sort().reverse();
-            let recordsHtml = '';
-            sortedDates.forEach(date => {
-                let sales = salesData[date] || 0;
-                let expenses = expensesData[date] || 0;
-                let start = startTimeData[date] || '-';
-                let close = closingTimeData[date] || '-';
-                let hours = calculateHoursWorked(start, close);
-                recordsHtml += `
-                    <div class="daily-report-item" style="cursor:pointer;" onclick="showDateReport('${date}')">
-                        <div class="report-date">📅 ${formatDisplayDate(date)}</div>
-                        <div class="report-detail"><span>💰 Sales:</span><strong>KSH ${sales.toLocaleString()}</strong></div>
-                        <div class="report-detail"><span>⏱️ Hours:</span><strong>${hours > 0 ? hours.toFixed(1) + ' hrs' : '-'}</strong></div>
-                        <div class="report-detail"><span>💸 Expenses:</span><strong>KSH ${expenses.toLocaleString()}</strong></div>
-                        <div class="report-detail"><span>📈 Profit:</span><strong style="color: ${sales-expenses >= 0 ? '#2d6a4f' : '#dc3545'}">KSH ${(sales-expenses).toLocaleString()}</strong></div>
-                    </div>
-                `;
-            });
-            document.getElementById('allRecordsList').innerHTML = recordsHtml || '<div class="empty-state">No records yet</div>';
-        }
-
-        function viewDailyReport() {
-            let date = document.getElementById('reportDatePicker').value;
-            if (!date) {
-                alert('Select a date');
-                return;
-            }
-            showDateReport(date);
-        }
-
         function updateAll() {
             updateDashboard();
-            updateReports();
             updateStockDisplayForDate(currentStockViewDate);
             updateStockDaySelector();
             document.getElementById('headerShopName').innerHTML = settings.shopName;
@@ -1274,7 +1190,6 @@
             document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('stockViewingDate').innerHTML = formatDisplayDate(currentStockViewDate);
             document.getElementById('recordDate').value = getTodayKey();
-            document.getElementById('reportDatePicker').value = getTodayKey();
             document.getElementById('dailyGoalInput').value = settings.dailyGoal;
             document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
             document.getElementById('managerNameInput').value = settings.managerName;
@@ -1386,12 +1301,11 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             if (closeModalBtn) closeModalBtn.addEventListener('click', () => document.getElementById('celebrationModal').classList.remove('active'));
             
-            // Calculator functionality - FIXED
+            // Calculator functionality
             const calculatorBtn = document.getElementById('calculatorBtn');
             if (calculatorBtn) {
                 calculatorBtn.addEventListener('click', function() {
                     document.getElementById('calculatorModal').classList.add('active');
-                    // Clear previous values
                     document.getElementById('amountPaid').value = '';
                     document.getElementById('totalDue').value = '';
                     document.getElementById('changeResult').innerHTML = '💰 Change: KSH 0';
@@ -1414,7 +1328,6 @@
                     if (paid >= due && due > 0) {
                         let change = paid - due;
                         resultElement.innerHTML = `💰 Change: KSH ${change.toLocaleString()}`;
-                        // Play sound if enabled
                         if (settings.soundEnabled) {
                             try {
                                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1454,9 +1367,6 @@
             
             const closeDateReportBtn = document.getElementById('closeDateReportBtn');
             if (closeDateReportBtn) closeDateReportBtn.addEventListener('click', () => document.getElementById('dateReportModal').classList.remove('active'));
-            
-            const viewReportBtn = document.getElementById('viewReportBtn');
-            if (viewReportBtn) viewReportBtn.addEventListener('click', viewDailyReport);
             
             const saveItemBtn = document.getElementById('saveItemBtn');
             if (saveItemBtn) {
