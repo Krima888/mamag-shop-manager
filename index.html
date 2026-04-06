@@ -497,6 +497,41 @@
             font-weight: bold;
             color: #ffd966;
         }
+        
+        .stock-date-picker {
+            background: #e8f0fe;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .stock-date-picker label {
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #1b4d3e;
+        }
+        
+        .stock-date-picker input {
+            background: white;
+            border: 1px solid #2d6a4f;
+        }
+        
+        .apply-date-btn {
+            background: #2d6a4f;
+            margin-top: 8px;
+            font-size: 12px;
+            padding: 8px;
+        }
+        
+        .current-view-badge {
+            background: #2d6a4f;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -577,22 +612,32 @@
             </div>
         </div>
 
-        <!-- STOCK PAGE - WITH DAILY VIEWER -->
+        <!-- STOCK PAGE - WITH DATE PICKER FOR ANY DATE -->
         <div id="stock" class="page">
             <div class="card">
                 <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
+                
+                <!-- Date Picker for selecting any date -->
+                <div class="stock-date-picker">
+                    <label>📅 SELECT DATE FOR STOCK RECORDS:</label>
+                    <input type="date" id="stockDatePicker" value="">
+                    <button id="applyStockDateBtn" class="apply-date-btn">📆 VIEW / EDIT THIS DATE</button>
+                    <div style="text-align: center; margin-top: 8px;">
+                        <span class="current-view-badge" id="currentViewBadge">📅 Viewing: Today</span>
+                    </div>
+                </div>
+                
                 <div class="stock-day-selector" id="stockDaySelector"></div>
-                <p style="color: #6c757d; font-size: 10px;">📅 Viewing: <strong id="stockViewingDate"></strong></p>
             </div>
 
             <div class="action-buttons">
                 <div class="action-card" onclick="openAddItemModal('sold')">
                     <h3>📦 ITEMS SOLD</h3>
-                    <p>Add what you sold today</p>
+                    <p>Add what you sold on this day</p>
                 </div>
                 <div class="action-card" onclick="openAddItemModal('bought')">
                     <h3>🛒 ITEMS BOUGHT</h3>
-                    <p>Add restock purchases</p>
+                    <p>Add restock purchases for this day</p>
                 </div>
             </div>
 
@@ -755,7 +800,7 @@
     <script>
         // ========== DATA STORAGE ==========
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
-        let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
+        let startTimeData = JSON.parse(localStorage.getItem('mag_start_times')) || {};
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
         let expensesData = JSON.parse(localStorage.getItem('mamag_expenses')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
@@ -771,7 +816,6 @@
                 celebrationEnabled: true
             };
         } else {
-            // Ensure all properties exist even if old data is missing
             if (settings.shopName === undefined) settings.shopName = "🏪 MAMA G'S GENERAL SHOP";
             if (settings.managerName === undefined) settings.managerName = "Priscilla Wambui Kamau";
             if (settings.dailyGoal === undefined) settings.dailyGoal = 3500;
@@ -827,34 +871,45 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // ========== STOCK FUNCTIONS WITH DAILY VIEWER ==========
+        // ========== STOCK FUNCTIONS WITH DATE SELECTION ==========
+        
+        // Function to change stock view to any date
+        function changeStockViewDate(dateKey) {
+            currentStockViewDate = dateKey;
+            updateStockDisplayForDate(dateKey);
+            updateStockDaySelector();
+            document.getElementById('currentViewBadge').innerHTML = `📅 Viewing: ${formatDisplayDate(dateKey)}`;
+            document.getElementById('stockDatePicker').value = dateKey;
+        }
+        
+        // Apply selected date from picker
+        function applySelectedDate() {
+            let selectedDate = document.getElementById('stockDatePicker').value;
+            if (selectedDate) {
+                changeStockViewDate(selectedDate);
+                showCelebration('📅 DATE CHANGED', `Now viewing stock for ${formatDisplayDate(selectedDate)}`);
+            } else {
+                alert('❌ Please select a date first');
+            }
+        }
+
         function updateStockDaySelector() {
             const dates = Object.keys(stockData).sort().reverse();
             const selector = document.getElementById('stockDaySelector');
             
+            let html = '<div style="font-size: 11px; color: #6c757d; margin-bottom: 8px;">Quick jump to dates with records:</div>';
+            html += '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
+            
             if (dates.length === 0) {
-                selector.innerHTML = '<div class="stock-day-badge">No past stock records yet</div>';
-                return;
-            }
-            
-            let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
-            html += `<div class="day-chip ${currentStockViewDate === getTodayKey() ? 'active' : ''}" onclick="changeStockViewDate('${getTodayKey()}')">📅 Today</div>`;
-            
-            dates.forEach(date => {
-                if (date !== getTodayKey()) {
+                html += '<div class="stock-day-badge">No past stock records yet</div>';
+            } else {
+                dates.forEach(date => {
                     const isActive = currentStockViewDate === date;
                     html += `<div class="day-chip ${isActive ? 'active' : ''}" onclick="changeStockViewDate('${date}')">📅 ${formatDisplayDate(date)}</div>`;
-                }
-            });
+                });
+            }
             html += '</div>';
             selector.innerHTML = html;
-        }
-
-        function changeStockViewDate(dateKey) {
-            currentStockViewDate = dateKey;
-            updateStockDaySelector();
-            updateStockDisplayForDate(dateKey);
-            document.getElementById('stockViewingDate').innerHTML = formatDisplayDate(dateKey);
         }
 
         function updateStockDisplayForDate(dateKey) {
@@ -948,22 +1003,21 @@
                 return false;
             }
             
-            const todayKey = getTodayKey();
-            if (!stockData[todayKey]) {
-                stockData[todayKey] = { sold: [], bought: [] };
+            // Use the current selected date (not just today!)
+            const targetDate = currentStockViewDate;
+            if (!stockData[targetDate]) {
+                stockData[targetDate] = { sold: [], bought: [] };
             }
             
             const newItem = { name: name, quantity: quantity, price: price, timestamp: new Date().toISOString() };
-            stockData[todayKey][type].push(newItem);
+            stockData[targetDate][type].push(newItem);
             localStorage.setItem('mamag_stock', JSON.stringify(stockData));
             playChaChing();
             const itemTotal = quantity * price;
-            showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${quantity} x ${name} = KSH ${itemTotal.toLocaleString()}`);
+            showCelebration('✅ ITEM SAVED!', `${type === 'sold' ? 'Sold' : 'Purchased'}: ${quantity} x ${name} = KSH ${itemTotal.toLocaleString()}<br>📅 Date: ${formatDisplayDate(targetDate)}`);
             
             // Refresh current view
-            if (currentStockViewDate === todayKey) {
-                updateStockDisplayForDate(todayKey);
-            }
+            updateStockDisplayForDate(targetDate);
             updateStockDaySelector();
             return true;
         }
@@ -1038,7 +1092,8 @@
         function openAddItemModal(type) {
             currentItemType = type;
             const modalTitle = document.getElementById('modalTitle');
-            modalTitle.innerHTML = type === 'sold' ? '➕ ADD ITEM SOLD' : '🛒 ADD ITEM BOUGHT';
+            const dateDisplay = formatDisplayDate(currentStockViewDate);
+            modalTitle.innerHTML = type === 'sold' ? `➕ ADD ITEM SOLD (${dateDisplay})` : `🛒 ADD ITEM BOUGHT (${dateDisplay})`;
             document.getElementById('itemName').value = '';
             document.getElementById('itemQuantity').value = '';
             document.getElementById('itemPrice').value = '';
@@ -1077,7 +1132,6 @@
         function changeStockViewDateAndClose(dateKey) {
             changeStockViewDate(dateKey);
             document.getElementById('stockHistoryModal').classList.remove('active');
-            // Navigate to stock tab
             navigateTo('stock');
         }
 
@@ -1188,7 +1242,8 @@
             document.getElementById('headerShopName').innerHTML = settings.shopName;
             document.getElementById('headerManagerName').innerHTML = settings.managerName;
             document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('stockViewingDate').innerHTML = formatDisplayDate(currentStockViewDate);
+            document.getElementById('stockDatePicker').value = getTodayKey();
+            document.getElementById('currentViewBadge').innerHTML = `📅 Viewing: ${formatDisplayDate(currentStockViewDate)}`;
             document.getElementById('recordDate').value = getTodayKey();
             document.getElementById('dailyGoalInput').value = settings.dailyGoal;
             document.getElementById('shopNameInput').value = settings.shopName.replace('🏪 ', '');
@@ -1271,11 +1326,16 @@
         window.changeStockViewDate = changeStockViewDate;
         window.changeStockViewDateAndClose = changeStockViewDateAndClose;
         window.getTodayKey = getTodayKey;
+        window.applySelectedDate = applySelectedDate;
 
-        // Event listeners - DOMContentLoaded ensures all elements exist
+        // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation
             document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
+            
+            // Stock date picker
+            const applyStockDateBtn = document.getElementById('applyStockDateBtn');
+            if (applyStockDateBtn) applyStockDateBtn.addEventListener('click', applySelectedDate);
             
             // Sales
             const saveSaleBtn = document.getElementById('saveSaleBtn');
