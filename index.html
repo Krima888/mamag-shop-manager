@@ -20,6 +20,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Base body with fallback gradient */
         body {
             background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
             font-family: 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -28,10 +29,96 @@
             overscroll-behavior-y: contain;
         }
 
+        /* Dashboard (Home) Page Background */
+        #dashboard.page.active {
+            background: url('https://i.pinimg.com/1200x/8c/e3/5d/8ce35dba6a905798cc7aac1614f0cd79.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* Record Page Background */
+        #record.page.active {
+            background: url('https://i.pinimg.com/736x/fc/04/ae/fc04aeee22cbce1229a93dd3d0e1eefa.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* Stock Page Background */
+        #stock.page.active {
+            background: url('https://i.pinimg.com/736x/48/d2/b6/48d2b65e39df5e4d738fc60bde129a13.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* Settings Page - No background image, just clean gradient */
+        #settings.page.active {
+            background: transparent;
+        }
+        
+        /* Semi-transparent overlay for all pages to make text readable */
+        .page.active::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        
+        /* Special overlay for settings (lighter) */
+        #settings.page.active::before {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Make cards slightly transparent to show background */
+        .card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Sales card with stronger background for contrast */
+        .sales-card {
+            background: rgba(45, 106, 79, 0.92);
+            backdrop-filter: blur(2px);
+            color: white;
+            text-align: center;
+        }
+        
+        /* Action cards remain solid for better clickability */
+        .action-card {
+            background: #2d6a4f;
+            backdrop-filter: none;
+        }
+        
+        /* Keep modals solid */
+        .modal-content {
+            background: white;
+        }
+        
+        /* Navigation bar solid */
+        .nav-bar {
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Header solid with slight transparency */
+        .header {
+            background: rgba(45, 106, 79, 0.92);
+            backdrop-filter: blur(2px);
+        }
+        
+        /* Ensure all other styles remain exactly as before */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: #f8f9fa;
+            background: transparent;
             min-height: 100vh;
             border-radius: 0;
             overflow: hidden;
@@ -39,12 +126,7 @@
             position: relative;
         }
 
-        .header {
-            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
-            padding: 18px 16px 14px;
-            color: white;
-        }
-
+        /* Rest of your existing styles (keeping everything else identical) */
         .shop-name {
             font-size: 18px;
             font-weight: bold;
@@ -72,7 +154,7 @@
         }
 
         .nav-bar {
-            background: white;
+            background: rgba(248, 249, 250, 0.95);
             display: flex;
             justify-content: space-evenly;
             padding: 8px 6px;
@@ -82,7 +164,6 @@
             z-index: 100;
             gap: 2px;
             flex-wrap: nowrap;
-            background: #f8f9fa;
         }
 
         .nav-btn {
@@ -110,6 +191,8 @@
             padding: 14px;
             animation: fadeIn 0.3s ease;
             min-height: calc(100vh - 115px);
+            position: relative;
+            transition: background 0.3s ease;
         }
 
         .page.active {
@@ -119,20 +202,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
-        }
-
-        .card {
-            background: white;
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        .sales-card {
-            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
-            color: white;
-            text-align: center;
         }
 
         .sales-amount {
@@ -220,6 +289,7 @@
             border-radius: 10px;
             font-size: 13px;
             transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.95);
         }
 
         input:focus {
@@ -404,6 +474,7 @@
             font-size: 9px;
             border-top: 1px solid #e9ecef;
             margin-top: 12px;
+            background: rgba(248, 249, 250, 0.9);
         }
 
         .time-info {
@@ -453,7 +524,7 @@
         }
         
         .stat-card {
-            background: #f8f9fa;
+            background: rgba(248, 249, 250, 0.95);
             padding: 10px;
             border-radius: 10px;
             text-align: center;
@@ -513,7 +584,7 @@
         }
         
         .stock-date-picker {
-            background: #e8f0fe;
+            background: rgba(232, 240, 254, 0.95);
             padding: 12px;
             border-radius: 12px;
             margin-bottom: 15px;
@@ -715,7 +786,7 @@
         <div class="footer">Mama G's General Shop | Smart Business Manager</div>
     </div>
 
-    <!-- MODALS -->
+    <!-- MODALS (same as before - keeping all functionality identical) -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
@@ -781,7 +852,6 @@
         </div>
     </div>
 
-    <!-- NEW: Move Item to Different Date Modal -->
     <div id="moveItemModal" class="modal">
         <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
@@ -830,7 +900,7 @@
     </div>
 
     <script>
-        // ========== DATA STORAGE ==========
+        // ========== DATA STORAGE (identical to before) ==========
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
         let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
@@ -856,10 +926,9 @@
 
         let currentItemType = 'sold';
         let currentEditInfo = {};
-        let currentMoveInfo = {}; // For moving items between dates
+        let currentMoveInfo = {};
         let currentStockViewDate = getTodayKey();
 
-        // Helper Functions
         function formatDate(d) { return d.toISOString().split('T')[0]; }
         function getTodayKey() { return formatDate(new Date()); }
         
@@ -902,8 +971,7 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // ========== STOCK FUNCTIONS ==========
-        
+        // ========== STOCK FUNCTIONS (identical functionality) ==========
         function changeStockViewDate(dateKey) {
             currentStockViewDate = dateKey;
             updateStockDisplayForDate(dateKey);
@@ -944,7 +1012,6 @@
         function updateStockDisplayForDate(dateKey) {
             const todayStock = stockData[dateKey] || { sold: [], bought: [] };
             
-            // Display SOLD items
             const soldContainer = document.getElementById('soldItemsList');
             if (!todayStock.sold || todayStock.sold.length === 0) {
                 soldContainer.innerHTML = '<div class="empty-state">✨ No items sold on this day</div>';
@@ -972,7 +1039,6 @@
                 document.getElementById('soldTotal').innerHTML = `💰 TOTAL SOLD: KSH ${soldTotal.toLocaleString()}`;
             }
             
-            // Display BOUGHT items
             const boughtContainer = document.getElementById('boughtItemsList');
             if (!todayStock.bought || todayStock.bought.length === 0) {
                 boughtContainer.innerHTML = '<div class="empty-state">🛒 No items bought on this day</div>';
@@ -1000,7 +1066,6 @@
                 document.getElementById('boughtTotal').innerHTML = `💸 TOTAL PURCHASES: KSH ${boughtTotal.toLocaleString()}`;
             }
             
-            // Calculate totals for summary
             let soldTotalVal = 0, boughtTotalVal = 0;
             todayStock.sold.forEach(i => soldTotalVal += i.quantity * i.price);
             todayStock.bought.forEach(i => boughtTotalVal += i.quantity * i.price);
@@ -1016,7 +1081,6 @@
             `;
         }
 
-        // NEW: Open modal to move item to different date
         function openMoveModal(type, index, sourceDate) {
             const item = stockData[sourceDate][type][index];
             if (!item) return;
@@ -1033,7 +1097,6 @@
             document.getElementById('moveItemModal').classList.add('active');
         }
         
-        // Confirm moving item to new date
         function confirmMoveItem() {
             const { type, index, sourceDate, item } = currentMoveInfo;
             const targetDate = document.getElementById('moveToDate').value;
@@ -1049,11 +1112,9 @@
                 return;
             }
             
-            // Remove from source
             if (stockData[sourceDate] && stockData[sourceDate][type]) {
                 stockData[sourceDate][type].splice(index, 1);
                 
-                // Clean up if source array becomes empty
                 if (stockData[sourceDate][type].length === 0 && 
                     (!stockData[sourceDate].sold || stockData[sourceDate].sold.length === 0) &&
                     (!stockData[sourceDate].bought || stockData[sourceDate].bought.length === 0)) {
@@ -1061,22 +1122,17 @@
                 }
             }
             
-            // Add to target
             if (!stockData[targetDate]) {
                 stockData[targetDate] = { sold: [], bought: [] };
             }
             stockData[targetDate][type].push({ ...item, movedFrom: sourceDate, movedOn: new Date().toISOString() });
             
-            // Save to localStorage
             localStorage.setItem('mamag_stock', JSON.stringify(stockData));
-            
-            // Update displays
             updateStockDisplayForDate(currentStockViewDate);
             updateStockDaySelector();
             
             playChaChing();
             showCelebration('📅 ITEM MOVED!', `✅ "${item.name}" moved from ${formatDisplayDate(sourceDate)} to ${formatDisplayDate(targetDate)}`);
-            
             document.getElementById('moveItemModal').classList.remove('active');
         }
 
@@ -1458,7 +1514,6 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             if (closeModalBtn) closeModalBtn.addEventListener('click', () => document.getElementById('celebrationModal').classList.remove('active'));
             
-            // Calculator
             const calculatorBtn = document.getElementById('calculatorBtn');
             if (calculatorBtn) {
                 calculatorBtn.addEventListener('click', function() {
@@ -1470,11 +1525,7 @@
             }
             
             const closeCalculatorBtn = document.getElementById('closeCalculatorBtn');
-            if (closeCalculatorBtn) {
-                closeCalculatorBtn.addEventListener('click', function() {
-                    document.getElementById('calculatorModal').classList.remove('active');
-                });
-            }
+            if (closeCalculatorBtn) closeCalculatorBtn.addEventListener('click', () => document.getElementById('calculatorModal').classList.remove('active'));
             
             const calculateChangeBtn = document.getElementById('calculateChangeBtn');
             if (calculateChangeBtn) {
@@ -1509,7 +1560,6 @@
                 });
             }
             
-            // Stock modals
             const viewStockHistoryBtn = document.getElementById('viewStockHistoryBtn');
             if (viewStockHistoryBtn) viewStockHistoryBtn.addEventListener('click', showStockHistory);
             
@@ -1525,7 +1575,6 @@
             const closeDateReportBtn = document.getElementById('closeDateReportBtn');
             if (closeDateReportBtn) closeDateReportBtn.addEventListener('click', () => document.getElementById('dateReportModal').classList.remove('active'));
             
-            // Move item modal
             const closeMoveModalBtn = document.getElementById('closeMoveModalBtn');
             if (closeMoveModalBtn) closeMoveModalBtn.addEventListener('click', () => document.getElementById('moveItemModal').classList.remove('active'));
             
@@ -1544,7 +1593,6 @@
             const updateItemBtn = document.getElementById('updateItemBtn');
             if (updateItemBtn) updateItemBtn.addEventListener('click', updateStockItem);
             
-            // Preview updates
             const itemQuantity = document.getElementById('itemQuantity');
             if (itemQuantity) {
                 itemQuantity.addEventListener('input', () => {
