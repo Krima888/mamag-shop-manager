@@ -20,13 +20,145 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Base body with fallback gradient */
         body {
-            background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
             font-family: 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
             overscroll-behavior-y: contain;
+        }
+
+        /* Theme Variables - Default Green */
+        :root {
+            --primary-color: #2d6a4f;
+            --primary-dark: #1b4d3e;
+            --primary-light: #40916c;
+            --accent-color: #ffd966;
+            --gradient-start: #1a472a;
+            --gradient-end: #0e2a1a;
+            --header-bg: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #2d6a4f;
+            --text-dark: #1b4d3e;
+        }
+
+        /* Theme 1: Royal Purple */
+        .theme-purple {
+            --primary-color: #6c3483;
+            --primary-dark: #4a235a;
+            --primary-light: #8e44ad;
+            --accent-color: #f9e79f;
+            --gradient-start: #4a235a;
+            --gradient-end: #2c0b3a;
+            --header-bg: linear-gradient(135deg, #6c3483, #4a235a);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #6c3483;
+            --text-dark: #4a235a;
+        }
+
+        /* Theme 2: Ocean Blue */
+        .theme-blue {
+            --primary-color: #1a5f7a;
+            --primary-dark: #0e3d52;
+            --primary-light: #2e86c1;
+            --accent-color: #aed6f1;
+            --gradient-start: #0e3d52;
+            --gradient-end: #06212e;
+            --header-bg: linear-gradient(135deg, #1a5f7a, #0e3d52);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #1a5f7a;
+            --text-dark: #0e3d52;
+        }
+
+        /* Theme 3: Sunset Orange */
+        .theme-orange {
+            --primary-color: #e67e22;
+            --primary-dark: #b85c0a;
+            --primary-light: #f39c12;
+            --accent-color: #fdebd0;
+            --gradient-start: #b85c0a;
+            --gradient-end: #6b2e00;
+            --header-bg: linear-gradient(135deg, #e67e22, #b85c0a);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #e67e22;
+            --text-dark: #b85c0a;
+        }
+
+        /* Theme 4: Forest Dark (Dark Mode) */
+        .theme-dark {
+            --primary-color: #1e1e2f;
+            --primary-dark: #0f0f1a;
+            --primary-light: #2d2d44;
+            --accent-color: #ffd966;
+            --gradient-start: #1e1e2f;
+            --gradient-end: #0a0a0f;
+            --header-bg: linear-gradient(135deg, #1e1e2f, #0f0f1a);
+            --card-bg: rgba(30, 30, 47, 0.92);
+            --nav-bg: rgba(20, 20, 30, 0.95);
+            --text-primary: #ffd966;
+            --text-dark: #f9e79f;
+        }
+        
+        .theme-dark .card,
+        .theme-dark .stat-card,
+        .theme-dark .stock-date-picker,
+        .theme-dark .time-info {
+            background: rgba(30, 30, 47, 0.92);
+            color: #e0e0e0;
+        }
+        
+        .theme-dark .card h3,
+        .theme-dark .card h4,
+        .theme-dark label,
+        .theme-dark .report-date {
+            color: #ffd966;
+        }
+        
+        .theme-dark input,
+        .theme-dark select {
+            background: #2d2d44;
+            color: white;
+            border-color: #ffd966;
+        }
+
+        /* Theme 5: Rose Pink */
+        .theme-pink {
+            --primary-color: #c0395e;
+            --primary-dark: #8e2446;
+            --primary-light: #e74c7c;
+            --accent-color: #fadbd8;
+            --gradient-start: #8e2446;
+            --gradient-end: #4a1224;
+            --header-bg: linear-gradient(135deg, #c0395e, #8e2446);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #c0395e;
+            --text-dark: #8e2446;
+        }
+
+        /* Apply theme variables */
+        body {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: transparent;
+            min-height: 100vh;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .header {
+            background: var(--header-bg);
+            padding: 18px 16px 14px;
+            color: white;
         }
 
         /* Dashboard (Home) Page Background */
@@ -50,12 +182,11 @@
             position: relative;
         }
         
-        /* Settings Page - No background image, just clean gradient */
+        /* Settings Page */
         #settings.page.active {
             background: transparent;
         }
         
-        /* Semi-transparent overlay for all pages to make text readable */
         .page.active::before {
             content: '';
             position: fixed;
@@ -63,18 +194,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             z-index: -1;
         }
         
-        /* Special overlay for settings (lighter) */
-        #settings.page.active::before {
-            background: rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Make cards slightly transparent to show background */
         .card {
-            background: rgba(255, 255, 255, 0.92);
+            background: var(--card-bg);
             backdrop-filter: blur(2px);
             border-radius: 14px;
             padding: 14px;
@@ -83,50 +208,159 @@
             transition: all 0.3s ease;
         }
         
-        /* Sales card with stronger background for contrast */
         .sales-card {
-            background: rgba(45, 106, 79, 0.92);
+            background: var(--primary-color);
             backdrop-filter: blur(2px);
             color: white;
             text-align: center;
         }
         
-        /* Action cards remain solid for better clickability */
         .action-card {
-            background: #2d6a4f;
+            background: var(--primary-color);
             backdrop-filter: none;
         }
         
-        /* Keep modals solid */
-        .modal-content {
-            background: white;
-        }
-        
-        /* Navigation bar solid */
         .nav-bar {
-            background: rgba(248, 249, 250, 0.95);
+            background: var(--nav-bg);
             backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: space-evenly;
+            padding: 8px 6px;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 2px;
+            flex-wrap: nowrap;
         }
         
-        /* Header solid with slight transparency */
-        .header {
-            background: rgba(45, 106, 79, 0.92);
-            backdrop-filter: blur(2px);
+        .nav-btn {
+            background: #f0f0f0;
+            border: none;
+            font-size: 12px;
+            padding: 6px 8px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: var(--text-primary);
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
         }
         
-        /* Ensure all other styles remain exactly as before */
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: transparent;
-            min-height: 100vh;
-            border-radius: 0;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.2);
-            position: relative;
+        .nav-btn.active {
+            background: var(--primary-color);
+            color: white;
         }
-
-        /* Rest of your existing styles (keeping everything else identical) */
+        
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 22px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.01);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+        
+        h3, h4 {
+            color: var(--text-primary);
+        }
+        
+        .report-date {
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .stock-total {
+            font-weight: bold;
+            padding-top: 8px;
+            margin-top: 6px;
+            border-top: 2px solid var(--primary-color);
+            text-align: right;
+            font-size: 13px;
+        }
+        
+        .stock-summary-net.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .stock-summary-net.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .time-info {
+            background: #e8f0fe;
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 11px;
+            text-align: center;
+        }
+        
+        .hours-worked {
+            background: #d4edda;
+            padding: 6px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #155724;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .theme-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Keep all other existing styles */
         .shop-name {
             font-size: 18px;
             font-weight: bold;
@@ -151,39 +385,6 @@
             margin-top: 6px;
             font-size: 10px;
             opacity: 0.8;
-        }
-
-        .nav-bar {
-            background: rgba(248, 249, 250, 0.95);
-            display: flex;
-            justify-content: space-evenly;
-            padding: 8px 6px;
-            border-bottom: 1px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            gap: 2px;
-            flex-wrap: nowrap;
-        }
-
-        .nav-btn {
-            background: #f0f0f0;
-            border: none;
-            font-size: 12px;
-            padding: 6px 8px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            color: #2d6a4f;
-            flex: 1;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .nav-btn.active {
-            background: #2d6a4f;
-            color: white;
         }
 
         .page {
@@ -230,7 +431,7 @@
             right: 15px;
             top: 15px;
             font-size: 11px;
-            color: #2d6a4f;
+            color: var(--text-primary);
             background: rgba(45,106,79,0.1);
             padding: 4px 8px;
             border-radius: 20px;
@@ -241,17 +442,6 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 14px;
-        }
-
-        .action-card {
-            background: #2d6a4f;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .action-card h3 {
@@ -267,19 +457,11 @@
 
         .action-card:hover {
             transform: scale(1.02);
-            background: #1b4d3e;
+            background: var(--primary-dark);
         }
 
         .form-group {
             margin-bottom: 12px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2d6a4f;
-            font-size: 12px;
         }
 
         input, select {
@@ -294,25 +476,7 @@
 
         input:focus {
             outline: none;
-            border-color: #2d6a4f;
-        }
-
-        button {
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 22px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            background: #1b4d3e;
-            transform: scale(1.01);
+            border-color: var(--primary-color);
         }
 
         .btn-edit {
@@ -396,13 +560,6 @@
             border-bottom: none;
         }
         
-        .report-date {
-            font-weight: bold;
-            color: #2d6a4f;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        
         .report-detail {
             display: flex;
             justify-content: space-between;
@@ -432,34 +589,6 @@
             flex-wrap: wrap;
         }
 
-        .stock-total {
-            font-weight: bold;
-            padding-top: 8px;
-            margin-top: 6px;
-            border-top: 2px solid #2d6a4f;
-            text-align: right;
-            font-size: 13px;
-        }
-
-        .stock-summary-net {
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 8px;
-            text-align: center;
-            padding: 8px;
-            border-radius: 10px;
-        }
-
-        .stock-summary-net.positive {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .stock-summary-net.negative {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
         .empty-state {
             text-align: center;
             padding: 20px;
@@ -475,26 +604,6 @@
             border-top: 1px solid #e9ecef;
             margin-top: 12px;
             background: rgba(248, 249, 250, 0.9);
-        }
-
-        .time-info {
-            background: #e8f0fe;
-            padding: 8px;
-            border-radius: 10px;
-            margin-top: 8px;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .hours-worked {
-            background: #d4edda;
-            padding: 6px 8px;
-            border-radius: 10px;
-            margin-top: 6px;
-            font-size: 11px;
-            color: #155724;
-            text-align: center;
-            font-weight: bold;
         }
 
         .offline-badge {
@@ -524,16 +633,10 @@
         }
         
         .stat-card {
-            background: rgba(248, 249, 250, 0.95);
+            background: var(--card-bg);
             padding: 10px;
             border-radius: 10px;
             text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2d6a4f;
         }
 
         .stock-day-badge {
@@ -543,7 +646,7 @@
             font-size: 11px;
             display: inline-block;
             margin-bottom: 10px;
-            color: #2d6a4f;
+            color: var(--text-primary);
         }
 
         .stock-day-selector {
@@ -563,12 +666,12 @@
         }
         
         .day-chip.active {
-            background: #2d6a4f;
+            background: var(--primary-color);
             color: white;
         }
         
         .day-chip:hover {
-            background: #40916c;
+            background: var(--primary-light);
             color: white;
         }
         
@@ -584,7 +687,7 @@
         }
         
         .stock-date-picker {
-            background: rgba(232, 240, 254, 0.95);
+            background: var(--card-bg);
             padding: 12px;
             border-radius: 12px;
             margin-bottom: 15px;
@@ -593,23 +696,22 @@
         .stock-date-picker label {
             font-size: 13px;
             margin-bottom: 8px;
-            color: #1b4d3e;
         }
         
         .stock-date-picker input {
             background: white;
-            border: 1px solid #2d6a4f;
+            border: 1px solid var(--primary-color);
         }
         
         .apply-date-btn {
-            background: #2d6a4f;
+            background: var(--primary-color);
             margin-top: 8px;
             font-size: 12px;
             padding: 8px;
         }
         
         .current-view-badge {
-            background: #2d6a4f;
+            background: var(--primary-color);
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -619,7 +721,7 @@
         }
     </style>
 </head>
-<body>
+<body class="theme-default">
     <div class="offline-badge" id="offlineBadge">📴 OFFLINE MODE</div>
     
     <div class="app-container">
@@ -651,7 +753,7 @@
             
             <div class="card clickable-card" id="todayCard" onclick="showDateReport(getTodayKey())">
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">💰 TODAY'S SALES <span class="click-icon">📅 Tap for details</span></div>
-                <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px; color: #2d6a4f;">KSH 0</div>
+                <div class="sales-amount" id="todaySalesDisplay" style="font-size: 28px;">KSH 0</div>
                 <div id="streakDisplay" style="color: #ff6b35; margin-top: 6px; font-size: 11px;"></div>
                 <div id="startTimeDisplay" class="time-info">
                     ⏰ Opening: <strong id="startTimeValue">Not set</strong> | 🔒 Closing: <strong id="closingTimeValue">Not set</strong>
@@ -665,13 +767,13 @@
                 <div style="font-weight: bold; margin-bottom: 10px;">📊 THIS WEEK</div>
                 <div id="weeklyGraph"></div>
             </div>
-            <button id="calculatorBtn" style="margin-top: 6px; background: #40916c;">🧮 CALCULATOR</button>
+            <button id="calculatorBtn" style="margin-top: 6px;">🧮 CALCULATOR</button>
         </div>
 
         <!-- RECORD PAGE -->
         <div id="record" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f; margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
+                <h3 style="margin-bottom: 12px;">📝 RECORD TODAY'S SALES</h3>
                 <div class="form-group">
                     <label>📅 Date</label>
                     <input type="date" id="recordDate">
@@ -700,7 +802,7 @@
         <!-- STOCK PAGE -->
         <div id="stock" class="page">
             <div class="card">
-                <h3 style="color: #2d6a4f;">📦 STOCK & INVENTORY</h3>
+                <h3>📦 STOCK & INVENTORY</h3>
                 
                 <div class="stock-date-picker">
                     <label>📅 SELECT DATE FOR STOCK RECORDS:</label>
@@ -726,23 +828,23 @@
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f; margin-bottom: 8px; font-size: 13px;">📝 SOLD ITEMS</h4>
+                <h4 style="margin-bottom: 8px; font-size: 13px;">📝 SOLD ITEMS</h4>
                 <div id="soldItemsList"></div>
                 <div id="soldTotal" class="stock-total"></div>
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f; margin-bottom: 8px; font-size: 13px;">🛒 BOUGHT ITEMS</h4>
+                <h4 style="margin-bottom: 8px; font-size: 13px;">🛒 BOUGHT ITEMS</h4>
                 <div id="boughtItemsList"></div>
                 <div id="boughtTotal" class="stock-total"></div>
             </div>
 
             <div class="card">
-                <h4 style="color: #2d6a4f; margin-bottom: 8px; font-size: 13px;">📊 STOCK SUMMARY</h4>
+                <h4 style="margin-bottom: 8px; font-size: 13px;">📊 STOCK SUMMARY</h4>
                 <div id="stockSummary"></div>
             </div>
 
-            <button id="viewStockHistoryBtn" style="background: #40916c;">📜 VIEW ALL STOCK HISTORY</button>
+            <button id="viewStockHistoryBtn">📜 VIEW ALL STOCK HISTORY</button>
         </div>
 
         <!-- SETTINGS PAGE -->
@@ -759,6 +861,21 @@
                 </div>
                 <button id="saveInfoBtn">💾 SAVE INFO</button>
             </div>
+            
+            <!-- NEW: Theme Switcher Section -->
+            <div class="card">
+                <h3>🎨 APP THEME</h3>
+                <p style="font-size: 11px; color: #6c757d; margin-bottom: 10px;">Choose your favorite color theme</p>
+                <div class="theme-grid">
+                    <button class="theme-btn" onclick="changeTheme('default')" style="background: #2d6a4f;">🌿 Default Green</button>
+                    <button class="theme-btn" onclick="changeTheme('purple')" style="background: #6c3483;">👑 Royal Purple</button>
+                    <button class="theme-btn" onclick="changeTheme('blue')" style="background: #1a5f7a;">🌊 Ocean Blue</button>
+                    <button class="theme-btn" onclick="changeTheme('orange')" style="background: #e67e22;">🌅 Sunset Orange</button>
+                    <button class="theme-btn" onclick="changeTheme('dark')" style="background: #1e1e2f;">🌙 Forest Dark</button>
+                    <button class="theme-btn" onclick="changeTheme('pink')" style="background: #c0395e;">🌸 Rose Pink</button>
+                </div>
+            </div>
+            
             <div class="card">
                 <h3>🎯 DAILY GOAL</h3>
                 <div class="form-group">
@@ -779,14 +896,14 @@
             </div>
             <div class="card">
                 <h3>💾 DATA MANAGEMENT</h3>
-                <button id="exportBtn" style="background: #40916c; margin-bottom: 6px;">📥 Export Data</button>
+                <button id="exportBtn" style="margin-bottom: 6px;">📥 Export Data</button>
                 <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
             </div>
         </div>
         <div class="footer">Mama G's General Shop | Smart Business Manager</div>
     </div>
 
-    <!-- MODALS (same as before - keeping all functionality identical) -->
+    <!-- MODALS (same as before) -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
@@ -883,8 +1000,8 @@
     <div id="dateReportModal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="color: #2d6a4f;" id="dateReportTitle">📅 Daily Report</h3>
-                <button id="closeDateReportBtn" style="width: auto; background: none; color: #2d6a4f; font-size: 20px;">✖</button>
+                <h3 style="color: var(--text-primary);" id="dateReportTitle">📅 Daily Report</h3>
+                <button id="closeDateReportBtn" style="width: auto; background: none; color: var(--text-primary); font-size: 20px;">✖</button>
             </div>
             <div id="dateReportContent"></div>
         </div>
@@ -893,14 +1010,14 @@
     <div id="celebrationModal" class="modal">
         <div class="modal-content" style="background: white;">
             <div style="font-size: 36px;">🎉 🎉 🎉</div>
-            <div style="font-size: 18px; font-weight: bold; color: #2d6a4f;" id="celebrationTitle"></div>
+            <div style="font-size: 18px; font-weight: bold; color: var(--primary-color);" id="celebrationTitle"></div>
             <div id="celebrationMessage" style="margin: 10px 0;"></div>
-            <button id="closeModalBtn" style="background: #2d6a4f;">Continue</button>
+            <button id="closeModalBtn" style="background: var(--primary-color);">Continue</button>
         </div>
     </div>
 
     <script>
-        // ========== DATA STORAGE (identical to before) ==========
+        // ========== DATA STORAGE ==========
         let salesData = JSON.parse(localStorage.getItem('mamag_sales')) || {};
         let startTimeData = JSON.parse(localStorage.getItem('mamag_start_times')) || {};
         let closingTimeData = JSON.parse(localStorage.getItem('mamag_closing_times')) || {};
@@ -914,7 +1031,8 @@
                 managerName: "Priscilla Wambui Kamau",
                 dailyGoal: 3500,
                 soundEnabled: true,
-                celebrationEnabled: true
+                celebrationEnabled: true,
+                theme: "default"
             };
         } else {
             if (settings.shopName === undefined) settings.shopName = "🏪 MAMA G'S GENERAL SHOP";
@@ -922,6 +1040,38 @@
             if (settings.dailyGoal === undefined) settings.dailyGoal = 3500;
             if (settings.soundEnabled === undefined) settings.soundEnabled = true;
             if (settings.celebrationEnabled === undefined) settings.celebrationEnabled = true;
+            if (settings.theme === undefined) settings.theme = "default";
+        }
+
+        // Apply saved theme
+        function applyTheme(themeName) {
+            const body = document.body;
+            // Remove all theme classes
+            body.classList.remove('theme-default', 'theme-purple', 'theme-blue', 'theme-orange', 'theme-dark', 'theme-pink');
+            
+            if (themeName === 'default') {
+                body.classList.add('theme-default');
+            } else if (themeName === 'purple') {
+                body.classList.add('theme-purple');
+            } else if (themeName === 'blue') {
+                body.classList.add('theme-blue');
+            } else if (themeName === 'orange') {
+                body.classList.add('theme-orange');
+            } else if (themeName === 'dark') {
+                body.classList.add('theme-dark');
+            } else if (themeName === 'pink') {
+                body.classList.add('theme-pink');
+            }
+            
+            // Save to settings
+            settings.theme = themeName;
+            localStorage.setItem('mamag_settings', JSON.stringify(settings));
+        }
+        
+        // Change theme function (called by buttons)
+        function changeTheme(themeName) {
+            applyTheme(themeName);
+            showCelebration('🎨 THEME CHANGED!', `Theme switched to ${themeName.charAt(0).toUpperCase() + themeName.slice(1)}`);
         }
 
         let currentItemType = 'sold';
@@ -971,7 +1121,7 @@
             document.getElementById('celebrationModal').classList.add('active');
         }
 
-        // ========== STOCK FUNCTIONS (identical functionality) ==========
+        // ========== STOCK FUNCTIONS ==========
         function changeStockViewDate(dateKey) {
             currentStockViewDate = dateKey;
             updateStockDisplayForDate(dateKey);
@@ -1327,7 +1477,7 @@
                     <div class="report-detail"><span>Items Sold Value:</span><strong>KSH ${soldTotal.toLocaleString()}</strong></div>
                     <div class="report-detail"><span>Items Purchased:</span><strong>KSH ${boughtTotal.toLocaleString()}</strong></div>
                     <div class="report-detail"><span>Stock Items:</span><strong>${(stock.sold || []).length} sold, ${(stock.bought || []).length} bought</strong></div>
-                    <button onclick="changeStockViewDateAndClose('${dateKey}')" style="margin-top: 10px; background: #2d6a4f;">📦 View Stock Details</button>
+                    <button onclick="changeStockViewDateAndClose('${dateKey}')" style="margin-top: 10px;">📦 View Stock Details</button>
                 </div>
             `;
             document.getElementById('dateReportModal').classList.add('active');
@@ -1485,9 +1635,13 @@
         window.applySelectedDate = applySelectedDate;
         window.openMoveModal = openMoveModal;
         window.confirmMoveItem = confirmMoveItem;
+        window.changeTheme = changeTheme;
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved theme on load
+            applyTheme(settings.theme);
+            
             document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
             
             const applyStockDateBtn = document.getElementById('applyStockDateBtn');
