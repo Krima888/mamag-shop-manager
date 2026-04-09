@@ -87,7 +87,7 @@
             --text-dark: #b85c0a;
         }
 
-        /* Theme 4: Forest Dark (Dark Mode) */
+        /* Theme 4: Forest Dark (Dark Mode) - FIXED FOR READABILITY */
         .theme-dark {
             --primary-color: #1e1e2f;
             --primary-dark: #0f0f1a;
@@ -96,32 +96,135 @@
             --gradient-start: #1e1e2f;
             --gradient-end: #0a0a0f;
             --header-bg: linear-gradient(135deg, #1e1e2f, #0f0f1a);
-            --card-bg: rgba(30, 30, 47, 0.92);
+            --card-bg: rgba(30, 30, 47, 0.95);
             --nav-bg: rgba(20, 20, 30, 0.95);
             --text-primary: #ffd966;
-            --text-dark: #f9e79f;
+            --text-dark: #ffffff;
+            --text-light: #e0e0e0;
         }
         
+        /* Force all text to be readable in dark mode */
         .theme-dark .card,
         .theme-dark .stat-card,
         .theme-dark .stock-date-picker,
-        .theme-dark .time-info {
-            background: rgba(30, 30, 47, 0.92);
-            color: #e0e0e0;
+        .theme-dark .time-info,
+        .theme-dark .hours-worked {
+            background: rgba(30, 30, 47, 0.95);
+            color: #ffffff !important;
         }
         
         .theme-dark .card h3,
         .theme-dark .card h4,
-        .theme-dark label,
-        .theme-dark .report-date {
-            color: #ffd966;
+        .theme-dark .report-date,
+        .theme-dark .stock-item-info,
+        .theme-dark .stock-total,
+        .theme-dark .report-detail span,
+        .theme-dark .report-detail strong {
+            color: #ffffff !important;
+        }
+        
+        .theme-dark label {
+            color: #ffd966 !important;
         }
         
         .theme-dark input,
         .theme-dark select {
             background: #2d2d44;
-            color: white;
+            color: #ffffff !important;
             border-color: #ffd966;
+        }
+        
+        .theme-dark input::placeholder {
+            color: #aaaaaa;
+        }
+        
+        .theme-dark .stat-value {
+            color: #ffd966 !important;
+        }
+        
+        .theme-dark .empty-state {
+            color: #cccccc !important;
+        }
+        
+        .theme-dark .footer {
+            background: rgba(20, 20, 30, 0.95);
+            color: #cccccc;
+        }
+        
+        .theme-dark .day-chip {
+            background: #2d2d44;
+            color: #ffffff;
+        }
+        
+        .theme-dark .day-chip.active {
+            background: #ffd966;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .day-chip:hover {
+            background: #ffd966;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .click-icon {
+            background: rgba(255, 217, 102, 0.2);
+            color: #ffd966;
+        }
+        
+        .theme-dark .time-info {
+            background: #2d2d44;
+            color: #ffffff;
+        }
+        
+        .theme-dark .hours-worked {
+            background: #2d2d44;
+            color: #ffd966;
+        }
+        
+        .theme-dark .stock-summary-net.positive {
+            background: #1a472a;
+            color: #d4edda;
+        }
+        
+        .theme-dark .stock-summary-net.negative {
+            background: #721c24;
+            color: #f8d7da;
+        }
+        
+        .theme-dark .btn-edit {
+            background: #ffc107;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .theme-dark .btn-move-date {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .theme-dark .apply-date-btn,
+        .theme-dark button:not(.btn-edit):not(.btn-delete):not(.btn-move-date) {
+            background: #ffd966;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .apply-date-btn:hover,
+        .theme-dark button:not(.btn-edit):not(.btn-delete):not(.btn-move-date):hover {
+            background: #f5cb5c;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .current-view-badge {
+            background: #ffd966;
+            color: #1e1e2f;
+        }
+        
+        .theme-dark .stock-date-picker label {
+            color: #ffd966 !important;
         }
 
         /* Theme 5: Rose Pink */
@@ -862,7 +965,7 @@
                 <button id="saveInfoBtn">💾 SAVE INFO</button>
             </div>
             
-            <!-- NEW: Theme Switcher Section -->
+            <!-- Theme Switcher Section -->
             <div class="card">
                 <h3>🎨 APP THEME</h3>
                 <p style="font-size: 11px; color: #6c757d; margin-bottom: 10px;">Choose your favorite color theme</p>
@@ -903,7 +1006,7 @@
         <div class="footer">Mama G's General Shop | Smart Business Manager</div>
     </div>
 
-    <!-- MODALS (same as before) -->
+    <!-- MODALS -->
     <div id="calculatorModal" class="modal">
         <div class="modal-content" style="background: #1a1a1a; border: 1px solid #ffd966;">
             <div style="display: flex; justify-content: space-between;">
