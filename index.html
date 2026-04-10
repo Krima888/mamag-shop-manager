@@ -999,7 +999,7 @@
             </div>
             <div class="card">
                 <h3>💾 DATA MANAGEMENT</h3>
-                <button id="exportBtn" style="margin-bottom: 6px;">📥 Export Data</button>
+                <button id="exportCsvBtn" style="margin-bottom: 6px; background: #40916c;">📊 Export as Excel/CSV (Table Format)</button>
                 <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
             </div>
         </div>
@@ -1149,7 +1149,6 @@
         // Apply saved theme
         function applyTheme(themeName) {
             const body = document.body;
-            // Remove all theme classes
             body.classList.remove('theme-default', 'theme-purple', 'theme-blue', 'theme-orange', 'theme-dark', 'theme-pink');
             
             if (themeName === 'default') {
@@ -1166,15 +1165,108 @@
                 body.classList.add('theme-pink');
             }
             
-            // Save to settings
             settings.theme = themeName;
             localStorage.setItem('mamag_settings', JSON.stringify(settings));
         }
         
-        // Change theme function (called by buttons)
         function changeTheme(themeName) {
             applyTheme(themeName);
             showCelebration('🎨 THEME CHANGED!', `Theme switched to ${themeName.charAt(0).toUpperCase() + themeName.slice(1)}`);
+        }
+
+        // ========== CSV EXPORT FUNCTION ==========
+        function exportAsCSV() {
+            let allDates = Object.keys(salesData).sort();
+            
+            if (allDates.length === 0) {
+                alert('📭 No data to export. Record some sales first!');
+                return;
+            }
+            
+            // Headers
+            let headers = [
+                '📅 Date',
+                '💰 Sales (KSH)',
+                '💸 Expenses (KSH)',
+                '📈 Profit (KSH)',
+                '⏱️ Hours Worked',
+                '📦 Stock Sold (KSH)',
+                '🛒 Stock Bought (KSH)',
+                '📊 Stock Profit (KSH)'
+            ];
+            
+            // Data rows
+            let rows = [];
+            allDates.forEach(date => {
+                let sales = salesData[date] || 0;
+                let expenses = expensesData[date] || 0;
+                let profit = sales - expenses;
+                
+                let start = startTimeData[date] || '';
+                let close = closingTimeData[date] || '';
+                let hours = calculateHoursWorked(start, close);
+                let hoursDisplay = hours > 0 ? hours.toFixed(1) : '0';
+                
+                let stock = stockData[date] || { sold: [], bought: [] };
+                let soldTotal = 0, boughtTotal = 0;
+                
+                if (stock.sold && stock.sold.length > 0) {
+                    soldTotal = stock.sold.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                }
+                if (stock.bought && stock.bought.length > 0) {
+                    boughtTotal = stock.bought.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                }
+                let stockProfit = soldTotal - boughtTotal;
+                
+                rows.push([date, sales, expenses, profit, hoursDisplay, soldTotal, boughtTotal, stockProfit]);
+            });
+            
+            // Summary totals
+            let totalSales = rows.reduce((sum, row) => sum + row[1], 0);
+            let totalExpenses = rows.reduce((sum, row) => sum + row[2], 0);
+            let totalProfit = totalSales - totalExpenses;
+            let totalStockSold = rows.reduce((sum, row) => sum + row[5], 0);
+            let totalStockBought = rows.reduce((sum, row) => sum + row[6], 0);
+            let totalStockProfit = totalStockSold - totalStockBought;
+            
+            let summaryRows = [
+                [],
+                ['📊 SUMMARY REPORT', '', '', '', '', '', '', ''],
+                ['TOTAL SALES', `KSH ${totalSales.toLocaleString()}`, '', '', '', '', '', ''],
+                ['TOTAL EXPENSES', `KSH ${totalExpenses.toLocaleString()}`, '', '', '', '', '', ''],
+                ['NET PROFIT', `KSH ${totalProfit.toLocaleString()}`, '', '', '', '', '', ''],
+                ['TOTAL STOCK SOLD', `KSH ${totalStockSold.toLocaleString()}`, '', '', '', '', '', ''],
+                ['TOTAL STOCK BOUGHT', `KSH ${totalStockBought.toLocaleString()}`, '', '', '', '', '', ''],
+                ['NET STOCK PROFIT', `KSH ${totalStockProfit.toLocaleString()}`, '', '', '', '', '', ''],
+                [],
+                [`📅 Generated: ${new Date().toLocaleString()}`, '', '', '', '', '', '', ''],
+                [`🏪 ${settings.shopName} | Manager: ${settings.managerName}`, '', '', '', '', '', '', '']
+            ];
+            
+            let allRows = [headers, ...rows, ...summaryRows];
+            
+            // Convert to CSV
+            let csvContent = allRows.map(row => {
+                return row.map(cell => {
+                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"'))) {
+                        return `"${cell.replace(/"/g, '""')}"`;
+                    }
+                    return cell;
+                }).join(',');
+            }).join('\n');
+            
+            // Add UTF-8 BOM for proper Excel encoding
+            let blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            let link = document.createElement('a');
+            let url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', `mamag_export_${getTodayKey()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showCelebration('📊 EXPORT COMPLETE!', `CSV file saved to Downloads folder<br>${allDates.length} days of data exported`);
         }
 
         let currentItemType = 'sold';
@@ -1688,15 +1780,6 @@
             alert('✅ Settings saved');
         }
         
-        function exportData() {
-            let data = { sales: salesData, expenses: expensesData, startTimes: startTimeData, closingTimes: closingTimeData, stock: stockData, settings };
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            let a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `mamag_backup_${getTodayKey()}.json`;
-            a.click();
-        }
-        
         function resetData() {
             if(confirm('⚠️ Delete ALL data?')) {
                 salesData = {}; startTimeData = {}; closingTimeData = {}; expensesData = {}; stockData = {};
@@ -1739,10 +1822,10 @@
         window.openMoveModal = openMoveModal;
         window.confirmMoveItem = confirmMoveItem;
         window.changeTheme = changeTheme;
+        window.exportAsCSV = exportAsCSV;
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Apply saved theme on load
             applyTheme(settings.theme);
             
             document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
@@ -1762,8 +1845,8 @@
             const saveNotificationsBtn = document.getElementById('saveNotificationsBtn');
             if (saveNotificationsBtn) saveNotificationsBtn.addEventListener('click', saveNotifications);
             
-            const exportBtn = document.getElementById('exportBtn');
-            if (exportBtn) exportBtn.addEventListener('click', exportData);
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+            if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportAsCSV);
             
             const resetBtn = document.getElementById('resetBtn');
             if (resetBtn) resetBtn.addEventListener('click', resetData);
