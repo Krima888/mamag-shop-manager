@@ -311,6 +311,56 @@
             transition: all 0.3s ease;
         }
         
+        /* Settings Accordion Styles */
+        .settings-section {
+            margin-bottom: 12px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--card-bg);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .settings-header {
+            background: var(--primary-color);
+            padding: 14px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .settings-arrow {
+            color: white;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .settings-section.open .settings-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .settings-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            padding: 0 14px;
+        }
+        
+        .settings-section.open .settings-content {
+            max-height: 500px;
+            padding: 14px;
+            transition: max-height 0.4s ease-in;
+        }
+        
         .sales-card {
             background: var(--primary-color);
             backdrop-filter: blur(2px);
@@ -950,57 +1000,88 @@
             <button id="viewStockHistoryBtn">📜 VIEW ALL STOCK HISTORY</button>
         </div>
 
-        <!-- SETTINGS PAGE -->
+        <!-- SETTINGS PAGE - ACCORDION STYLE -->
         <div id="settings" class="page">
-            <div class="card">
-                <h3>🏪 SHOP INFO</h3>
-                <div class="form-group">
-                    <label>Shop Name</label>
-                    <input type="text" id="shopNameInput" value="MAMA G'S GENERAL SHOP">
+            <!-- Shop Info Section -->
+            <div class="settings-section" id="sectionShopInfo">
+                <div class="settings-header" onclick="toggleSection('sectionShopInfo')">
+                    <h3>🏪 SHOP INFO</h3>
+                    <span class="settings-arrow">▼</span>
                 </div>
-                <div class="form-group">
-                    <label>Manager Name</label>
-                    <input type="text" id="managerNameInput" value="Priscilla Wambui Kamau">
-                </div>
-                <button id="saveInfoBtn">💾 SAVE INFO</button>
-            </div>
-            
-            <!-- Theme Switcher Section -->
-            <div class="card">
-                <h3>🎨 APP THEME</h3>
-                <p style="font-size: 11px; color: #6c757d; margin-bottom: 10px;">Choose your favorite color theme</p>
-                <div class="theme-grid">
-                    <button class="theme-btn" onclick="changeTheme('default')" style="background: #2d6a4f;">🌿 Default Green</button>
-                    <button class="theme-btn" onclick="changeTheme('purple')" style="background: #6c3483;">👑 Royal Purple</button>
-                    <button class="theme-btn" onclick="changeTheme('blue')" style="background: #1a5f7a;">🌊 Ocean Blue</button>
-                    <button class="theme-btn" onclick="changeTheme('orange')" style="background: #e67e22;">🌅 Sunset Orange</button>
-                    <button class="theme-btn" onclick="changeTheme('dark')" style="background: #1e1e2f;">🌙 Forest Dark</button>
-                    <button class="theme-btn" onclick="changeTheme('pink')" style="background: #c0395e;">🌸 Rose Pink</button>
+                <div class="settings-content">
+                    <div class="form-group">
+                        <label>Shop Name</label>
+                        <input type="text" id="shopNameInput" value="MAMA G'S GENERAL SHOP">
+                    </div>
+                    <div class="form-group">
+                        <label>Manager Name</label>
+                        <input type="text" id="managerNameInput" value="Priscilla Wambui Kamau">
+                    </div>
+                    <button id="saveInfoBtn">💾 SAVE INFO</button>
                 </div>
             </div>
             
-            <div class="card">
-                <h3>🎯 DAILY GOAL</h3>
-                <div class="form-group">
-                    <label>Set Daily Target (KSH)</label>
-                    <input type="number" id="dailyGoalInput" step="100">
+            <!-- App Theme Section -->
+            <div class="settings-section" id="sectionAppTheme">
+                <div class="settings-header" onclick="toggleSection('sectionAppTheme')">
+                    <h3>🎨 APP THEME</h3>
+                    <span class="settings-arrow">▼</span>
                 </div>
-                <button id="saveGoalBtn">💾 SAVE GOAL</button>
+                <div class="settings-content">
+                    <p style="font-size: 11px; color: #6c757d; margin-bottom: 10px;">Choose your favorite color theme</p>
+                    <div class="theme-grid">
+                        <button class="theme-btn" onclick="changeTheme('default')" style="background: #2d6a4f;">🌿 Default Green</button>
+                        <button class="theme-btn" onclick="changeTheme('purple')" style="background: #6c3483;">👑 Royal Purple</button>
+                        <button class="theme-btn" onclick="changeTheme('blue')" style="background: #1a5f7a;">🌊 Ocean Blue</button>
+                        <button class="theme-btn" onclick="changeTheme('orange')" style="background: #e67e22;">🌅 Sunset Orange</button>
+                        <button class="theme-btn" onclick="changeTheme('dark')" style="background: #1e1e2f;">🌙 Forest Dark</button>
+                        <button class="theme-btn" onclick="changeTheme('pink')" style="background: #c0395e;">🌸 Rose Pink</button>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h3>🔔 NOTIFICATIONS</h3>
-                <label style="display: flex; align-items: center; gap: 6px;">
-                    <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; margin-top: 6px;">
-                    <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration
-                </label>
-                <button id="saveNotificationsBtn" style="margin-top: 10px;">💾 SAVE</button>
+            
+            <!-- Daily Goal Section -->
+            <div class="settings-section" id="sectionDailyGoal">
+                <div class="settings-header" onclick="toggleSection('sectionDailyGoal')">
+                    <h3>🎯 DAILY GOAL</h3>
+                    <span class="settings-arrow">▼</span>
+                </div>
+                <div class="settings-content">
+                    <div class="form-group">
+                        <label>Set Daily Target (KSH)</label>
+                        <input type="number" id="dailyGoalInput" step="100">
+                    </div>
+                    <button id="saveGoalBtn">💾 SAVE GOAL</button>
+                </div>
             </div>
-            <div class="card">
-                <h3>💾 DATA MANAGEMENT</h3>
-                <button id="exportCsvBtn" style="margin-bottom: 6px; background: #40916c;">📊 Export as Excel/CSV (Table Format)</button>
-                <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
+            
+            <!-- Notifications Section -->
+            <div class="settings-section" id="sectionNotifications">
+                <div class="settings-header" onclick="toggleSection('sectionNotifications')">
+                    <h3>🔔 NOTIFICATIONS</h3>
+                    <span class="settings-arrow">▼</span>
+                </div>
+                <div class="settings-content">
+                    <label style="display: flex; align-items: center; gap: 6px;">
+                        <input type="checkbox" id="soundToggle" checked> 🔊 Sound Effects
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; margin-top: 6px;">
+                        <input type="checkbox" id="celebrationToggle" checked> 🎉 Celebration
+                    </label>
+                    <button id="saveNotificationsBtn" style="margin-top: 10px;">💾 SAVE</button>
+                </div>
+            </div>
+            
+            <!-- Data Management Section -->
+            <div class="settings-section" id="sectionDataManagement">
+                <div class="settings-header" onclick="toggleSection('sectionDataManagement')">
+                    <h3>💾 DATA MANAGEMENT</h3>
+                    <span class="settings-arrow">▼</span>
+                </div>
+                <div class="settings-content">
+                    <button id="exportCsvBtn" style="margin-bottom: 6px; background: #40916c;">📊 Export as Excel/CSV (Table Format)</button>
+                    <button id="resetBtn" style="background: #dc3545;">🗑️ Reset All Data</button>
+                </div>
             </div>
         </div>
         <div class="footer">Mama G's General Shop | Smart Business Manager</div>
@@ -1146,6 +1227,14 @@
             if (settings.theme === undefined) settings.theme = "default";
         }
 
+        // ========== ACCORDION FUNCTION ==========
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle('open');
+            }
+        }
+
         // Apply saved theme
         function applyTheme(themeName) {
             const body = document.body;
@@ -1183,7 +1272,6 @@
                 return;
             }
             
-            // Headers
             let headers = [
                 '📅 Date',
                 '💰 Sales (KSH)',
@@ -1195,7 +1283,6 @@
                 '📊 Stock Profit (KSH)'
             ];
             
-            // Data rows
             let rows = [];
             allDates.forEach(date => {
                 let sales = salesData[date] || 0;
@@ -1221,7 +1308,6 @@
                 rows.push([date, sales, expenses, profit, hoursDisplay, soldTotal, boughtTotal, stockProfit]);
             });
             
-            // Summary totals
             let totalSales = rows.reduce((sum, row) => sum + row[1], 0);
             let totalExpenses = rows.reduce((sum, row) => sum + row[2], 0);
             let totalProfit = totalSales - totalExpenses;
@@ -1245,7 +1331,6 @@
             
             let allRows = [headers, ...rows, ...summaryRows];
             
-            // Convert to CSV
             let csvContent = allRows.map(row => {
                 return row.map(cell => {
                     if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"'))) {
@@ -1255,7 +1340,6 @@
                 }).join(',');
             }).join('\n');
             
-            // Add UTF-8 BOM for proper Excel encoding
             let blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
             let link = document.createElement('a');
             let url = URL.createObjectURL(blob);
@@ -1823,6 +1907,7 @@
         window.confirmMoveItem = confirmMoveItem;
         window.changeTheme = changeTheme;
         window.exportAsCSV = exportAsCSV;
+        window.toggleSection = toggleSection;
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
