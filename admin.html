@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🛠️ Mama G's Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #0e2a1a 100%);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            padding: 20px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            backdrop-filter: blur(4px);
+        }
+        
+        .card h2 {
+            color: #2d6a4f;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #2d6a4f;
+            margin-bottom: 6px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #2d6a4f;
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .theme-btn {
+            padding: 12px 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .theme-btn.active {
+            outline: 3px solid #ffd966;
+            transform: scale(1.02);
+        }
+        
+        .theme-btn.green { background: #2d6a4f; }
+        .theme-btn.purple { background: #6c3483; }
+        .theme-btn.blue { background: #1a5f7a; }
+        .theme-btn.orange { background: #e67e22; }
+        .theme-btn.dark { background: #1e1e2f; }
+        .theme-btn.pink { background: #c0395e; }
+        
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .toggle-group label {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #2d6a4f;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+        
+        .toggle-switch.active::after {
+            left: 26px;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+        
+        .save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .preview-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 12px;
+        }
+        
+        .preview-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .section-content.open {
+            max-height: 500px;
+        }
+        
+        .arrow {
+            transition: transform 0.3s;
+        }
+        
+        .arrow.open {
+            transform: rotate(180deg);
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 10px;
+            margin-top: 8px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .badge {
+            background: #ffd966;
+            color: #1e1e2f;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ Mama G's Admin</h1>
+            <p>Configure your shop app without touching code</p>
+        </div>
+        
+        <div id="messageBox" class="message"></div>
+        
+        <!-- Shop Info Card -->
+        <div class="card">
+            <h2>🏪 Shop Information</h2>
+            <div class="form-group">
+                <label>Shop Name</label>
+                <input type="text" id="shopName" placeholder="MAMA G'S GENERAL SHOP">
+            </div>
+            <div class="form-group">
+                <label>Manager Name</label>
+                <input type="text" id="managerName" placeholder="Priscilla Wambui Kamau">
+            </div>
+            <div class="form-group">
+                <label>Daily Sales Goal (KSH)</label>
+                <input type="number" id="dailyGoal" placeholder="3500" step="100">
+            </div>
+        </div>
+        
+        <!-- Theme Card -->
+        <div class="card">
+            <h2>🎨 App Theme</h2>
+            <div class="theme-grid" id="themeSelector">
+                <button class="theme-btn green" data-theme="green">🌿 Green</button>
+                <button class="theme-btn purple" data-theme="purple">👑 Purple</button>
+                <button class="theme-btn blue" data-theme="blue">🌊 Blue</button>
+                <button class="theme-btn orange" data-theme="orange">🌅 Orange</button>
+                <button class="theme-btn dark" data-theme="dark">🌙 Dark</button>
+                <button class="theme-btn pink" data-theme="pink">🌸 Pink</button>
+            </div>
+        </div>
+        
+        <!-- Background Images Card (Collapsible) -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('bgSection')">
+                <h2 style="border: none; margin: 0; padding: 0;">🖼️ Background Images</h2>
+                <span class="arrow" id="bgArrow">▼</span>
+            </div>
+            <div class="section-content" id="bgSection">
+                <div class="form-group">
+                    <label>📊 Dashboard Background</label>
+                    <input type="text" id="bgDashboard" placeholder="Image URL">
+                    <div class="image-preview" id="previewDashboard"></div>
+                </div>
+                <div class="form-group">
+                    <label>💰 Record Page Background</label>
+                    <input type="text" id="bgRecord" placeholder="Image URL">
+                    <div class="image-preview" id="previewRecord"></div>
+                </div>
+                <div class="form-group">
+                    <label>📦 Stock Page Background</label>
+                    <input type="text" id="bgStock" placeholder="Image URL">
+                    <div class="image-preview" id="previewStock"></div>
+                </div>
+                <div class="form-group">
+                    <label>⚙️ Settings Page Background</label>
+                    <input type="text" id="bgSettings" placeholder="Image URL">
+                    <div class="image-preview" id="previewSettings"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Card -->
+        <div class="card">
+            <h2>🔧 Features</h2>
+            <div class="toggle-group">
+                <label>🔊 Sound Effects</label>
+                <div class="toggle-switch" id="toggleSound" onclick="toggleFeature('sound')"></div>
+            </div>
+            <div class="toggle-group">
+                <label>🎉 Celebration Popups</label>
+                <div class="toggle-switch" id="toggleCelebration" onclick="toggleFeature('celebration')"></div>
+            </div>
+            <div class="toggle-group">
+                <label>🧮 Calculator</label>
+                <div class="toggle-switch" id="toggleCalculator" onclick="toggleFeature('calculator')"></div>
+            </div>
+            <div class="toggle-group">
+                <label>📦 Stock Tracking</label>
+                <div class="toggle-switch" id="toggleStock" onclick="toggleFeature('stock')"></div>
+            </div>
+        </div>
+        
+        <!-- Save Button -->
+        <button class="save-btn" onclick="saveAllSettings()">💾 SAVE ALL CHANGES</button>
+        
+        <!-- Link to Main App -->
+        <a href="index.html" class="preview-link">👁️ Open Mama G's App →</a>
+        
+        <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 11px;">
+            Changes save to config.js • App updates automatically
+        </div>
+    </div>
+
+    <script>
+        // Current settings object
+        let currentConfig = {
+            shopName: "MAMA G'S GENERAL SHOP",
+            managerName: "Priscilla Wambui Kamau",
+            dailyGoal: 3500,
+            theme: "green",
+            backgrounds: {
+                dashboard: "https://i.pinimg.com/1200x/8c/e3/5d/8ce35dba6a905798cc7aac1614f0cd79.jpg",
+                record: "https://i.pinimg.com/736x/fc/04/ae/fc04aeee22cbce1229a93dd3d0e1eefa.jpg",
+                stock: "https://i.pinimg.com/736x/48/d2/b6/48d2b65e39df5e4d738fc60bde129a13.jpg",
+                settings: "https://i.pinimg.com/736x/d9/6f/6a/d96f6ad175a83982c8069c45fedc4a61.jpg"
+            },
+            features: {
+                soundEffects: true,
+                celebrations: true,
+                calculator: true,
+                stockTracking: true
+            }
+        };
+        
+        // Load current config from localStorage or defaults
+        function loadConfig() {
+            const saved = localStorage.getItem('mamag_admin_config');
+            if (saved) {
+                try {
+                    currentConfig = JSON.parse(saved);
+                } catch(e) {
+                    console.log('Using default config');
+                }
+            }
+            
+            // Populate form
+            document.getElementById('shopName').value = currentConfig.shopName;
+            document.getElementById('managerName').value = currentConfig.managerName;
+            document.getElementById('dailyGoal').value = currentConfig.dailyGoal;
+            
+            // Background URLs
+            document.getElementById('bgDashboard').value = currentConfig.backgrounds.dashboard;
+            document.getElementById('bgRecord').value = currentConfig.backgrounds.record;
+            document.getElementById('bgStock').value = currentConfig.backgrounds.stock;
+            document.getElementById('bgSettings').value = currentConfig.backgrounds.settings;
+            
+            // Update previews
+            updateImagePreviews();
+            
+            // Theme
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.theme === currentConfig.theme) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Features
+            updateToggleUI('sound', currentConfig.features.soundEffects);
+            updateToggleUI('celebration', currentConfig.features.celebrations);
+            updateToggleUI('calculator', currentConfig.features.calculator);
+            updateToggleUI('stock', currentConfig.features.stockTracking);
+        }
+        
+        function updateToggleUI(feature, value) {
+            const toggle = document.getElementById(`toggle${feature.charAt(0).toUpperCase() + feature.slice(1)}`);
+            if (toggle) {
+                if (value) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            }
+        }
+        
+        function toggleFeature(feature) {
+            const featureMap = {
+                'sound': 'soundEffects',
+                'celebration': 'celebrations',
+                'calculator': 'calculator',
+                'stock': 'stockTracking'
+            };
+            
+            const configKey = featureMap[feature];
+            currentConfig.features[configKey] = !currentConfig.features[configKey];
+            updateToggleUI(feature, currentConfig.features[configKey]);
+        }
+        
+        function updateImagePreviews() {
+            document.getElementById('previewDashboard').style.backgroundImage = `url('${document.getElementById('bgDashboard').value}')`;
+            document.getElementById('previewRecord').style.backgroundImage = `url('${document.getElementById('bgRecord').value}')`;
+            document.getElementById('previewStock').style.backgroundImage = `url('${document.getElementById('bgStock').value}')`;
+            document.getElementById('previewSettings').style.backgroundImage = `url('${document.getElementById('bgSettings').value}')`;
+        }
+        
+        // Theme selection
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentConfig.theme = this.dataset.theme;
+            });
+        });
+        
+        // Image URL input listeners
+        ['Dashboard', 'Record', 'Stock', 'Settings'].forEach(page => {
+            document.getElementById(`bg${page}`).addEventListener('input', function() {
+                currentConfig.backgrounds[page.toLowerCase()] = this.value;
+                document.getElementById(`preview${page}`).style.backgroundImage = `url('${this.value}')`;
+            });
+        });
+        
+        // Other input listeners
+        document.getElementById('shopName').addEventListener('input', function() {
+            currentConfig.shopName = this.value;
+        });
+        
+        document.getElementById('managerName').addEventListener('input', function() {
+            currentConfig.managerName = this.value;
+        });
+        
+        document.getElementById('dailyGoal').addEventListener('input', function() {
+            currentConfig.dailyGoal = parseInt(this.value) || 3500;
+        });
+        
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = document.getElementById('bgArrow');
+            
+            if (section.classList.contains('open')) {
+                section.classList.remove('open');
+                arrow.classList.remove('open');
+                section.style.maxHeight = '0';
+            } else {
+                section.classList.add('open');
+                arrow.classList.add('open');
+                section.style.maxHeight = section.scrollHeight + 'px';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const box = document.getElementById('messageBox');
+            box.textContent = text;
+            box.className = 'message ' + type;
+            
+            setTimeout(() => {
+                box.className = 'message';
+            }, 3000);
+        }
+        
+        function generateConfigFile() {
+            return `// Mama G's App Configuration File
+// Last updated: ${new Date().toLocaleString()}
+const APP_CONFIG = {
+  shopName: "${currentConfig.shopName}",
+  managerName: "${currentConfig.managerName}",
+  dailyGoal: ${currentConfig.dailyGoal},
+  
+  theme: "${currentConfig.theme}",
+  
+  backgrounds: {
+    dashboard: "${currentConfig.backgrounds.dashboard}",
+    record: "${currentConfig.backgrounds.record}",
+    stock: "${currentConfig.backgrounds.stock}",
+    settings: "${currentConfig.backgrounds.settings}"
+  },
+  
+  features: {
+    soundEffects: ${currentConfig.features.soundEffects},
+    celebrations: ${currentConfig.features.celebrations},
+    calculator: ${currentConfig.features.calculator},
+    stockTracking: ${currentConfig.features.stockTracking}
+  }
+};`;
+        }
+        
+        function saveAllSettings() {
+            // Save to localStorage
+            localStorage.setItem('mamag_admin_config', JSON.stringify(currentConfig));
+            
+            // Generate config file content
+            const configContent = generateConfigFile();
+            
+            // Create download
+            const blob = new Blob([configContent], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.js';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('✅ Settings saved! Replace config.js in GitHub with the downloaded file.', 'success');
+            
+            // Also show instructions
+            setTimeout(() => {
+                alert('📁 IMPORTANT:\n\n1. The config.js file has been downloaded\n2. Go to your GitHub repository\n3. Delete the old config.js\n4. Upload this new config.js\n5. Your app will update automatically in 1-2 minutes!');
+            }, 500);
+        }
+        
+        // Initialize
+        loadConfig();
+        
+        // Make toggleSection global
+        window.toggleSection = toggleSection;
+        window.toggleFeature = toggleFeature;
+        window.saveAllSettings = saveAllSettings;
+    </script>
+</body>
+</html>
