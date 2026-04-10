@@ -12,6 +12,9 @@
     <meta name="apple-mobile-web-app-title" content="Mama G Shop">
     <meta name="theme-color" content="#2d6a4f">
     
+    <!-- Load Configuration File -->
+    <script src="config.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -264,28 +267,28 @@
             color: white;
         }
 
-        /* Dashboard (Home) Page Background */
+        /* Dashboard (Home) Page Background - Default fallback */
         #dashboard.page.active {
             background: url('https://i.pinimg.com/1200x/8c/e3/5d/8ce35dba6a905798cc7aac1614f0cd79.jpg') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
         
-        /* Record Page Background */
+        /* Record Page Background - Default fallback */
         #record.page.active {
             background: url('https://i.pinimg.com/736x/fc/04/ae/fc04aeee22cbce1229a93dd3d0e1eefa.jpg') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
         
-        /* Stock Page Background */
+        /* Stock Page Background - Default fallback */
         #stock.page.active {
             background: url('https://i.pinimg.com/736x/48/d2/b6/48d2b65e39df5e4d738fc60bde129a13.jpg') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
         
-        /* Settings Page Background - NEW IMAGE ADDED */
+        /* Settings Page Background - Default fallback */
         #settings.page.active {
             background: url('https://i.pinimg.com/736x/d9/6f/6a/d96f6ad175a83982c8069c45fedc4a61.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -1210,7 +1213,22 @@
         let expensesData = JSON.parse(localStorage.getItem('mamag_expenses')) || {};
         let stockData = JSON.parse(localStorage.getItem('mamag_stock')) || {};
         
+        // Load settings from config.js FIRST, then fallback to localStorage, then defaults
         let settings = JSON.parse(localStorage.getItem('mamag_settings'));
+        
+        // If no localStorage settings, try to load from APP_CONFIG (config.js)
+        if (!settings && typeof APP_CONFIG !== 'undefined') {
+            settings = {
+                shopName: "🏪 " + APP_CONFIG.shopName,
+                managerName: APP_CONFIG.managerName,
+                dailyGoal: APP_CONFIG.dailyGoal,
+                soundEnabled: APP_CONFIG.features.soundEffects,
+                celebrationEnabled: APP_CONFIG.features.celebrations,
+                theme: APP_CONFIG.theme
+            };
+        }
+        
+        // Final fallback defaults
         if (!settings) {
             settings = {
                 shopName: "🏪 MAMA G'S GENERAL SHOP",
@@ -1221,12 +1239,39 @@
                 theme: "default"
             };
         } else {
+            // Ensure all properties exist
             if (settings.shopName === undefined) settings.shopName = "🏪 MAMA G'S GENERAL SHOP";
             if (settings.managerName === undefined) settings.managerName = "Priscilla Wambui Kamau";
             if (settings.dailyGoal === undefined) settings.dailyGoal = 3500;
             if (settings.soundEnabled === undefined) settings.soundEnabled = true;
             if (settings.celebrationEnabled === undefined) settings.celebrationEnabled = true;
             if (settings.theme === undefined) settings.theme = "default";
+        }
+        
+        // Apply background images from config if available
+        if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.backgrounds) {
+            // Remove old dynamic style if exists
+            const oldStyle = document.getElementById('dynamic-backgrounds');
+            if (oldStyle) oldStyle.remove();
+            
+            // Create style element for dynamic backgrounds
+            const bgStyle = document.createElement('style');
+            bgStyle.id = 'dynamic-backgrounds';
+            bgStyle.textContent = `
+                #dashboard.page.active {
+                    background-image: url('${APP_CONFIG.backgrounds.dashboard}') !important;
+                }
+                #record.page.active {
+                    background-image: url('${APP_CONFIG.backgrounds.record}') !important;
+                }
+                #stock.page.active {
+                    background-image: url('${APP_CONFIG.backgrounds.stock}') !important;
+                }
+                #settings.page.active {
+                    background-image: url('${APP_CONFIG.backgrounds.settings}') !important;
+                }
+            `;
+            document.head.appendChild(bgStyle);
         }
 
         // ========== ACCORDION FUNCTION ==========
@@ -1242,7 +1287,7 @@
             const body = document.body;
             body.classList.remove('theme-default', 'theme-purple', 'theme-blue', 'theme-orange', 'theme-dark', 'theme-pink');
             
-            if (themeName === 'default') {
+            if (themeName === 'default' || themeName === 'green') {
                 body.classList.add('theme-default');
             } else if (themeName === 'purple') {
                 body.classList.add('theme-purple');
